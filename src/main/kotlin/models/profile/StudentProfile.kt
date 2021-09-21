@@ -5,8 +5,8 @@ import models.Tags
 data class StudentProfile(
     override val name: String,
     override val surname: String,
-    override val patronymic: String? = null,
-    override val avatarURL: String? = null,
+    override val patronymic: String,
+    override val avatarURL: String,
     override val career: List<JobDescription>,
     override val achievements: List<AchievementDescription>,
     override val interestsTags: Tags,
