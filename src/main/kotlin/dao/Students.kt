@@ -11,5 +11,5 @@ object Students : LongIdTable() {
     val faculty = varchar("faculty", 256)
     val course = integer("course")
     val gpa = decimal("gpa", 3, 2).nullable()
-    val cvUrl = varchar("cv_url", 256).nullable()
+    val cvUrl = text("cv_url").nullable()
 }
