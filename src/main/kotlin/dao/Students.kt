@@ -9,7 +9,7 @@ object Students : LongIdTable() {
     val profileId = entityId("profile_id", Profiles).uniqueIndex()
     val university = varchar("university", 256)
     val faculty = varchar("faculty", 256)
-    val step = varchar("step", 50).nullable()
+    val degree = varchar("step", 50).nullable()
     val course = integer("course")
     val gpa = decimal("gpa", 3, 2).nullable()
     val cvUrl = text("cv_url").nullable()
