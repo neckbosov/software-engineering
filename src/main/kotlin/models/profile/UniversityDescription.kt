@@ -1,5 +1,8 @@
 package models.profile
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UniversityDescription(
     val universityName: String,
     val faculty: String,

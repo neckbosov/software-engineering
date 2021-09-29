@@ -1,7 +1,9 @@
 package models.profile
 
+import kotlinx.serialization.Serializable
 import models.Tags
 
+@Serializable
 sealed class UserProfile {
     abstract val name: String
     abstract val surname: String
@@ -18,6 +20,7 @@ sealed class UserProfile {
     abstract val status: Status
 }
 
+@Serializable
 data class InstructorProfile(
     override val name: String,
     override val surname: String,
@@ -32,6 +35,7 @@ data class InstructorProfile(
     val works: List<ResearchWorkDescription>,
 ) : UserProfile()
 
+@Serializable
 data class StudentProfile(
     override val name: String,
     override val surname: String,
