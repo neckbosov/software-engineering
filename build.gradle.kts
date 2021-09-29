@@ -20,12 +20,15 @@ repositories {
 
 val exposedVersion: String by project
 val ktorVersion: String by project
+val http4kVersion: String by project
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
     implementation(compose.desktop.currentOs)
     implementation(compose.materialIconsExtended)
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
@@ -39,6 +42,11 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-serialization:$ktorVersion")
+
+    implementation(platform("org.http4k:http4k-bom:$http4kVersion")) // todo: used in oauth to catch callbacks, switch to ktor later
+    implementation("org.http4k:http4k-core")
+    implementation("org.http4k:http4k-server-netty")
+    implementation("org.http4k:http4k-client-apache")
 }
 
 tasks.withType<KotlinCompile>() {
