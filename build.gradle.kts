@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.5.21"
+    kotlin("plugin.serialization") version "1.5.21"
     id("org.jetbrains.compose") version "1.0.0-alpha3"
 }
 
@@ -22,6 +23,7 @@ val ktorVersion: String by project
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
     implementation(compose.desktop.currentOs)
     implementation(compose.materialIconsExtended)
 
