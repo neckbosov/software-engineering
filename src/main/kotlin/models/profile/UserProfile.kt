@@ -2,18 +2,48 @@ package models.profile
 
 import models.Tags
 
-interface UserProfile {
-    val name: String
-    val surname: String
-    val patronymic: String
+sealed class UserProfile {
+    abstract val name: String
+    abstract val surname: String
+    abstract val patronymic: String
 
     // TODO
-    val avatarURL: String
+    abstract val avatarURL: String
 
-    val career: List<JobDescription>
-    val achievements: List<AchievementDescription>
+    abstract val career: List<JobDescription>
+    abstract val achievements: List<AchievementDescription>
 
-    val interestsTags: Tags
+    abstract val interestsTags: Tags
 
-    val status: Status
+    abstract val status: Status
 }
+
+data class InstructorProfile(
+    override val name: String,
+    override val surname: String,
+    override val patronymic: String,
+    override val avatarURL: String,
+    override val career: List<JobDescription>,
+    override val achievements: List<AchievementDescription>,
+    override val interestsTags: Tags,
+    override val status: Status,
+
+    val degree: String,
+    val works: List<ResearchWorkDescription>,
+) : UserProfile()
+
+data class StudentProfile(
+    override val name: String,
+    override val surname: String,
+    override val patronymic: String,
+    override val avatarURL: String,
+    override val career: List<JobDescription>,
+    override val achievements: List<AchievementDescription>,
+    override val interestsTags: Tags,
+    override val status: Status,
+
+    val universityDescription: UniversityDescription,
+    val cvURL: String? = null,
+) : UserProfile()
+
+
