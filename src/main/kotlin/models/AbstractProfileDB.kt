@@ -2,7 +2,7 @@ package models
 
 import models.profile.*
 
-interface AbstractProfileBackend {
+interface AbstractProfileDB {
     fun postStudentProfile(id: Int, profile: StudentProfile)
     fun getStudentProfile(id: Int): StudentProfile
 

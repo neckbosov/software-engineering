@@ -34,28 +34,22 @@ fun Route.configureProfileRouting(backend: AbstractProfileBackend) {
         }
 
         post("/student_profile") {
-            val id = call.request.queryParameters["id"]?.toIntOrNull()
-            if (id == null) {
-                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
-                return@post
-            }
             // todo handle exception
 
             val profile = call.receive<StudentProfile>()
-            backend.postStudentProfile(profile)
+            val id = -1 //TODO("receive id fro session")
+            backend.postStudentProfile(id, profile)
             call.respond(HttpStatusCode.OK)
         }
 
         post("/instructor_profile") {
-            val id = call.request.queryParameters["id"]?.toIntOrNull()
-            if (id == null) {
-                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
-                return@post
-            }
+
             // todo handle exception
 
             val profile = call.receive<InstructorProfile>()
-            backend.postInstructorProfile(profile)
+            val id = -1 //TODO("receive id fro session")
+
+            backend.postInstructorProfile(id, profile)
             call.respond(HttpStatusCode.OK)
         }
     }
