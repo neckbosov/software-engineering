@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.ktor.auth.*
 import models.Tags
 import models.profile.*
 
@@ -20,14 +21,15 @@ import models.profile.*
 @Preview
 fun ProfileView(profile: UserProfile, modifier: Modifier = Modifier) {
     BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
-        Column {
-            Row {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 ImageView(profile.avatarURL)
-                ProfileInfoView(profile, modifier = Modifier.padding(start = 10.dp))
+                ProfileInfoView(profile)
             }
-            AchievmentsView(profile.achievements, modifier = Modifier.padding(top = 20.dp))
-            CarrierView(profile.career, modifier = Modifier.padding(top = 10.dp))
-            AdditionalInfoView(profile, modifier = Modifier.padding(top = 10.dp))
+            Spacer(modifier = Modifier.height(5.dp))
+            AchievmentsView(profile.achievements)
+            CarrierView(profile.career)
+            AdditionalInfoView(profile)
         }
     }
 }
@@ -67,17 +69,21 @@ fun ProfileInfoView(profile: UserProfile, modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
+fun NameView(profile: UserProfile, modifier: Modifier = Modifier) {
+    Row(horizontalArrangement = Arrangement.spacedBy(5.dp), modifier = modifier) {
+        FullNameView(
+            fullName = "${profile.surname} ${profile.name} ${profile.patronymic}",
+            modifier = Modifier
+        )
+        StatusView(profile.status)
+    }
+}
+
+@Composable
+@Preview
 fun StudentProfileInfoView(profile: StudentProfile, modifier: Modifier = Modifier) {
-    Column(modifier) {
-        Row {
-            FullNameView(
-                fullName = "${profile.surname} ${profile.name} ${profile.patronymic}",
-                modifier = Modifier
-            )
-            Spacer(modifier = Modifier.widthIn(min = 5.dp, max = 10.dp))
-            StatusView(profile.status)
-        }
-        Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier) {
+        NameView(profile)
         val universityInfo = profile.universityDescription
         Text(
             text = "Student in ${universityInfo.universityName}, ${universityInfo.faculty}",
@@ -86,7 +92,6 @@ fun StudentProfileInfoView(profile: StudentProfile, modifier: Modifier = Modifie
                 fontWeight = FontWeight.SemiBold,
             )
         )
-        Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
         Text(
             text = "Grade: ${universityInfo.grade}",
             style = TextStyle(
@@ -94,7 +99,6 @@ fun StudentProfileInfoView(profile: StudentProfile, modifier: Modifier = Modifie
                 fontWeight = FontWeight.SemiBold,
             )
         )
-        Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
         Text(
             text = "GPA: ${universityInfo.gpa}",
             style = TextStyle(
@@ -102,7 +106,6 @@ fun StudentProfileInfoView(profile: StudentProfile, modifier: Modifier = Modifie
                 fontWeight = FontWeight.SemiBold,
             )
         )
-        Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
         TagsView(profile.interestsTags)
     }
 }
@@ -110,16 +113,8 @@ fun StudentProfileInfoView(profile: StudentProfile, modifier: Modifier = Modifie
 @Composable
 @Preview
 fun InstructorProfileInfoView(profile: InstructorProfile, modifier: Modifier = Modifier) {
-    Column(modifier) {
-        Row {
-            FullNameView(
-                fullName = "${profile.surname} ${profile.name} ${profile.patronymic}",
-                modifier = Modifier
-            )
-            Spacer(modifier = Modifier.widthIn(min = 5.dp, max = 10.dp))
-            StatusView(profile.status)
-        }
-        Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier) {
+        NameView(profile)
         Text(
             text = "Tutor in ${profile.degree}",
             style = TextStyle(
@@ -127,7 +122,6 @@ fun InstructorProfileInfoView(profile: InstructorProfile, modifier: Modifier = M
                 fontWeight = FontWeight.SemiBold,
             )
         )
-        Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
         TagsView(profile.interestsTags)
     }
 }
@@ -135,7 +129,7 @@ fun InstructorProfileInfoView(profile: InstructorProfile, modifier: Modifier = M
 @Composable
 @Preview
 fun AchievmentsView(achievements : List<AchievementDescription>, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier) {
         Text(
             text = "Achievements:",
             style = TextStyle(
@@ -143,39 +137,31 @@ fun AchievmentsView(achievements : List<AchievementDescription>, modifier: Modif
                 fontWeight = FontWeight.SemiBold,
             ),
         )
-        Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
         achievements.forEachIndexed { i, achievement ->
-            Row {
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                 Text(
                     text = "$i)",
                     fontSize = 20f.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
-                Spacer(modifier = Modifier.widthIn(min = 5.dp, max = 10.dp))
                 Text(
                     text = achievement.title,
                     fontSize = 20f.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
-                Spacer(modifier = Modifier.widthIn(min = 5.dp, max = 10.dp))
                 Text(
                     text = "(${achievement.date})",
                     fontSize = 20f.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.DarkGray
                 )
-                Spacer(modifier = Modifier.widthIn(min = 5.dp, max = 10.dp))
                 Text(
                     text = "[${achievement.type}]",
                     fontSize = 20f.sp,
                     color = Color.DarkGray
                 )
             }
-            Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
-            Text(
-                text = achievement.description
-            )
-            Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
+            Text(text = achievement.description)
         }
     }
 }
@@ -183,7 +169,7 @@ fun AchievmentsView(achievements : List<AchievementDescription>, modifier: Modif
 @Composable
 @Preview
 fun CarrierView(jobs: List<JobDescription>, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier) {
         Text(
             text = "Carrier:",
             style = TextStyle(
@@ -191,21 +177,18 @@ fun CarrierView(jobs: List<JobDescription>, modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.SemiBold,
             ),
         )
-        Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
         jobs.forEachIndexed { i, job ->
-            Row {
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                 Text(
                     text = "$i)",
                     fontSize = 20f.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
-                Spacer(modifier = Modifier.widthIn(min = 5.dp, max = 10.dp))
                 Text(
                     text = "${job.position} at ${job.place}",
                     fontSize = 20f.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
-                Spacer(modifier = Modifier.widthIn(min = 5.dp, max = 10.dp))
                 Text(
                     text = "(${job.period.first} - ${job.period.second})",
                     fontSize = 20f.sp,
@@ -213,7 +196,6 @@ fun CarrierView(jobs: List<JobDescription>, modifier: Modifier = Modifier) {
                     color = Color.DarkGray
                 )
             }
-            Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
         }
     }
 }
@@ -221,7 +203,7 @@ fun CarrierView(jobs: List<JobDescription>, modifier: Modifier = Modifier) {
 @Composable
 @Preview
 fun TagsView(tags: Tags, modifier: Modifier = Modifier) {
-    Row(modifier = modifier) {
+    Row(horizontalArrangement = Arrangement.spacedBy(5.dp), modifier = modifier) {
         Text(
             text = "Tags: ",
             style = TextStyle(
@@ -230,7 +212,9 @@ fun TagsView(tags: Tags, modifier: Modifier = Modifier) {
             ),
             modifier = Modifier
         )
-        Text(tags.joinToString())
+        tags.forEach {
+            Text(it)
+        }
     }
 }
 
@@ -264,7 +248,7 @@ fun StudentAdditionalInfoView(profile: StudentProfile, modifier: Modifier = Modi
 @Composable
 @Preview
 fun InstructorAdditionalInfoView(profile: InstructorProfile, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier) {
         Text(
             text = "Works:",
             style = TextStyle(
@@ -272,31 +256,24 @@ fun InstructorAdditionalInfoView(profile: InstructorProfile, modifier: Modifier 
                 fontWeight = FontWeight.SemiBold,
             ),
         )
-        Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
         profile.works.forEachIndexed { i, work ->
-            Row {
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                 Text(
                     text = "$i)",
                     fontSize = 20f.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
-                Spacer(modifier = Modifier.widthIn(min = 5.dp, max = 10.dp))
                 Text(
                     text = work.name,
                     fontSize = 20f.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
-            Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
-            Text(
-                text = work.description
-            )
-            Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
+            Text(text = work.description)
             Text(
                 text = "Details: ${work.detailsURL}",
                 fontWeight = FontWeight.SemiBold,
             )
-            Spacer(modifier = Modifier.heightIn(min = 10.dp, max = 20.dp))
         }
     }
 }
