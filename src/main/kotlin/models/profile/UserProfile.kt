@@ -7,10 +7,10 @@ import models.Tags
 sealed class UserProfile {
     abstract val name: String
     abstract val surname: String
-    abstract val patronymic: String
+    abstract val patronymic: String?
 
     // TODO
-    abstract val avatarURL: String
+    abstract val avatarURL: String?
 
     abstract val career: List<JobDescription>
     abstract val achievements: List<AchievementDescription>
@@ -24,8 +24,8 @@ sealed class UserProfile {
 data class InstructorProfile(
     override val name: String,
     override val surname: String,
-    override val patronymic: String,
-    override val avatarURL: String,
+    override val patronymic: String? = null,
+    override val avatarURL: String? = null,
     override val career: List<JobDescription>,
     override val achievements: List<AchievementDescription>,
     override val interestsTags: Tags,
@@ -39,8 +39,8 @@ data class InstructorProfile(
 data class StudentProfile(
     override val name: String,
     override val surname: String,
-    override val patronymic: String,
-    override val avatarURL: String,
+    override val patronymic: String? = null,
+    override val avatarURL: String? = null,
     override val career: List<JobDescription>,
     override val achievements: List<AchievementDescription>,
     override val interestsTags: Tags,
