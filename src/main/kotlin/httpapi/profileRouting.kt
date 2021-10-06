@@ -37,7 +37,7 @@ fun Route.configureProfileRouting(backend: AbstractProfileBackend) {
             // todo handle exception
 
             val profile = call.receive<StudentProfile>()
-            val id = -1 //TODO("receive id fro session")
+            val id = (-1).toLong() //TODO("receive id fro session")
             backend.postStudentProfile(id, profile)
             call.respond(HttpStatusCode.OK)
         }
@@ -47,7 +47,7 @@ fun Route.configureProfileRouting(backend: AbstractProfileBackend) {
             // todo handle exception
 
             val profile = call.receive<InstructorProfile>()
-            val id = -1 //TODO("receive id fro session")
+            val id = (-1).toLong() //TODO("receive id fro session")
 
             backend.postInstructorProfile(id, profile)
             call.respond(HttpStatusCode.OK)
