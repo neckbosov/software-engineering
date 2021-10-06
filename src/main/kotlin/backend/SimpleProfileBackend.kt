@@ -3,12 +3,13 @@ package backend
 import dao.*
 import models.AbstractProfileBackend
 import models.Tag
-import models.profile.InstructorProfile
-import models.profile.StudentProfile
 import models.profile.*
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.select
 import java.math.BigDecimal
 
+@Suppress("RemoveRedundantQualifierName")
 class SimpleProfileBackend : AbstractProfileBackend {
 
     override fun postStudentProfile(id: Long, profile: StudentProfile) {
@@ -92,6 +93,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
         )
 
         return StudentProfile(
+            studentProfile[Profiles.email],
             studentProfile[Profiles.firstName],
             studentProfile[Profiles.lastName],
             studentProfile[Profiles.patronymic],
@@ -161,7 +163,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
     }
 
     override fun getInstructorProfile(id: Long): InstructorProfile {
-        val profile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
+        val instryctorProfile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
         val achievements = Achievements.select { Achievements.profileId.eq(id) }.map {
             AchievementDescription(
                 it[Achievements.type],
@@ -191,14 +193,15 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
 
         return InstructorProfile(
-            profile[Profiles.firstName],
-            profile[Profiles.lastName],
-            profile[Profiles.patronymic],
-            profile[Profiles.avatarUrl],
+            instryctorProfile[Profiles.email],
+            instryctorProfile[Profiles.firstName],
+            instryctorProfile[Profiles.lastName],
+            instryctorProfile[Profiles.patronymic],
+            instryctorProfile[Profiles.avatarUrl],
             career,
             achievements,
             instructorInterestingTags,
-            if (profile[Profiles.isActive]) {
+            if (instryctorProfile[Profiles.isActive]) {
                 Status.ACTIVE
             } else {
                 Status.NON_ACTIVE

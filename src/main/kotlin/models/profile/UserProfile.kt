@@ -5,6 +5,7 @@ import models.Tags
 
 @Serializable
 sealed class UserProfile {
+    abstract val email: String
     abstract val name: String
     abstract val surname: String
     abstract val patronymic: String?
@@ -22,6 +23,7 @@ sealed class UserProfile {
 
 @Serializable
 data class InstructorProfile(
+    override val email: String,
     override val name: String,
     override val surname: String,
     override val patronymic: String? = null,
@@ -37,6 +39,7 @@ data class InstructorProfile(
 
 @Serializable
 data class StudentProfile(
+    override val email: String,
     override val name: String,
     override val surname: String,
     override val patronymic: String? = null,
