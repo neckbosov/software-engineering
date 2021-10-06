@@ -91,7 +91,6 @@ class SimpleProfileBackend : AbstractProfileBackend {
             Pair(studentData[Students.from], studentData[Students.to]),
             studentData[Students.gpa]?.toFloat()
         )
-
         return StudentProfile(
             studentProfile[Profiles.email],
             studentProfile[Profiles.firstName],
@@ -210,4 +209,96 @@ class SimpleProfileBackend : AbstractProfileBackend {
             researches
         )
     }
+
+    override fun getIdByEmail(email: String): Long {
+        val profile = Profiles.select {
+            Profiles.email.eq(email)
+        }.toList()[0]
+        return profile[Profiles.id].value
+    }
+
+    override fun getProfile(id: Long): UserProfile {
+        val profile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
+        val achievements = Achievements.select { Achievements.profileId.eq(id) }.map {
+            AchievementDescription(
+                it[Achievements.type],
+                it[Achievements.name],
+                it[Achievements.description],
+                it[Achievements.date]
+            )
+        }
+        val career = Jobs.select { Jobs.profileId.eq(id) }.map {
+            JobDescription(
+                it[Jobs.place],
+                it[Jobs.position],
+                Pair(it[Jobs.fromDate], it[Jobs.toDate])
+            )
+        }
+        val tags = Tags.select { Tags.profileId.eq(id) }.map {
+            it[Tags.tag]
+        }
+        when (profile[Profiles.profileType]) {
+            ProfileType.Student -> {
+                val studentData = Students.select { Students.profileId.eq(id) }.toList()[0]
+                val universityData = UniversityDescription(
+                    studentData[Students.university],
+                    studentData[Students.faculty],
+                    studentData[Students.degree],
+                    studentData[Students.course],
+                    Pair(studentData[Students.from], studentData[Students.to]),
+                    studentData[Students.gpa]?.toFloat()
+                )
+                return StudentProfile(
+                    profile[Profiles.email],
+                    profile[Profiles.firstName],
+                    profile[Profiles.lastName],
+                    profile[Profiles.patronymic],
+                    profile[Profiles.avatarUrl],
+                    career,
+                    achievements,
+                    tags,
+                    if (profile[Profiles.isActive]) {
+                        Status.ACTIVE
+                    } else {
+                        Status.NON_ACTIVE
+                    },
+                    universityData,
+                    studentData[Students.cvUrl]
+                )
+            }
+            ProfileType.Instructor -> {
+                val instructor = Instructors.select { Students.profileId.eq(id) }.toList()[0]
+                val researches = ResearchWorks.select { ResearchWorks.instructorId.eq(id) }.map {
+                    ResearchWorkDescription(
+                        it[ResearchWorks.title],
+                        it[ResearchWorks.description],
+                        it[ResearchWorks.detailsURL]
+                    )
+                }
+                return InstructorProfile(
+                    profile[Profiles.email],
+                    profile[Profiles.firstName],
+                    profile[Profiles.lastName],
+                    profile[Profiles.patronymic],
+                    profile[Profiles.avatarUrl],
+                    career,
+                    achievements,
+                    tags,
+                    if (profile[Profiles.isActive]) {
+                        Status.ACTIVE
+                    } else {
+                        Status.NON_ACTIVE
+                    },
+                    instructor[Instructors.degree],
+                    researches
+                )
+            }
+        }
+    }
+
+    override fun postProfile(profile: UserProfile): Long {
+        TODO("Not yet implemented")
+    }
+
+
 }

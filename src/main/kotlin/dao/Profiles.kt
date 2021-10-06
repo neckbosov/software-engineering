@@ -10,4 +10,5 @@ object Profiles : LongIdTable() {
     val patronymic = varchar("patronymic", 50).nullable()
     val currentJobId = entityId("current_job_id", Jobs).uniqueIndex().nullable()
     val isActive = bool("is_active")
+    val profileType = enumeration("profile_type", ProfileType::class)
 }
