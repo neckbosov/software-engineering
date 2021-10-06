@@ -1,6 +1,10 @@
 package dao
 
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
+import org.jetbrains.exposed.sql.transactions.transaction
 
 object DbSettings {
     val db by lazy {
@@ -15,5 +19,9 @@ object DbSettings {
             user = dbUser,
             password = dbPassword
         )
+        transaction {
+            addLogger(StdOutSqlLogger)
+            SchemaUtils.create(Profiles, Students, Instructors, Achievements, Jobs, Tags, ResearchWorks)
+        }
     }
 }
