@@ -13,7 +13,7 @@ object DbSettings {
         val dbName = System.getenv("DB_NAME") ?: "postgres"
         val dbUser = System.getenv("DB_USER") ?: "postgres"
         val dbPassword = System.getenv("DB_PASSWORD") ?: ""
-        Database.connect(
+        val db = Database.connect(
             "jdbc:postgresql://$dbHost:$dbPort/$dbName",
             driver = "org.postgresql.Driver",
             user = dbUser,
@@ -23,5 +23,6 @@ object DbSettings {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(Profiles, Students, Instructors, Achievements, Jobs, Tags, ResearchWorks)
         }
+        db
     }
 }
