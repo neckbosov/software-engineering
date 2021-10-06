@@ -12,7 +12,7 @@ import models.profile.StudentProfile
 fun Route.configureProfileRouting(backend: AbstractProfileBackend) {
     route("/v0/profile") {
         get("/student_profile") {
-            val id = call.request.queryParameters["id"]?.toIntOrNull()
+            val id = call.request.queryParameters["id"]?.toLongOrNull()
             if (id == null) {
                 call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
                 return@get
@@ -23,7 +23,7 @@ fun Route.configureProfileRouting(backend: AbstractProfileBackend) {
         }
 
         get("/instructor_profile") {
-            val id = call.request.queryParameters["id"]?.toIntOrNull()
+            val id = call.request.queryParameters["id"]?.toLongOrNull()
             if (id == null) {
                 call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
                 return@get

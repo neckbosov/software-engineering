@@ -1,20 +1,15 @@
-package DB
+package backend
 
 import dao.*
-import dao.Students.id
-import dao.Students.nullable
-import dao.Students.uniqueIndex
-import models.AbstractProfileDB
+import models.AbstractProfileBackend
 import models.Tag
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import models.profile.*
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
-import javax.swing.text.html.parser.Entity
 
-class SimpleProfileDB : AbstractProfileDB {
+class SimpleProfileBackend : AbstractProfileBackend {
 
     override fun postStudentProfile(id: Long, profile: StudentProfile) {
         val profileId = Profiles.insertAndGetId {
