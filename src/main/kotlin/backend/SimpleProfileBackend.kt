@@ -62,30 +62,23 @@ class SimpleProfileBackend : AbstractProfileBackend {
 
     override fun getStudentProfile(id: Long): StudentProfile {
         val studentProfile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
-        val studentAchievements = ArrayList<AchievementDescription>()
-        Achievements.select { Achievements.profileId.eq(id) }.forEach {
-            studentAchievements.add(
-                AchievementDescription(
-                    it[Achievements.type],
-                    it[Achievements.name],
-                    it[Achievements.description],
-                    it[Achievements.date]
-                )
+        val studentAchievements = Achievements.select { Achievements.profileId.eq(id) }.map {
+            AchievementDescription(
+                it[Achievements.type],
+                it[Achievements.name],
+                it[Achievements.description],
+                it[Achievements.date]
             )
         }
-        val studentCareer = ArrayList<JobDescription>()
-        Jobs.select { Jobs.profileId.eq(id) }.forEach {
-            studentCareer.add(
-                JobDescription(
-                    it[Jobs.place],
-                    it[Jobs.position],
-                    Pair(it[Jobs.fromDate], it[Jobs.toDate])
-                )
+        val studentCareer = Jobs.select { Jobs.profileId.eq(id) }.map {
+            JobDescription(
+                it[Jobs.place],
+                it[Jobs.position],
+                Pair(it[Jobs.fromDate], it[Jobs.toDate])
             )
         }
-        val studentInterestingTags = ArrayList<Tag>()
-        Tags.select { Tags.profileId.eq(id) }.forEach {
-            studentInterestingTags.add(it[Tags.tag])
+        val studentInterestingTags = Tags.select { Tags.profileId.eq(id) }.map {
+            it[Tags.tag]
         }
 
         val studentData = Students.select { Students.profileId.eq(id) }.toList()[0]
@@ -152,7 +145,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
             }
         }
 
-        for (research: ResearchWorkDescription in profile.works){
+        for (research: ResearchWorkDescription in profile.works) {
             ResearchWorks.insert {
                 it[ResearchWorks.instructorId] = profileId
                 it[ResearchWorks.title] = research.name
@@ -169,41 +162,32 @@ class SimpleProfileBackend : AbstractProfileBackend {
 
     override fun getInstructorProfile(id: Long): InstructorProfile {
         val profile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
-        val achievements = ArrayList<AchievementDescription>()
-        Achievements.select { Achievements.profileId.eq(id) }.forEach {
-            achievements.add(
-                AchievementDescription(
-                    it[Achievements.type],
-                    it[Achievements.name],
-                    it[Achievements.description],
-                    it[Achievements.date]
-                )
+        val achievements = Achievements.select { Achievements.profileId.eq(id) }.map {
+            AchievementDescription(
+                it[Achievements.type],
+                it[Achievements.name],
+                it[Achievements.description],
+                it[Achievements.date]
             )
         }
-        val career = ArrayList<JobDescription>()
-        Jobs.select { Jobs.profileId.eq(id) }.forEach {
-            career.add(
-                JobDescription(
-                    it[Jobs.place],
-                    it[Jobs.position],
-                    Pair(it[Jobs.fromDate], it[Jobs.toDate])
-                )
+        val career = Jobs.select { Jobs.profileId.eq(id) }.map {
+            JobDescription(
+                it[Jobs.place],
+                it[Jobs.position],
+                Pair(it[Jobs.fromDate], it[Jobs.toDate])
             )
         }
-        val instructorInterestingTags = ArrayList<Tag>()
-        Tags.select { Tags.profileId.eq(id) }.forEach {
-            instructorInterestingTags.add(it[Tags.tag])
+        val instructorInterestingTags = Tags.select { Tags.profileId.eq(id) }.map {
+            it[Tags.tag]
         }
 
         val instructor = Instructors.select { Students.profileId.eq(id) }.toList()[0]
-        val researches = ArrayList<ResearchWorkDescription>()
-        ResearchWorks.select{ ResearchWorks.instructorId.eq(id)}.forEach{
-            researches.add(
-                ResearchWorkDescription(
-                    it[ResearchWorks.title],
-                    it[ResearchWorks.description],
-                    it[ResearchWorks.detailsURL]
-            ))
+        val researches = ResearchWorks.select { ResearchWorks.instructorId.eq(id) }.map {
+            ResearchWorkDescription(
+                it[ResearchWorks.title],
+                it[ResearchWorks.description],
+                it[ResearchWorks.detailsURL]
+            )
         }
 
         return InstructorProfile(
