@@ -17,12 +17,13 @@ import androidx.compose.ui.unit.dp
 import auth.GoogleApi
 import auth.GoogleAppCredentials
 import auth.GoogleOAuthHandler
+import ui.DummyAppInfo
 import ui.utils.loadNetworkImage
 import ui.utils.openInBrowser
 
 @Composable
 @Preview
-fun Authorization() {
+fun Authorization(appInfo: DummyAppInfo) {
     val userInfoText = remember { mutableStateOf("") }
     val userPictureUrl = remember { mutableStateOf("") }
     val oauth =
@@ -31,6 +32,7 @@ fun Authorization() {
             println(userinfo)
             userInfoText.value = userinfo.toString()
             userPictureUrl.value = userinfo.avatarUrl
+
         }
     DesktopMaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {

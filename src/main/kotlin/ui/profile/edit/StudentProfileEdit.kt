@@ -45,7 +45,7 @@ fun StudentProfileEdit(appInfo: DummyAppInfo, profile: TMPStudentProfileEdit, mo
                 ) {
                     IconButton(
                         onClick = {
-                            appInfo.backend.postStudentProfile(appInfo.currentId.toLong(), profile.toStudentProfile())
+                            appInfo.backend.postStudentProfile(appInfo.currentId!!.toLong(), profile.toStudentProfile())
                             appInfo.currentState.value = ProfileViewState()
                         }
                     ) {
