@@ -51,21 +51,21 @@ fun NameEdit(profile: UserProfileInfoEdit, modifier: Modifier = Modifier) {
                 onValueChange = { profile.surname.value = it },
                 label = { Text("Surname") },
                 singleLine = true,
-                modifier = Modifier.width(150.dp)
+                modifier = Modifier.width(170.dp)
             )
             OutlinedTextField(
                 value = profile.name.value,
                 onValueChange = { profile.name.value = it },
                 label = { Text("Name") },
                 singleLine = true,
-                modifier = Modifier.width(150.dp)
+                modifier = Modifier.width(170.dp)
             )
             OutlinedTextField(
                 value = profile.patronymic.value,
                 onValueChange = { profile.patronymic.value = it },
                 label = { Text("Patronymic") },
                 singleLine = true,
-                modifier = Modifier.width(150.dp)
+                modifier = Modifier.width(170.dp)
             )
         }
     }

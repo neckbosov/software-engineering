@@ -84,13 +84,13 @@ fun StudentProfileInfoEdit(profile: TMPStudentProfileEdit, modifier: Modifier = 
                     value = universityInfo.universityName.value,
                     onValueChange = { universityInfo.universityName.value = it },
                     label = { Text("University name") },
-                    modifier = Modifier.width(200.dp)
+                    modifier = Modifier.width(300.dp)
                 )
                 OutlinedTextField(
                     value = universityInfo.faculty.value,
                     onValueChange = { universityInfo.faculty.value = it },
                     label = { Text("Faculty") },
-                    modifier = Modifier.widthIn(200.dp)
+                    modifier = Modifier.widthIn(300.dp)
                 )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -98,19 +98,19 @@ fun StudentProfileInfoEdit(profile: TMPStudentProfileEdit, modifier: Modifier = 
                     value = universityInfo.grade.value,
                     onValueChange = { universityInfo.grade.value = it },
                     label = { Text("Grade") },
-                    modifier = Modifier.widthIn(100.dp)
+                    modifier = Modifier.widthIn(200.dp)
                 )
                 OutlinedTextField(
                     value = universityInfo.course.value,
                     onValueChange = { universityInfo.course.value = it },
                     label = { Text("Course") },
-                    modifier = Modifier.widthIn(100.dp)
+                    modifier = Modifier.widthIn(200.dp)
                 )
                 OutlinedTextField(
                     value = universityInfo.gpa.value,
                     onValueChange = { universityInfo.gpa.value = it },
                     label = { Text("GPA") },
-                    modifier = Modifier.widthIn(100.dp)
+                    modifier = Modifier.widthIn(200.dp)
                 )
             }
         }
