@@ -5,12 +5,13 @@ import models.Tags
 
 @Serializable
 sealed class UserProfile {
+    abstract val email: String
     abstract val name: String
     abstract val surname: String
-    abstract val patronymic: String
+    abstract val patronymic: String?
 
     // TODO
-    abstract val avatarURL: String
+    abstract val avatarURL: String?
 
     abstract val career: List<JobDescription>
     abstract val achievements: List<AchievementDescription>
@@ -22,10 +23,11 @@ sealed class UserProfile {
 
 @Serializable
 data class InstructorProfile(
+    override val email: String,
     override val name: String,
     override val surname: String,
-    override val patronymic: String,
-    override val avatarURL: String,
+    override val patronymic: String? = null,
+    override val avatarURL: String? = null,
     override val career: List<JobDescription>,
     override val achievements: List<AchievementDescription>,
     override val interestsTags: Tags,
@@ -37,10 +39,11 @@ data class InstructorProfile(
 
 @Serializable
 data class StudentProfile(
+    override val email: String,
     override val name: String,
     override val surname: String,
-    override val patronymic: String,
-    override val avatarURL: String,
+    override val patronymic: String? = null,
+    override val avatarURL: String? = null,
     override val career: List<JobDescription>,
     override val achievements: List<AchievementDescription>,
     override val interestsTags: Tags,
