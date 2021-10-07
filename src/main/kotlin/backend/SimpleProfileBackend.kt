@@ -32,7 +32,8 @@ class SimpleProfileBackend : AbstractProfileBackend {
         return transaction {
 
             addLogger(StdOutSqlLogger)
-            val profileId = Profiles.insertAndGetId {
+            val profileId = id
+            Profiles.update({ Profiles.id.eq(id) }) {
                 it[Profiles.avatarUrl] = profile.avatarURL
                 it[Profiles.firstName] = profile.name
                 it[Profiles.lastName] = profile.surname
@@ -67,8 +68,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
                 }
             }
 
-            Students.insert {
-                it[Students.profileId] = profileId
+            Students.update({ Students.profileId.eq(profileId) }) {
                 it[Students.university] = profile.universityDescription.universityName
                 it[Students.faculty] = profile.universityDescription.faculty
                 it[Students.degree] = profile.universityDescription.grade
@@ -138,7 +138,8 @@ class SimpleProfileBackend : AbstractProfileBackend {
     override fun postInstructorProfile(id: Long, profile: InstructorProfile) {
         transaction {
             addLogger(StdOutSqlLogger)
-            val profileId = Profiles.insertAndGetId {
+            val profileId = id
+            Profiles.update({ Profiles.id.eq(id) }) {
                 it[Profiles.avatarUrl] = profile.avatarURL
                 it[Profiles.firstName] = profile.name
                 it[Profiles.lastName] = profile.surname
@@ -174,7 +175,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
             }
 
             for (research: ResearchWorkDescription in profile.works) {
-                ResearchWorks.insert {
+                ResearchWorks.update({ ResearchWorks.instructorId.eq(id) }) {
                     it[ResearchWorks.instructorId] = profileId
                     it[ResearchWorks.title] = research.name
                     it[ResearchWorks.description] = research.description
@@ -182,7 +183,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
                 }
             }
 
-            Instructors.insert {
+            Instructors.update({ Instructors.profileId.eq(id) }) {
                 it[Instructors.profileId] = profileId
                 it[Instructors.degree] = profile.degree
             }
