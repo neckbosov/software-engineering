@@ -11,7 +11,7 @@ import ui.profile.view.ProfileViewState
 @Composable
 fun UIStateView(appInfo: DummyAppInfo) {
     when (appInfo.currentState.value) {
-        is AuthorizationState -> { Authorization() }
+        is AuthorizationState -> { Authorization(appInfo) }
         is ProfileViewState -> { ProfileView(appInfo) }
         is ProfileEditState -> { ProfileEdit(appInfo) }
     }

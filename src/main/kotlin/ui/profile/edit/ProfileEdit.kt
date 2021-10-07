@@ -13,8 +13,7 @@ import ui.profile.edit.models.TMPStudentProfileEdit
 @Composable
 @Preview
 fun ProfileEdit(appInfo: DummyAppInfo) {
-    when (val x = appInfo.currentProfile.value) {
-        null -> {}
+    when (val x = appInfo.backend.getProfile(appInfo.currentId!!)) {
         is StudentProfile -> {
             StudentProfileEdit(appInfo, TMPStudentProfileEdit(x), modifier = Modifier.padding(start = 10.dp, top = 10.dp))
         }

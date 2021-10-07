@@ -10,15 +10,12 @@ import ui.DummyAppInfo
 
 @Composable
 fun ProfileView(appInfo: DummyAppInfo) {
-    when (val x = appInfo.currentProfile.value) {
-        null -> { }
+    when (val profile = appInfo.backend.getProfile(appInfo.currentId!!)) {
         is StudentProfile -> {
-            appInfo.currentProfile.value = appInfo.backend.getStudentProfile(appInfo.currentId!!.toLong())
-            StudentProfileView(appInfo, x, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+            StudentProfileView(appInfo, profile, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
         }
         is InstructorProfile -> {
-            appInfo.currentProfile.value = appInfo.backend.getInstructorProfile(appInfo.currentId!!.toLong())
-            InstructorProfileView(appInfo, x, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+            InstructorProfileView(appInfo, profile, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
         }
     }
 }

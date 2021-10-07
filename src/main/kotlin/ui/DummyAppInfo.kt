@@ -11,7 +11,6 @@ import ui.profile.view.ProfileViewState
 
 class DummyAppInfo {
     val currentState: MutableState<UIState> = mutableStateOf(AuthorizationState())
-    var currentId: Int? = null
-    val backend = DummyBackend()
-    val currentProfile: MutableState<UserProfile?> = mutableStateOf(null)
+    var currentId: Long? = null
+    val backend = DummyBackend() // TODO("Replace")
 }
