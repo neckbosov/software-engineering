@@ -8,7 +8,6 @@ object Profiles : LongIdTable() {
     val firstName = varchar("first_name", 50)
     val lastName = varchar("last_name", 50)
     val patronymic = varchar("patronymic", 50).nullable()
-    val currentJobId = entityId("current_job_id", Jobs).uniqueIndex().nullable()
     val isActive = bool("is_active")
     val profileType = enumeration("profile_type", ProfileType::class)
 }

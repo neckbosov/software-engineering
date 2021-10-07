@@ -15,13 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import models.profile.StudentProfile
-import ui.DummyAppInfo
+import ui.SimpleAppInfo
 import ui.profile.edit.ProfileEditState
 import ui.utils.BoxWithVerticalScroll
 
 @Composable
 @Preview
-fun StudentProfileView(appInfo: DummyAppInfo, profile: StudentProfile, modifier: Modifier = Modifier) {
+fun StudentProfileView(appInfo: SimpleAppInfo, profile: StudentProfile, modifier: Modifier = Modifier) {
     BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {

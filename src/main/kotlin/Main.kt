@@ -2,14 +2,13 @@
 import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import ui.DummyAppInfo
+import ui.SimpleAppInfo
 import ui.UIStateView
-import ui.profile.view.ProfileView
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
         DesktopMaterialTheme {
-            val appInfo = DummyAppInfo()
+            val appInfo = SimpleAppInfo()
             UIStateView(appInfo)
         }
     }

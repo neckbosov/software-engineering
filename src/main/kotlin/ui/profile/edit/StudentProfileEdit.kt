@@ -1,7 +1,5 @@
 package ui.profile.edit
 
-import ui.profile.view.*
-
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -18,14 +16,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import models.profile.StudentProfile
-import ui.DummyAppInfo
+import ui.SimpleAppInfo
 import ui.profile.edit.models.TMPStudentProfileEdit
+import ui.profile.view.ProfileViewState
 import ui.utils.BoxWithVerticalScroll
 
 @Composable
 @Preview
-fun StudentProfileEdit(appInfo: DummyAppInfo, profile: TMPStudentProfileEdit, modifier: Modifier = Modifier) {
+fun StudentProfileEdit(appInfo: SimpleAppInfo, profile: TMPStudentProfileEdit, modifier: Modifier = Modifier) {
     BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {
