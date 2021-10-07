@@ -1,11 +1,17 @@
-package ui
+package ui.authorization
 
 import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,10 +23,14 @@ import androidx.compose.ui.unit.dp
 import auth.GoogleApi
 import auth.GoogleAppCredentials
 import auth.GoogleOAuthHandler
+import ui.SimpleAppInfo
+import ui.profile.view.ProfileViewState
+import ui.utils.loadNetworkImage
+import ui.utils.openInBrowser
 
 @Composable
 @Preview
-fun Authorization() {
+fun Authorization(appInfo: SimpleAppInfo) {
     val userInfoText = remember { mutableStateOf("") }
     val userPictureUrl = remember { mutableStateOf("") }
     val oauth =
@@ -29,6 +39,8 @@ fun Authorization() {
             println(userinfo)
             userInfoText.value = userinfo.toString()
             userPictureUrl.value = userinfo.avatarUrl
+            appInfo.currentId = appInfo.backend.getIdByEmail(userinfo.email)
+            appInfo.currentState.value = ProfileViewState()
         }
     DesktopMaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -82,7 +94,7 @@ fun Authorization() {
                     bitmap = if (userPictureUrl.value.isEmpty()) {
                         ImageBitmap(1, 1)
                     } else {
-                        loadNetworkImage(userPictureUrl.value)
+                        loadNetworkImage(userPictureUrl.value) ?: ImageBitmap(1, 1)
                     },
                     "avatar",
                     modifier = Modifier.background(Color.Transparent)
