@@ -1,4 +1,4 @@
-package ui
+package ui.authorization
 
 import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import auth.GoogleApi
 import auth.GoogleAppCredentials
 import auth.GoogleOAuthHandler
+import ui.utils.loadNetworkImage
+import ui.utils.openInBrowser
 
 @Composable
 @Preview
@@ -82,7 +84,7 @@ fun Authorization() {
                     bitmap = if (userPictureUrl.value.isEmpty()) {
                         ImageBitmap(1, 1)
                     } else {
-                        loadNetworkImage(userPictureUrl.value)
+                        loadNetworkImage(userPictureUrl.value) ?: ImageBitmap(1, 1)
                     },
                     "avatar",
                     modifier = Modifier.background(Color.Transparent)
