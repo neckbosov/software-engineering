@@ -33,6 +33,19 @@ fun NameView(profile: UserProfile, modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
+fun EmailView(email: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Email: $email",
+        style = TextStyle(
+            fontSize = 15f.sp,
+            fontWeight = FontWeight.SemiBold,
+        ),
+        modifier = modifier
+    )
+}
+
+@Composable
+@Preview
 fun AchievmentsView(achievements : List<AchievementDescription>, modifier: Modifier = Modifier) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier) {
         Text(
@@ -150,8 +163,8 @@ fun FullNameView(fullName: String, modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
-fun ImageView(avatarURL: String, modifier: Modifier = Modifier) {
-    val picture = loadNetworkImage(avatarURL)
+fun ImageView(avatarURL: String?, modifier: Modifier = Modifier) {
+    val picture = if (avatarURL != null) loadNetworkImage(avatarURL) else null
     if (picture != null) {
         Image(
             bitmap = picture,

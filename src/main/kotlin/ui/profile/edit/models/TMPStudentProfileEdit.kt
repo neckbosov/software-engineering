@@ -13,6 +13,7 @@ class TMPStudentProfileEdit(
 
     fun toStudentProfile(): StudentProfile =
         StudentProfile(
+            email = email,
             name = name.value.text,
             surname = surname.value.text,
             patronymic = patronymic.value.text,

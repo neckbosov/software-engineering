@@ -21,8 +21,7 @@ import ui.utils.BoxWithVerticalScroll
 
 @Composable
 @Preview
-fun StudentProfileView(appInfo: DummyAppInfo, modifier: Modifier = Modifier) {
-    val profile: StudentProfile = (appInfo.currentProfile.value as StudentProfile)
+fun StudentProfileView(appInfo: DummyAppInfo, profile: StudentProfile, modifier: Modifier = Modifier) {
     BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {
@@ -53,9 +52,10 @@ fun StudentProfileView(appInfo: DummyAppInfo, modifier: Modifier = Modifier) {
 fun StudentProfileInfoView(profile: StudentProfile, modifier: Modifier = Modifier) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier) {
         NameView(profile)
+        EmailView(profile.email)
         val universityInfo = profile.universityDescription
         Text(
-            text = "Student in ${universityInfo.universityName}, ${universityInfo.faculty}",
+            text = "Student in ${universityInfo.universityName}, ${universityInfo.faculty}, ${universityInfo.course}",
             style = TextStyle(
                 fontSize = 15f.sp,
                 fontWeight = FontWeight.SemiBold,

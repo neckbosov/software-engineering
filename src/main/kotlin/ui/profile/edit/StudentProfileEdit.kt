@@ -25,8 +25,7 @@ import ui.utils.BoxWithVerticalScroll
 
 @Composable
 @Preview
-fun StudentProfileEdit(appInfo: DummyAppInfo, modifier: Modifier = Modifier) {
-    val profile = TMPStudentProfileEdit(appInfo.currentProfile.value as StudentProfile)
+fun StudentProfileEdit(appInfo: DummyAppInfo, profile: TMPStudentProfileEdit, modifier: Modifier = Modifier) {
     BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {
@@ -35,9 +34,9 @@ fun StudentProfileEdit(appInfo: DummyAppInfo, modifier: Modifier = Modifier) {
                     modifier = Modifier.align(Alignment.TopStart)
                 ) {
                     ImageEdit(profile.avatarURL)
-                    Column {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         NameEdit(profile)
-                        TagsEdit(profile.interestsTags)
+                        StudentProfileInfoEdit(profile)
                     }
                 }
                 Row(
@@ -46,7 +45,7 @@ fun StudentProfileEdit(appInfo: DummyAppInfo, modifier: Modifier = Modifier) {
                 ) {
                     IconButton(
                         onClick = {
-                            appInfo.backend.postStudentProfile(appInfo.currentId, profile.toStudentProfile())
+                            appInfo.backend.postStudentProfile(appInfo.currentId.toLong(), profile.toStudentProfile())
                             appInfo.currentState.value = ProfileViewState()
                         }
                     ) {
@@ -59,7 +58,7 @@ fun StudentProfileEdit(appInfo: DummyAppInfo, modifier: Modifier = Modifier) {
                     }
                 }
             }
-            StudentProfileInfoEdit(profile)
+            TagsEdit(profile.interestsTags)
             AchievmentsEdit(profile.achievements)
             CarrierEdit(profile.career)
             CVEdit(profile)
@@ -79,33 +78,42 @@ fun StudentProfileInfoEdit(profile: TMPStudentProfileEdit, modifier: Modifier = 
             ),
         )
         val universityInfo = profile.universityDescription
-        Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-            OutlinedTextField(
-                value = universityInfo.universityName.value,
-                onValueChange = { universityInfo.universityName.value = it },
-                label = { Text("University name") },
-                modifier = Modifier.width(200.dp)
-            )
-            OutlinedTextField(
-                value = universityInfo.faculty.value,
-                onValueChange = { universityInfo.faculty.value = it },
-                label = { Text("Faculty") },
-                modifier = Modifier.widthIn(200.dp)
-            )
-            OutlinedTextField(
-                value = universityInfo.grade.value,
-                onValueChange = { universityInfo.grade.value = it },
-                label = { Text("Grade") },
-                modifier = Modifier.widthIn(100.dp)
-            )
-            OutlinedTextField(
-                value = universityInfo.gpa.value,
-                onValueChange = { universityInfo.gpa.value = it },
-                label = { Text("GPA") },
-                modifier = Modifier.widthIn(100.dp)
-            )
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                OutlinedTextField(
+                    value = universityInfo.universityName.value,
+                    onValueChange = { universityInfo.universityName.value = it },
+                    label = { Text("University name") },
+                    modifier = Modifier.width(200.dp)
+                )
+                OutlinedTextField(
+                    value = universityInfo.faculty.value,
+                    onValueChange = { universityInfo.faculty.value = it },
+                    label = { Text("Faculty") },
+                    modifier = Modifier.widthIn(200.dp)
+                )
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                OutlinedTextField(
+                    value = universityInfo.grade.value,
+                    onValueChange = { universityInfo.grade.value = it },
+                    label = { Text("Grade") },
+                    modifier = Modifier.widthIn(100.dp)
+                )
+                OutlinedTextField(
+                    value = universityInfo.course.value,
+                    onValueChange = { universityInfo.course.value = it },
+                    label = { Text("Course") },
+                    modifier = Modifier.widthIn(100.dp)
+                )
+                OutlinedTextField(
+                    value = universityInfo.gpa.value,
+                    onValueChange = { universityInfo.gpa.value = it },
+                    label = { Text("GPA") },
+                    modifier = Modifier.widthIn(100.dp)
+                )
+            }
         }
-        TagsEdit(profile.interestsTags)
     }
 }
 

@@ -26,8 +26,7 @@ import ui.utils.BoxWithVerticalScroll
 
 @Composable
 @Preview
-fun InstructorProfileEdit(appInfo: DummyAppInfo, modifier: Modifier = Modifier) {
-    val profile = TMPInstructorProfileEdit(appInfo.currentProfile.value as InstructorProfile)
+fun InstructorProfileEdit(appInfo: DummyAppInfo, profile: TMPInstructorProfileEdit, modifier: Modifier = Modifier) {
     BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {
@@ -44,7 +43,7 @@ fun InstructorProfileEdit(appInfo: DummyAppInfo, modifier: Modifier = Modifier) 
                 ) {
                     IconButton(
                         onClick = {
-                            appInfo.backend.postInstructorProfile(appInfo.currentId, profile.toInstructorProfile())
+                            appInfo.backend.postInstructorProfile(appInfo.currentId.toLong(), profile.toInstructorProfile())
                             appInfo.currentState.value = ProfileViewState()
                         }
                     ) {
@@ -57,6 +56,7 @@ fun InstructorProfileEdit(appInfo: DummyAppInfo, modifier: Modifier = Modifier) 
                     }
                 }
             }
+            TagsEdit(profile.interestsTags)
             AchievmentsEdit(profile.achievements)
             CarrierEdit(profile.career)
             WorksEdit(profile.works)
@@ -76,7 +76,6 @@ fun InstructorProfileInfoEdit(profile: TMPInstructorProfileEdit, modifier: Modif
             singleLine = true,
             modifier = Modifier.width(200.dp)
         )
-        TagsEdit(profile.interestsTags)
     }
 }
 

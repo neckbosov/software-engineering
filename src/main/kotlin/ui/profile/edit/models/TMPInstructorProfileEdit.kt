@@ -13,6 +13,7 @@ class TMPInstructorProfileEdit(
 
     fun toInstructorProfile(): InstructorProfile =
         InstructorProfile(
+            email = email,
             name = name.value.text,
             surname = surname.value.text,
             patronymic = patronymic.value.text,

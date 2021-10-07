@@ -9,9 +9,8 @@ import ui.profile.edit.ProfileEditState
 import ui.profile.view.ProfileViewState
 
 class DummyAppInfo {
-    val currentState: MutableState<UIState> = mutableStateOf(ProfileEditState())
+    val currentState: MutableState<UIState> = mutableStateOf(ProfileViewState())
     var currentId = 0
-    val isStudent = false
     val backend = DummyBackend()
-    val currentProfile: MutableState<UserProfile?> = mutableStateOf(backend.getInstructorProfile(0))
+    val currentProfile: MutableState<UserProfile?> = mutableStateOf(backend.getProfile(1))
 }
