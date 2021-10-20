@@ -28,46 +28,55 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
     }
 
-    override fun postStudentProfile(id: Long, profile: StudentProfile) {
+    private fun updateCommonProfile(profileId: Long, profile: UserProfile) {
+        Profiles.update({ Profiles.id.eq(profileId) }) {
+            it[Profiles.avatarUrl] = profile.avatarURL
+            it[Profiles.firstName] = profile.name
+            it[Profiles.lastName] = profile.surname
+            it[Profiles.patronymic] = profile.patronymic
+            it[Profiles.isActive] = profile.status == Status.ACTIVE
+        }
+        Achievements.deleteWhere {
+            Achievements.profileId eq profileId
+        }
+        for (achievement: AchievementDescription in profile.achievements) {
+            Achievements.insert {
+                it[Achievements.profileId] = profileId
+                it[Achievements.type] = achievement.type
+                it[Achievements.name] = achievement.title
+                it[Achievements.description] = achievement.description
+                it[Achievements.date] = achievement.date
+            }
+        }
+        Jobs.deleteWhere {
+            Jobs.profileId eq profileId
+        }
+        for (job: JobDescription in profile.career) {
+            Jobs.insert {
+                it[Jobs.profileId] = profileId
+                it[Jobs.fromDate] = job.period.first
+                it[Jobs.toDate] = job.period.second
+                it[Jobs.position] = job.position
+                it[Jobs.place] = job.place
+            }
+        }
+        Tags.deleteWhere {
+            Tags.profileId eq profileId
+        }
+        for (tag: Tag in profile.interestsTags) {
+            Tags.insert {
+                it[Tags.profileId] = profileId
+                it[Tags.tag] = tag
+            }
+        }
+    }
+
+    override fun updateStudentProfile(id: Long, profile: StudentProfile) {
         return transaction {
 
             addLogger(StdOutSqlLogger)
             val profileId = id
-            Profiles.update({ Profiles.id.eq(id) }) {
-                it[Profiles.avatarUrl] = profile.avatarURL
-                it[Profiles.firstName] = profile.name
-                it[Profiles.lastName] = profile.surname
-                it[Profiles.patronymic] = profile.patronymic
-                it[Profiles.isActive] = profile.status == Status.ACTIVE
-            }
-
-            for (achievement: AchievementDescription in profile.achievements) {
-                Achievements.insert {
-                    it[Achievements.profileId] = profileId
-                    it[Achievements.type] = achievement.type
-                    it[Achievements.name] = achievement.title
-                    it[Achievements.description] = achievement.description
-                    it[Achievements.date] = achievement.date
-                }
-            }
-
-            for (job: JobDescription in profile.career) {
-                Jobs.insert {
-                    it[Jobs.profileId] = profileId
-                    it[Jobs.fromDate] = job.period.first
-                    it[Jobs.toDate] = job.period.second
-                    it[Jobs.position] = job.position
-                    it[Jobs.place] = job.place
-                }
-            }
-
-            for (tag: Tag in profile.interestsTags) {
-                Tags.insert {
-                    it[Tags.profileId] = profileId
-                    it[Tags.tag] = tag
-                }
-            }
-
+            updateCommonProfile(profileId, profile)
             Students.update({ Students.profileId.eq(profileId) }) {
                 it[Students.university] = profile.universityDescription.universityName
                 it[Students.faculty] = profile.universityDescription.faculty
@@ -135,48 +144,20 @@ class SimpleProfileBackend : AbstractProfileBackend {
     }
 
 
-    override fun postInstructorProfile(id: Long, profile: InstructorProfile) {
+    override fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
         transaction {
             addLogger(StdOutSqlLogger)
             val profileId = id
-            Profiles.update({ Profiles.id.eq(id) }) {
-                it[Profiles.avatarUrl] = profile.avatarURL
-                it[Profiles.firstName] = profile.name
-                it[Profiles.lastName] = profile.surname
-                it[Profiles.patronymic] = profile.patronymic
-                it[Profiles.isActive] = profile.status == Status.ACTIVE
-            }
-
-            for (achievement: AchievementDescription in profile.achievements) {
-                Achievements.insert {
-                    it[Achievements.profileId] = profileId
-                    it[Achievements.type] = achievement.type
-                    it[Achievements.name] = achievement.title
-                    it[Achievements.description] = achievement.description
-                    it[Achievements.date] = achievement.date
-                }
-            }
-
-            for (job: JobDescription in profile.career) {
-                Jobs.insert {
-                    it[Jobs.profileId] = profileId
-                    it[Jobs.fromDate] = job.period.first
-                    it[Jobs.toDate] = job.period.second
-                    it[Jobs.position] = job.position
-                    it[Jobs.place] = job.place
-                }
-            }
-
-            for (tag: Tag in profile.interestsTags) {
-                Tags.insert {
-                    it[Tags.profileId] = profileId
-                    it[Tags.tag] = tag
-                }
+            updateCommonProfile(profileId, profile)
+            val instructor = Instructors.select { Students.profileId.eq(profileId) }.toList()[0]
+            val instructorId = instructor[Instructors.id]
+            ResearchWorks.deleteWhere {
+                ResearchWorks.instructorId eq instructorId
             }
 
             for (research: ResearchWorkDescription in profile.works) {
-                ResearchWorks.update({ ResearchWorks.instructorId.eq(id) }) {
-                    it[ResearchWorks.instructorId] = profileId
+                ResearchWorks.insert {
+                    it[ResearchWorks.instructorId] = instructorId
                     it[ResearchWorks.title] = research.name
                     it[ResearchWorks.description] = research.description
                     it[ResearchWorks.detailsURL] = research.detailsURL
@@ -184,7 +165,6 @@ class SimpleProfileBackend : AbstractProfileBackend {
             }
 
             Instructors.update({ Instructors.profileId.eq(id) }) {
-                it[Instructors.profileId] = profileId
                 it[Instructors.degree] = profile.degree
             }
         }
