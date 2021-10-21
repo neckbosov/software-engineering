@@ -24,15 +24,18 @@ import ui.utils.BoxWithVerticalScroll
 @Composable
 @Preview
 fun StudentProfileEdit(appInfo: SimpleAppInfo, profile: TMPStudentProfileEdit, modifier: Modifier = Modifier) {
-    BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
+    BoxWithVerticalScroll(modifier = modifier.fillMaxSize()) {
         Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
-            Box(modifier = Modifier.fillMaxWidth(1f)) {
+            Box(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.align(Alignment.TopStart)
                 ) {
                     ImageEdit(profile.avatarURL)
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(
+                        modifier = Modifier.width(500.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         NameEdit(profile)
                         StudentProfileInfoEdit(profile)
                     }
@@ -47,12 +50,12 @@ fun StudentProfileEdit(appInfo: SimpleAppInfo, profile: TMPStudentProfileEdit, m
                             appInfo.currentState.value = ProfileViewState()
                         }
                     ) {
-                        Icon(Icons.Filled.Done, "save")
+                        Icon(Icons.Filled.Done, "Save button")
                     }
                     IconButton(
                         onClick = { appInfo.currentState.value = ProfileViewState() }
                     ) {
-                        Icon(Icons.Filled.Cancel, "close")
+                        Icon(Icons.Filled.Cancel, "Close button")
                     }
                 }
             }
@@ -82,13 +85,15 @@ fun StudentProfileInfoEdit(profile: TMPStudentProfileEdit, modifier: Modifier = 
                     value = universityInfo.universityName.value,
                     onValueChange = { universityInfo.universityName.value = it },
                     label = { Text("University name") },
-                    modifier = Modifier.width(300.dp)
+                    singleLine = true,
+                    modifier = Modifier.weight(1f)
                 )
                 OutlinedTextField(
                     value = universityInfo.faculty.value,
                     onValueChange = { universityInfo.faculty.value = it },
                     label = { Text("Faculty") },
-                    modifier = Modifier.widthIn(300.dp)
+                    singleLine = true,
+                    modifier = Modifier.weight(1f)
                 )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
@@ -96,19 +101,22 @@ fun StudentProfileInfoEdit(profile: TMPStudentProfileEdit, modifier: Modifier = 
                     value = universityInfo.grade.value,
                     onValueChange = { universityInfo.grade.value = it },
                     label = { Text("Grade") },
-                    modifier = Modifier.widthIn(200.dp)
+                    singleLine = true,
+                    modifier = Modifier.weight(1f)
                 )
                 OutlinedTextField(
                     value = universityInfo.course.value,
                     onValueChange = { universityInfo.course.value = it },
                     label = { Text("Course") },
-                    modifier = Modifier.widthIn(200.dp)
+                    singleLine = true,
+                    modifier = Modifier.weight(1f)
                 )
                 OutlinedTextField(
                     value = universityInfo.gpa.value,
                     onValueChange = { universityInfo.gpa.value = it },
                     label = { Text("GPA") },
-                    modifier = Modifier.widthIn(200.dp)
+                    singleLine = true,
+                    modifier = Modifier.weight(1f)
                 )
             }
         }
@@ -129,6 +137,7 @@ fun CVEdit(profile: TMPStudentProfileEdit, modifier: Modifier = Modifier) {
         value = profile.cvURL.value,
         onValueChange = { profile.cvURL.value = it },
         label = { Text("CV URL") },
-        modifier = modifier.widthIn(100.dp, 300.dp)
+        singleLine = true,
+        modifier = modifier
     )
 }
