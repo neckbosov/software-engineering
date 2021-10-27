@@ -1,4 +1,4 @@
-package dao
+package db.dao
 
 enum class ProfileType {
     Student,

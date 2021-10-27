@@ -1,4 +1,4 @@
-package dao
+package db.dao
 
 //object DbSettings {
 ////    val db by lazy {
