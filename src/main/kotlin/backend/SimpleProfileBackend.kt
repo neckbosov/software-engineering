@@ -149,7 +149,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
             addLogger(StdOutSqlLogger)
             val profileId = id
             updateCommonProfile(profileId, profile)
-            val instructor = Instructors.select { Students.profileId.eq(profileId) }.toList()[0]
+            val instructor = Instructors.select { Instructors.profileId.eq(profileId) }.toList()[0]
             val instructorId = instructor[Instructors.id]
             ResearchWorks.deleteWhere {
                 ResearchWorks.instructorId eq instructorId
