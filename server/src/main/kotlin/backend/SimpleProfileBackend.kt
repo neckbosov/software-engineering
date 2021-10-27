@@ -1,6 +1,6 @@
 package backend
 
-import dao.*
+import db.dao.*
 import models.AbstractProfileBackend
 import models.Tag
 import models.profile.*
@@ -15,7 +15,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
         val dbPort = System.getenv("DB_PORT") ?: "5432"
         val dbName = System.getenv("DB_NAME") ?: "postgres"
         val dbUser = System.getenv("DB_USER") ?: "postgres"
-        val dbPassword = System.getenv("DB_PASSWORD") ?: ""
+        val dbPassword = System.getenv("DB_PASSWORD") ?: "postgres"
         Database.connect(
             "jdbc:postgresql://$dbHost:$dbPort/$dbName",
             driver = "org.postgresql.Driver",

@@ -1,5 +1,6 @@
-package dao
+package db.dao
 
+import db.dao.Instructors
 import org.jetbrains.exposed.dao.id.LongIdTable
 
 object ResearchWorks : LongIdTable() {

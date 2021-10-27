@@ -1,9 +1,7 @@
-package dao
+package db.dao
 
+import db.dao.Profiles
 import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.select
-import java.math.BigDecimal
 
 object Students : LongIdTable() {
     val profileId = entityId("profile_id", Profiles).uniqueIndex()
