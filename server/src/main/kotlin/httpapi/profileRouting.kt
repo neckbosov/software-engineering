@@ -38,7 +38,7 @@ fun Route.configureProfileRouting(backend: AbstractProfileBackend) {
 
             val profile = call.receive<StudentProfile>()
             val id = -1L //TODO("receive id fro session")
-            backend.postStudentProfile(id, profile)
+            backend.updateStudentProfile(id, profile)
             call.respond(HttpStatusCode.OK)
         }
 
@@ -49,7 +49,7 @@ fun Route.configureProfileRouting(backend: AbstractProfileBackend) {
             val profile = call.receive<InstructorProfile>()
             val id = -1L //TODO("receive id fro session")
 
-            backend.postInstructorProfile(id, profile)
+            backend.updateInstructorProfile(id, profile)
             call.respond(HttpStatusCode.OK)
         }
     }
