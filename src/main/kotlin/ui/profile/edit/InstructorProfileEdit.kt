@@ -45,7 +45,7 @@ fun InstructorProfileEdit(appInfo: SimpleAppInfo, profile: TMPInstructorProfileE
                 ) {
                     IconButton(
                         onClick = {
-                            appInfo.backend.postInstructorProfile(appInfo.currentId!!, profile.toInstructorProfile())
+                            appInfo.backend.updateInstructorProfile(appInfo.currentId!!, profile.toInstructorProfile())
                             appInfo.currentState.value = ProfileViewState()
                         }
                     ) {

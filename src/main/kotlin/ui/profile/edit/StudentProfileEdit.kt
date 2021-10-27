@@ -43,7 +43,7 @@ fun StudentProfileEdit(appInfo: SimpleAppInfo, profile: TMPStudentProfileEdit, m
                 ) {
                     IconButton(
                         onClick = {
-                            appInfo.backend.postStudentProfile(appInfo.currentId!!, profile.toStudentProfile())
+                            appInfo.backend.updateStudentProfile(appInfo.currentId!!, profile.toStudentProfile())
                             appInfo.currentState.value = ProfileViewState()
                         }
                     ) {

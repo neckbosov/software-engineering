@@ -33,7 +33,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-    implementation("org.postgresql:postgresql:42.2.23.jre7")
+    implementation("org.postgresql:postgresql:42.2.24.jre7")
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -44,9 +44,9 @@ dependencies {
     implementation("io.ktor:ktor-serialization:$ktorVersion")
 
     implementation(platform("org.http4k:http4k-bom:$http4kVersion")) // todo: used in oauth to catch callbacks, switch to ktor later
-    implementation("org.http4k:http4k-core")
-    implementation("org.http4k:http4k-server-netty")
-    implementation("org.http4k:http4k-client-apache")
+    implementation("org.http4k:http4k-core:$http4kVersion")
+    implementation("org.http4k:http4k-server-netty:$http4kVersion")
+    implementation("org.http4k:http4k-client-apache:$http4kVersion")
 }
 
 tasks.withType<KotlinCompile>() {
