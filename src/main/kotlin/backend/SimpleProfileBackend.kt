@@ -245,14 +245,15 @@ class SimpleProfileBackend : AbstractProfileBackend {
 
     }
 
-    override fun getIdByEmail(email: String): Long {
+    override fun getIdByEmail(email: String): Long? {
         return transaction {
 
             addLogger(StdOutSqlLogger)
             val profile = Profiles.select {
                 Profiles.email.eq(email)
-            }.toList()[0]
-            profile[Profiles.id].value
+            }.toList().getOrNull(0)
+            if (profile != null) profile[Profiles.id].value
+            else null
         }
     }
 

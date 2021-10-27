@@ -24,6 +24,7 @@ import auth.GoogleApi
 import auth.GoogleAppCredentials
 import auth.GoogleOAuthHandler
 import ui.SimpleAppInfo
+import ui.profile.create.ProfileCreateState
 import ui.profile.view.ProfileViewState
 import ui.utils.loadNetworkImage
 import ui.utils.openInBrowser
@@ -39,8 +40,14 @@ fun Authorization(appInfo: SimpleAppInfo) {
             println(userinfo)
             userInfoText.value = userinfo.toString()
             userPictureUrl.value = userinfo.avatarUrl
-            appInfo.currentId = appInfo.backend.getIdByEmail(userinfo.email)
-            appInfo.currentState.value = ProfileViewState()
+
+            val userId = appInfo.backend.getIdByEmail(userinfo.email)
+            if (userId != null) {
+                appInfo.currentId = appInfo.backend.getIdByEmail(userinfo.email)
+                appInfo.currentState.value = ProfileViewState()
+            } else {
+                appInfo.currentState.value = ProfileCreateState()
+            }
         }
     DesktopMaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
