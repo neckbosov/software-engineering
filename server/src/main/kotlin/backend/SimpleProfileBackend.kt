@@ -2,6 +2,7 @@ package backend
 
 import db.dao.*
 import models.AbstractProfileBackend
+import models.ProfileType
 import models.Tag
 import models.profile.*
 import org.jetbrains.exposed.sql.*
