@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import models.profile.ResearchWorkDescription
-import ui.SimpleAppInfo
+import client.SimpleAppInfo
 import ui.profile.edit.models.ResearchWorkDescriptionEdit
 import ui.profile.edit.models.TMPInstructorProfileEdit
 import ui.profile.view.ProfileViewState
@@ -45,7 +45,7 @@ fun InstructorProfileEdit(appInfo: SimpleAppInfo, profile: TMPInstructorProfileE
                 ) {
                     IconButton(
                         onClick = {
-                            appInfo.backend.updateInstructorProfile(appInfo.currentId!!, profile.toInstructorProfile())
+                            appInfo.client.updateInstructorProfile(appInfo.currentId!!, profile.toInstructorProfile())
                             appInfo.currentState.value = ProfileViewState()
                         }
                     ) {

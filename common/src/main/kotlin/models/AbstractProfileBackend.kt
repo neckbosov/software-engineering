@@ -13,5 +13,4 @@ interface AbstractProfileBackend {
 
     fun getIdByEmail(email: String): Long
     fun getProfile(id: Long): UserProfile
-    fun postProfile(profile: UserProfile): Long
 }

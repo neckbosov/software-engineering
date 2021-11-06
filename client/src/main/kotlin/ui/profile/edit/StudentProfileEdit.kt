@@ -16,7 +16,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ui.SimpleAppInfo
+import client.SimpleAppInfo
 import ui.profile.edit.models.TMPStudentProfileEdit
 import ui.profile.view.ProfileViewState
 import ui.utils.BoxWithVerticalScroll
@@ -43,7 +43,7 @@ fun StudentProfileEdit(appInfo: SimpleAppInfo, profile: TMPStudentProfileEdit, m
                 ) {
                     IconButton(
                         onClick = {
-                            appInfo.backend.updateStudentProfile(appInfo.currentId!!, profile.toStudentProfile())
+                            appInfo.client.updateStudentProfile(appInfo.currentId!!, profile.toStudentProfile())
                             appInfo.currentState.value = ProfileViewState()
                         }
                     ) {

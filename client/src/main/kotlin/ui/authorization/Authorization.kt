@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import auth.GoogleApi
 import auth.GoogleAppCredentials
 import auth.GoogleOAuthHandler
-import ui.SimpleAppInfo
+import client.SimpleAppInfo
 import ui.profile.view.ProfileViewState
 import ui.utils.loadNetworkImage
 import ui.utils.openInBrowser
@@ -39,7 +39,7 @@ fun Authorization(appInfo: SimpleAppInfo) {
             println(userinfo)
             userInfoText.value = userinfo.toString()
             userPictureUrl.value = userinfo.avatarUrl
-            appInfo.currentId = appInfo.backend.getIdByEmail(userinfo.email)
+            appInfo.currentId = appInfo.client.getIdByEmail(userinfo.email)
             appInfo.currentState.value = ProfileViewState()
         }
     DesktopMaterialTheme {

@@ -11,6 +11,29 @@ import models.profile.StudentProfile
 
 fun Route.configureProfileRouting(backend: AbstractProfileBackend) {
     route("/v0/profile") {
+
+        get {
+            val id = call.request.queryParameters["id"]?.toLongOrNull()
+            if (id == null) {
+                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
+                return@get
+            }
+            // todo handle exception
+            val result = backend.getProfile(id)
+            call.respond(HttpStatusCode.OK, result)
+        }
+
+        get("/id_by_email") {
+            val email = call.request.queryParameters["email"]
+            if (email == null) {
+                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
+                return@get
+            }
+            // todo handle exception
+            val result = backend.getIdByEmail(email)
+            call.respond(HttpStatusCode.OK, result)
+        }
+
         get("/student_profile") {
             val id = call.request.queryParameters["id"]?.toLongOrNull()
             if (id == null) {

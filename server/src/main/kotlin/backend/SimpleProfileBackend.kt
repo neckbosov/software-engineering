@@ -143,7 +143,6 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
     }
 
-
     override fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
         transaction {
             addLogger(StdOutSqlLogger)
@@ -319,10 +318,4 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
 
     }
-
-    override fun postProfile(profile: UserProfile): Long {
-        TODO("Not yet implemented")
-    }
-
-
 }

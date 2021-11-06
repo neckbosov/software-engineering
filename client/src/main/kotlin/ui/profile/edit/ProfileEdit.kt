@@ -7,14 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
-import ui.SimpleAppInfo
+import client.SimpleAppInfo
 import ui.profile.edit.models.TMPInstructorProfileEdit
 import ui.profile.edit.models.TMPStudentProfileEdit
 
 @Composable
 @Preview
 fun ProfileEdit(appInfo: SimpleAppInfo) {
-    when (val x = appInfo.backend.getProfile(appInfo.currentId!!)) {
+    when (val x = appInfo.client.getProfile(appInfo.currentId!!)) {
         is StudentProfile -> {
             StudentProfileEdit(
                 appInfo,
