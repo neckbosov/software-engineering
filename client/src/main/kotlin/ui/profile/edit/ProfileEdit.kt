@@ -14,7 +14,7 @@ import ui.profile.edit.models.TMPStudentProfileEdit
 @Composable
 @Preview
 fun ProfileEdit(appInfo: SimpleAppInfo) {
-    when (val x = appInfo.backend.getProfile(appInfo.currentId!!)) {
+    when (val x = appInfo.profileBackend.getProfile(appInfo.currentId!!)) {
         is StudentProfile -> {
             StudentProfileEdit(
                 appInfo,

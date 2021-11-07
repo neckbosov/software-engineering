@@ -10,7 +10,7 @@ import ui.SimpleAppInfo
 
 @Composable
 fun ProfileView(appInfo: SimpleAppInfo) {
-    when (val profile = appInfo.backend.getProfile(appInfo.currentId!!)) {
+    when (val profile = appInfo.profileBackend.getProfile(appInfo.currentId!!)) {
         is StudentProfile -> {
             StudentProfileView(appInfo, profile, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
         }

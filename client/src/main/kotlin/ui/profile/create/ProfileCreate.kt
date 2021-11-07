@@ -19,8 +19,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import models.ProfileType
 import ui.SimpleAppInfo
+import ui.profile.view.ProfileViewState
+import ui.utils.openInBrowser
+import java.net.URI
 
 @Composable
 @Preview
@@ -94,8 +100,14 @@ fun ProfileCreate(appInfo: SimpleAppInfo) {
 
             Button(
                 onClick = {
-                    /* TODO create profile backend methods */
-                    //appInfo.currentState.value = ProfileViewState()
+                    val authData = appInfo.authBackend.registerViaGoogle(profileType.value)
+                    val authToken = authData.token
+                    openInBrowser(URI.create(authData.authURI))
+                    CoroutineScope(Dispatchers.IO).launch { // idk which one to use lmao
+                        val jwt = appInfo.authBackend.postRegisterViaGoogle(authToken)
+                        appInfo.currentJwt = jwt
+                        appInfo.currentState.value = ProfileViewState()
+                    }
                 }
             ) {
                 Text("Создать профиль!")
