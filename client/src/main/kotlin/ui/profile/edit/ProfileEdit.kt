@@ -6,11 +6,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
-import client.SimpleAppInfo
-import kotlinx.coroutines.launch
 import models.profile.UserProfile
+import ui.SimpleAppInfo
 import ui.profile.edit.models.TMPInstructorProfileEdit
 import ui.profile.edit.models.TMPStudentProfileEdit
 

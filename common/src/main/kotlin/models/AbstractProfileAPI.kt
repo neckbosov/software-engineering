@@ -4,7 +4,7 @@ import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import models.profile.UserProfile
 
-interface AbstractProfileClient {
+interface AbstractProfileAPI {
     suspend fun updateStudentProfile(id: Long, profile: StudentProfile)
     suspend fun getStudentProfile(id: Long): StudentProfile
 

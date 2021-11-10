@@ -17,8 +17,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import client.SimpleAppInfo
 import kotlinx.coroutines.launch
+import ui.SimpleAppInfo
 import ui.profile.edit.models.TMPStudentProfileEdit
 import ui.profile.view.ProfileViewState
 import ui.utils.BoxWithVerticalScroll
