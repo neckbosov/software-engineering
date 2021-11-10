@@ -17,6 +17,7 @@ import ui.profile.edit.models.TMPStudentProfileEdit
 @Composable
 @Preview
 fun ProfileEdit(appInfo: SimpleAppInfo) {
+    val modifier = Modifier.padding(start = 10.dp, top = 10.dp)
     val scope = rememberCoroutineScope()
     var user by remember { mutableStateOf<UserProfile?>(null) }
     scope.launch {
@@ -27,14 +28,14 @@ fun ProfileEdit(appInfo: SimpleAppInfo) {
             StudentProfileEdit(
                 appInfo,
                 TMPStudentProfileEdit(x),
-                modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+                modifier = modifier
             )
         }
         is InstructorProfile -> {
             InstructorProfileEdit(
                 appInfo,
                 TMPInstructorProfileEdit(x),
-                modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+                modifier = modifier
             )
         }
         else -> {

@@ -1,26 +1,25 @@
 package ui.profile.edit.models
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.text.input.TextFieldValue
 import models.profile.UniversityDescription
 
 class UniversityDescriptionEdit(
     universityDescription: UniversityDescription
 ) {
-    val universityName = mutableStateOf(TextFieldValue(universityDescription.universityName))
-    val faculty = mutableStateOf(TextFieldValue(universityDescription.faculty))
-    val grade = mutableStateOf(TextFieldValue(universityDescription.grade))
-    val period1 = mutableStateOf(TextFieldValue(universityDescription.period.first))
-    val period2 = mutableStateOf(TextFieldValue(universityDescription.period.second))
-    val gpa = mutableStateOf(TextFieldValue(universityDescription.gpa.toString()))
-    val course = mutableStateOf(TextFieldValue(universityDescription.course.toString()))
+    val universityName = mutableStateOf(universityDescription.universityName)
+    val faculty = mutableStateOf(universityDescription.faculty)
+    val grade = mutableStateOf(universityDescription.grade)
+    val period1 = mutableStateOf(universityDescription.period.first)
+    val period2 = mutableStateOf(universityDescription.period.second)
+    val gpa = mutableStateOf(universityDescription.gpa.toString())
+    val course = mutableStateOf(universityDescription.course.toString())
 
     fun toUniversityDescription(): UniversityDescription = UniversityDescription(
-        universityName = universityName.value.text,
-        faculty = faculty.value.text,
-        grade = grade.value.text,
-        period = Pair(period1.value.text, period2.value.text),
-        gpa = gpa.value.text.toFloatOrNull() ?: 0.0F,
-        course = gpa.value.text.toIntOrNull() ?: 0
+        universityName = universityName.value,
+        faculty = faculty.value,
+        grade = grade.value,
+        period = Pair(period1.value, period2.value),
+        gpa = gpa.value.toFloatOrNull() ?: 0.0F,
+        course = gpa.value.toIntOrNull() ?: 0
     )
 }

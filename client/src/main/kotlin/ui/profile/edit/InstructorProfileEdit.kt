@@ -77,14 +77,14 @@ fun InstructorProfileEdit(appInfo: SimpleAppInfo, profile: TMPInstructorProfileE
 @Composable
 @Preview
 fun InstructorProfileInfoEdit(profile: TMPInstructorProfileEdit, modifier: Modifier = Modifier) {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier.width(500.dp)) {
         NameEdit(profile)
         OutlinedTextField(
             value = profile.degree.value,
             onValueChange = { profile.degree.value = it },
             label = { Text("Degree") },
             singleLine = true,
-            modifier = Modifier.width(200.dp)
+            modifier = Modifier
         )
     }
 }
