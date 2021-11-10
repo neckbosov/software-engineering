@@ -3,18 +3,27 @@ package ui.profile.edit
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import client.SimpleAppInfo
+import kotlinx.coroutines.launch
+import models.profile.UserProfile
 import ui.profile.edit.models.TMPInstructorProfileEdit
 import ui.profile.edit.models.TMPStudentProfileEdit
 
 @Composable
 @Preview
 fun ProfileEdit(appInfo: SimpleAppInfo) {
-    when (val x = appInfo.client.getProfile(appInfo.currentId!!)) {
+    val scope = rememberCoroutineScope()
+    var user = remember<UserProfile?> { null }
+    scope.launch {
+        user = appInfo.client.getProfile(appInfo.currentId!!)
+    }
+    when (val x = user) {
         is StudentProfile -> {
             StudentProfileEdit(
                 appInfo,

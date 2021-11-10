@@ -12,6 +12,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,7 @@ import auth.GoogleApi
 import auth.GoogleAppCredentials
 import auth.GoogleOAuthHandler
 import client.SimpleAppInfo
+import kotlinx.coroutines.launch
 import ui.profile.view.ProfileViewState
 import ui.utils.loadNetworkImage
 import ui.utils.openInBrowser
@@ -31,16 +33,21 @@ import ui.utils.openInBrowser
 @Composable
 @Preview
 fun Authorization(appInfo: SimpleAppInfo) {
+    val scope = rememberCoroutineScope()
     val userInfoText = remember { mutableStateOf("") }
     val userPictureUrl = remember { mutableStateOf("") }
+
     val oauth =
         GoogleOAuthHandler(GoogleAppCredentials.fromFile(".secrets/google-app-desktop.txt")) { creds ->
             val userinfo = GoogleApi(creds).userInfo()
             println(userinfo)
             userInfoText.value = userinfo.toString()
             userPictureUrl.value = userinfo.avatarUrl
-            appInfo.currentId = appInfo.client.getIdByEmail(userinfo.email)
-            appInfo.currentState.value = ProfileViewState()
+            scope.launch {
+                appInfo.currentId = appInfo.client.getIdByEmail(userinfo.email)
+            }.invokeOnCompletion {
+                appInfo.currentState.value = ProfileViewState()
+            }
         }
     DesktopMaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
