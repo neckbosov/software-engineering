@@ -7,7 +7,12 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import models.AbstractProfileClient
+import models.AbstractAuthenticationAPI
+import models.AbstractProfileAPI
+import models.ProfileType
+import models.auth.EmailPasswordCredentials
+import models.auth.GoogleAuthStep
+import models.auth.Jwt
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import models.profile.UserProfile
@@ -29,43 +34,88 @@ fun createClient(): HttpClient {
 
 class HTTPProfileClient(
     private val client: HttpClient,
-    private val address: String = "http://0.0.0.0:8080/v0/profile"
-) : AbstractProfileClient {
+    private val endpoint: String,
+    private val currentJwt: () -> Jwt?
+) : AbstractProfileAPI, AbstractAuthenticationAPI {
+
+    private fun HttpRequestBuilder.provideAuth() {
+        val jwt = currentJwt()
+        if (jwt != null) {
+            headers["Authorization"] = "Bearer $jwt"
+        }
+    }
+
     override suspend fun updateStudentProfile(id: Long, profile: StudentProfile) {
-        val response: HttpResponse = client.post("$address/student_profile") {
+        val response: HttpResponse = client.post("$endpoint/profile/student_profile") {
+            provideAuth()
             contentType(ContentType.Application.Json)
             body = profile
         }
     }
 
     override suspend fun getStudentProfile(id: Long): StudentProfile {
-        return client.get("$address/student_profile") {
+        return client.get("$endpoint/profile/student_profile") {
+            provideAuth()
             parameter("id", id)
         }
     }
 
     override suspend fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
-        val response: HttpResponse = client.post("$address/instructor_profile") {
+        val response: HttpResponse = client.post("$endpoint/profile/instructor_profile") {
             contentType(ContentType.Application.Json)
+            provideAuth()
             body = profile
         }
     }
 
     override suspend fun getInstructorProfile(id: Long): InstructorProfile {
-        return client.get("$address/instructor_profile") {
+        return client.get("$endpoint/profile/instructor_profile") {
+            provideAuth()
             parameter("id", id)
         }
     }
 
     override suspend fun getIdByEmail(email: String): Long {
-        return client.get("$address/id_by_email") {
+        return client.get("$endpoint/profile/id_by_email") {
+            provideAuth()
             parameter("email", email)
         }
     }
 
     override suspend fun getProfile(id: Long): UserProfile {
-        return client.get(address) {
+        return client.get("$endpoint/profile/") {
+            provideAuth()
             parameter("id", id)
+        }
+    }
+
+    override suspend fun registerViaEmailPassword(creds: EmailPasswordCredentials, profileType: ProfileType): Jwt {
+        error("not implemented yeet")
+    }
+
+    override suspend fun loginViaEmailPassword(creds: EmailPasswordCredentials): Jwt {
+        error("not implemented yeet")
+    }
+
+    override suspend fun registerViaGoogle(profileType: ProfileType): GoogleAuthStep {
+        return client.get("$endpoint/auth/register/google") {
+            parameter("profile_type", profileType.toString())
+        }
+    }
+
+    override suspend fun postRegisterViaGoogle(token: String): Jwt {
+        return client.get("$endpoint/auth/register/google/post") {
+            parameter("token", token)
+        }
+    }
+
+    override suspend fun loginViaGoogle(): GoogleAuthStep {
+        return client.get("$endpoint/auth/login/google")
+    }
+
+    override suspend fun postLoginViaGoogle(token: String): Jwt {
+        return client.get("$endpoint/auth/login/google/post") {
+            parameter("token", token)
         }
     }
 }

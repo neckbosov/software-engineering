@@ -7,9 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
-import client.SimpleAppInfo
 import kotlinx.coroutines.launch
 import models.profile.UserProfile
+import ui.SimpleAppInfo
 
 @Composable
 fun ProfileView(appInfo: SimpleAppInfo) {

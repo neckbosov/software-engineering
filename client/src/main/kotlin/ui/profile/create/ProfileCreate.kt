@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
@@ -19,13 +20,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import db.dao.ProfileType
-import client.SimpleAppInfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import models.ProfileType
+import ui.SimpleAppInfo
+import ui.profile.view.ProfileViewState
+import ui.utils.openInBrowser
+import java.net.URI
 
 @Composable
 @Preview
 fun ProfileCreate(appInfo: SimpleAppInfo) {
+    val scope = rememberCoroutineScope()
     val profileType = remember { mutableStateOf(ProfileType.Student) }
+
     DesktopMaterialTheme {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -94,8 +104,17 @@ fun ProfileCreate(appInfo: SimpleAppInfo) {
 
             Button(
                 onClick = {
-                    /* TODO create profile backend methods */
-                    //appInfo.currentState.value = ProfileViewState()
+                    scope.launch {
+                        val authData = appInfo.client.registerViaGoogle(profileType.value)
+                        val authToken = authData.token
+                        openInBrowser(URI.create(authData.authURI))
+                        delay(150)
+                        scope.launch {
+                            val jwt = appInfo.client.postRegisterViaGoogle(authToken)
+                            appInfo.currentJwt = jwt
+                            appInfo.currentState.value = ProfileViewState()
+                        }
+                    }
                 }
             ) {
                 Text("Создать профиль!")

@@ -2,7 +2,7 @@
 import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import client.SimpleAppInfo
+import ui.SimpleAppInfo
 import ui.UIStateView
 
 fun main() = application {

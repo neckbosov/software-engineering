@@ -21,8 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import models.profile.ResearchWorkDescription
-import client.SimpleAppInfo
 import kotlinx.coroutines.launch
+import ui.SimpleAppInfo
 import ui.profile.edit.models.ResearchWorkDescriptionEdit
 import ui.profile.edit.models.TMPInstructorProfileEdit
 import ui.profile.view.ProfileViewState
