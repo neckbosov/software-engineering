@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import models.profile.ResearchWorkDescription
 import client.SimpleAppInfo
+import kotlinx.coroutines.launch
 import ui.profile.edit.models.ResearchWorkDescriptionEdit
 import ui.profile.edit.models.TMPInstructorProfileEdit
 import ui.profile.view.ProfileViewState
@@ -29,6 +31,7 @@ import ui.utils.BoxWithVerticalScroll
 @Composable
 @Preview
 fun InstructorProfileEdit(appInfo: SimpleAppInfo, profile: TMPInstructorProfileEdit, modifier: Modifier = Modifier) {
+    val scope = rememberCoroutineScope()
     BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {
@@ -45,8 +48,13 @@ fun InstructorProfileEdit(appInfo: SimpleAppInfo, profile: TMPInstructorProfileE
                 ) {
                     IconButton(
                         onClick = {
-                            appInfo.client.updateInstructorProfile(appInfo.currentId!!, profile.toInstructorProfile())
-                            appInfo.currentState.value = ProfileViewState()
+                            scope.launch {
+                                appInfo.client.updateInstructorProfile(
+                                    appInfo.currentId!!,
+                                    profile.toInstructorProfile()
+                                )
+                                appInfo.currentState.value = ProfileViewState()
+                            }
                         }
                     ) {
                         Icon(Icons.Filled.Done, "save")

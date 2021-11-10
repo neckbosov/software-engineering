@@ -44,7 +44,7 @@ class HTTPProfileClient(
     }
 
     override suspend fun getIdByEmail(email: String): Long {
-        return client.get("$address/email_by_id") {
+        return client.get("$address/id_by_email") {
             parameter("email", email)
         }
     }
