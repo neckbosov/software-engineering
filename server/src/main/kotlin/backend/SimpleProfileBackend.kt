@@ -176,7 +176,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
         return transaction {
 
             addLogger(StdOutSqlLogger)
-            val instryctorProfile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
+            val instructorProfile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
             val achievements = Achievements.select { Achievements.profileId.eq(id) }.map {
                 AchievementDescription(
                     it[Achievements.type],
@@ -206,15 +206,15 @@ class SimpleProfileBackend : AbstractProfileBackend {
             }
 
             InstructorProfile(
-                instryctorProfile[Profiles.email],
-                instryctorProfile[Profiles.firstName],
-                instryctorProfile[Profiles.lastName],
-                instryctorProfile[Profiles.patronymic],
-                instryctorProfile[Profiles.avatarUrl],
+                instructorProfile[Profiles.email],
+                instructorProfile[Profiles.firstName],
+                instructorProfile[Profiles.lastName],
+                instructorProfile[Profiles.patronymic],
+                instructorProfile[Profiles.avatarUrl],
                 career,
                 achievements,
                 instructorInterestingTags,
-                if (instryctorProfile[Profiles.isActive]) {
+                if (instructorProfile[Profiles.isActive]) {
                     Status.ACTIVE
                 } else {
                     Status.NON_ACTIVE
@@ -290,7 +290,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
                     )
                 }
                 ProfileType.Instructor -> {
-                    val instructor = Instructors.select { Students.profileId.eq(id) }.toList()[0]
+                    val instructor = Instructors.select { Instructors.profileId.eq(id) }.toList()[0]
                     val researches = ResearchWorks.select { ResearchWorks.instructorId.eq(id) }.map {
                         ResearchWorkDescription(
                             it[ResearchWorks.title],
