@@ -13,4 +13,7 @@ interface AbstractProfileClient {
 
     suspend fun getIdByEmail(email: String): Long
     suspend fun getProfile(id: Long): UserProfile
+
+    suspend fun searchStudentsByTags(tags: Tags): List<StudentProfile>
+    suspend fun searchInstructorsByTags(tags: Tags): List<InstructorProfile>
 }

@@ -16,6 +16,5 @@ interface AbstractBackend {
     fun postProfile(profile: UserProfile): Long
 
     fun searchStudentsByTags(tags: Tags): List<StudentProfile>
-
     fun searchInstructorsByTags(tags: Tags): List<InstructorProfile>
 }

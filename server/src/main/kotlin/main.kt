@@ -1,5 +1,7 @@
-import backend.SimpleProfileBackend
+import backend.SimpleBackend
+import db.SimpleDatabaseImpl
 import httpapi.configureProfileRouting
+import httpapi.configureSearchRouting
 import io.ktor.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -10,7 +12,7 @@ import io.ktor.serialization.*
 import kotlinx.serialization.json.Json
 
 fun main() {
-    val profileBackend = SimpleProfileBackend()
+    val profileBackend = SimpleBackend(SimpleDatabaseImpl)
 
     embeddedServer(Netty, port = 8080) {
         install(CORS)
@@ -34,6 +36,7 @@ fun main() {
         }
         install(Routing) {
             configureProfileRouting(profileBackend)
+            configureSearchRouting(profileBackend)
         }
     }.start(wait = true)
 }
