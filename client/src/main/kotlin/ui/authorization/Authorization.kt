@@ -45,7 +45,6 @@ fun Authorization(appInfo: SimpleAppInfo) {
             userPictureUrl.value = userinfo.avatarUrl
             scope.launch {
                 appInfo.currentId = appInfo.client.getIdByEmail(userinfo.email)
-            }.invokeOnCompletion {
                 appInfo.currentState.value = ProfileViewState()
             }
         }

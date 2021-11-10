@@ -2,9 +2,8 @@ package ui.profile.edit
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import models.profile.InstructorProfile
@@ -19,7 +18,7 @@ import ui.profile.edit.models.TMPStudentProfileEdit
 @Preview
 fun ProfileEdit(appInfo: SimpleAppInfo) {
     val scope = rememberCoroutineScope()
-    var user = remember<UserProfile?> { null }
+    var user by remember { mutableStateOf<UserProfile?>(null) }
     scope.launch {
         user = appInfo.client.getProfile(appInfo.currentId!!)
     }
@@ -37,6 +36,9 @@ fun ProfileEdit(appInfo: SimpleAppInfo) {
                 TMPInstructorProfileEdit(x),
                 modifier = Modifier.padding(start = 10.dp, top = 10.dp)
             )
+        }
+        else -> {
+            Text("Loading")
         }
     }
 }
