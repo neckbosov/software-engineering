@@ -1,5 +1,6 @@
 package ui.profile.edit
 
+import MenuBar
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
@@ -23,23 +24,25 @@ fun ProfileEdit(appInfo: SimpleAppInfo) {
     scope.launch {
         user = appInfo.client.getProfile(appInfo.currentId!!)
     }
-    when (val x = user) {
-        is StudentProfile -> {
-            StudentProfileEdit(
-                appInfo,
-                TMPStudentProfileEdit(x),
-                modifier = modifier
-            )
-        }
-        is InstructorProfile -> {
-            InstructorProfileEdit(
-                appInfo,
-                TMPInstructorProfileEdit(x),
-                modifier = modifier
-            )
-        }
-        else -> {
-            Text("Loading")
+    MenuBar(appInfo) {
+        when (val x = user) {
+            is StudentProfile -> {
+                StudentProfileEdit(
+                    appInfo,
+                    TMPStudentProfileEdit(x),
+                    modifier = modifier
+                )
+            }
+            is InstructorProfile -> {
+                InstructorProfileEdit(
+                    appInfo,
+                    TMPInstructorProfileEdit(x),
+                    modifier = modifier
+                )
+            }
+            else -> {
+                Text("Loading")
+            }
         }
     }
 }
