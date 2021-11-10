@@ -2,6 +2,7 @@ package client
 
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import models.AbstractProfileClient
@@ -11,7 +12,7 @@ import models.profile.UserProfile
 
 fun createClient(): HttpClient {
     return HttpClient(CIO) {
-
+        install(JsonFeature)
     }
 }
 
