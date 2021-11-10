@@ -51,7 +51,7 @@ class HTTPProfileClient(
     }
 
     override suspend fun getProfile(id: Long): UserProfile {
-        return client.get(address) {
+        return client.get("$address/") {
             parameter("id", id)
         }
     }
