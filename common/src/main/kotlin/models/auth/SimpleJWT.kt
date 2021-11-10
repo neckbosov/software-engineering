@@ -15,7 +15,6 @@ class SimpleJwt(secret: String) {
     fun sign(claims: UserClaims): Jwt = JWT.create().withClaim("id", claims.id).sign(algorithm)
 
     fun verify(jwt: Jwt): UserClaims {
-        println(jwt)
         val decoded = verifier.verify(jwt)
         return UserClaims(id = decoded.getClaim("id").asLong())
     }
