@@ -14,9 +14,9 @@ import models.auth.*
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
-import kotlin.RuntimeException
 
-class SimpleAuthenticationAPI(val jwtInstance: SimpleJwt, googleCredentials: GoogleAppCredentials) : AbstractAuthenticationAPI {
+class SimpleAuthenticationAPI(val jwtInstance: SimpleJwt, googleCredentials: GoogleAppCredentials) :
+    AbstractAuthenticationAPI {
     private val emailPasswordAuthStorage = EmailPasswordAuthStorage()
     private val googleAuthStorage = GoogleAuthStorage()
 
@@ -76,7 +76,7 @@ class SimpleAuthenticationAPI(val jwtInstance: SimpleJwt, googleCredentials: Goo
     }
 
     override suspend fun postRegisterViaGoogle(token: String): Jwt {
-        if(!googleAuthStorage.registerIntermediateStep.containsKey(token)) {
+        if (!googleAuthStorage.registerIntermediateStep.containsKey(token)) {
             throw AuthException("no such token found in the registry")
         }
         for (i in 1..100000) {
@@ -116,7 +116,7 @@ class SimpleAuthenticationAPI(val jwtInstance: SimpleJwt, googleCredentials: Goo
     }
 
     override suspend fun postLoginViaGoogle(token: String): Jwt {
-        if(!googleAuthStorage.loginIntermediateStep.containsKey(token)) {
+        if (!googleAuthStorage.loginIntermediateStep.containsKey(token)) {
             throw AuthException("no such token found in the registry")
         }
         for (i in 1..100000) {

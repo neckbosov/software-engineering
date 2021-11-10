@@ -10,6 +10,7 @@ import io.ktor.http.*
 import models.AbstractAuthenticationAPI
 import models.AbstractProfileAPI
 import models.ProfileType
+import models.Tags
 import models.auth.EmailPasswordCredentials
 import models.auth.GoogleAuthStep
 import models.auth.Jwt
@@ -41,7 +42,7 @@ class HTTPProfileClient(
     private fun HttpRequestBuilder.provideAuth() {
         val jwt = currentJwt()
         if (jwt != null) {
-            headers["Authorization"] = "Bearer $jwt"
+            header("Authorization", "Bearer $jwt")
         }
     }
 
@@ -88,6 +89,23 @@ class HTTPProfileClient(
             parameter("id", id)
         }
     }
+
+    private val searchAddress = "$endpoint/search"
+
+    override suspend fun searchStudentsByTags(tags: Tags): List<StudentProfile> {
+        return client.get("$searchAddress/students") {
+            contentType(ContentType.Application.Json)
+            body = tags
+        }
+    }
+
+    override suspend fun searchInstructorsByTags(tags: Tags): List<InstructorProfile> {
+        return client.get("$searchAddress/instructors") {
+            contentType(ContentType.Application.Json)
+            body = tags
+        }
+    }
+
 
     override suspend fun registerViaEmailPassword(creds: EmailPasswordCredentials, profileType: ProfileType): Jwt {
         error("not implemented yeet")

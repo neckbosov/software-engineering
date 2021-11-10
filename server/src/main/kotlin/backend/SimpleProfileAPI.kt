@@ -1,16 +1,18 @@
 package backend
 
+import db.SimpleDatabase
 import db.dao.*
 import models.AbstractProfileAPI
 import models.ProfileType
 import models.Tag
 import models.profile.*
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 
 @Suppress("RemoveRedundantQualifierName")
-class SimpleProfileAPI : AbstractProfileAPI {
+class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
     init {
         val dbHost = System.getenv("DB_HOST") ?: "localhost"
         val dbPort = System.getenv("DB_PORT") ?: "5432"
@@ -24,7 +26,7 @@ class SimpleProfileAPI : AbstractProfileAPI {
             password = dbPassword
         )
         transaction {
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger)
             SchemaUtils.create(Profiles, Students, Instructors, Achievements, Jobs, Tags, ResearchWorks)
         }
     }
@@ -73,9 +75,9 @@ class SimpleProfileAPI : AbstractProfileAPI {
     }
 
     override suspend fun updateStudentProfile(id: Long, profile: StudentProfile) {
-        return transaction {
+        return newSuspendedTransaction {
 
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger)
             val profileId = id
             updateCommonProfile(profileId, profile)
             Students.update({ Students.profileId.eq(profileId) }) {
@@ -92,9 +94,9 @@ class SimpleProfileAPI : AbstractProfileAPI {
     }
 
     override suspend fun getStudentProfile(id: Long): StudentProfile {
-        return transaction {
+        return newSuspendedTransaction {
 
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger)
             val studentProfile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
             val studentAchievements = Achievements.select { Achievements.profileId.eq(id) }.map {
                 AchievementDescription(
@@ -145,7 +147,7 @@ class SimpleProfileAPI : AbstractProfileAPI {
     }
 
     override suspend fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
-        transaction {
+        newSuspendedTransaction {
             addLogger(StdOutSqlLogger)
             val profileId = id
             updateCommonProfile(profileId, profile)
@@ -172,9 +174,9 @@ class SimpleProfileAPI : AbstractProfileAPI {
     }
 
     override suspend fun getInstructorProfile(id: Long): InstructorProfile {
-        return transaction {
+        return newSuspendedTransaction {
 
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger)
             val instructorProfile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
             val achievements = Achievements.select { Achievements.profileId.eq(id) }.map {
                 AchievementDescription(
@@ -226,7 +228,7 @@ class SimpleProfileAPI : AbstractProfileAPI {
     }
 
     override suspend fun getIdByEmail(email: String): Long {
-        return transaction {
+        return newSuspendedTransaction {
 
             addLogger(StdOutSqlLogger)
             val profile = Profiles.select {
@@ -237,9 +239,9 @@ class SimpleProfileAPI : AbstractProfileAPI {
     }
 
     override suspend fun getProfile(id: Long): UserProfile {
-        return transaction {
+        return newSuspendedTransaction {
 
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger)
             val profile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
             val achievements = Achievements.select { Achievements.profileId.eq(id) }.map {
                 AchievementDescription(
@@ -318,5 +320,17 @@ class SimpleProfileAPI : AbstractProfileAPI {
             }
         }
 
+    }
+
+    override suspend fun searchStudentsByTags(tags: List<Tag>): List<StudentProfile> {
+        val studentIDs = database.getStudentsIDByTag(tags)
+        return studentIDs.map {
+            getStudentProfile(it)
+        }
+    }
+
+    override suspend fun searchInstructorsByTags(tags: List<Tag>): List<InstructorProfile> {
+        val instructorIDs = database.getInstructorsIDByTag(tags)
+        return instructorIDs.map { getInstructorProfile(it) }
     }
 }

@@ -15,15 +15,14 @@ class SimpleJwt(secret: String) {
     fun sign(claims: UserClaims): Jwt = JWT.create().withClaim("id", claims.id).sign(algorithm)
 
     fun verify(jwt: Jwt): UserClaims {
-        println(jwt)
         val decoded = verifier.verify(jwt)
-        return UserClaims(id=decoded.getClaim("id").asLong())
+        return UserClaims(id = decoded.getClaim("id").asLong())
     }
 
     companion object {
         fun parse(jwt: Jwt): UserClaims {
             val decoded = JWT.decode(jwt)
-            return UserClaims(id=decoded.getClaim("id").asLong())
+            return UserClaims(id = decoded.getClaim("id").asLong())
         }
     }
 }
