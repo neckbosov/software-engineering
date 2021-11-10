@@ -21,16 +21,20 @@ import java.sql.Timestamp
 
 data class GoogleCredentials(val accessToken: String, val refreshToken: String, val expiresAt: Timestamp)
 
-class GoogleOAuthHandler(val appCredentials: GoogleAppCredentials, var hook: (creds: GoogleCredentials) -> Unit) {
+class GoogleOAuthHandler(
+    val appCredentials: GoogleAppCredentials,
+    var hook: (state: String?, creds: GoogleCredentials) -> Unit
+) {
     val serverPort: Int = 9239
 
     val callbackHandler = handler@{ request: Request ->
         val authCode = request.query("code")
             ?: return@handler Response(Status.BAD_REQUEST).body("Something went wrong: " + request.query("error"))
-        return@handler exchangeAuthCodeOnTokens(authCode)
+        val state = request.query("state")
+        return@handler exchangeAuthCodeOnTokens(authCode, state)
     }
 
-    val exchangeAuthCodeOnTokens = f@{ authCode: String ->
+    val exchangeAuthCodeOnTokens = f@{ authCode: String, state: String? ->
         val httpClient = JavaHttpClient()
         val tokenRequest = Request(Method.POST, "https://oauth2.googleapis.com/token")
             .header("Content-Type", "application/x-www-form-urlencoded")
@@ -54,6 +58,7 @@ class GoogleOAuthHandler(val appCredentials: GoogleAppCredentials, var hook: (cr
 
         val data = Json { ignoreUnknownKeys = true }.decodeFromString<TokensData>(tokenResponse.body.toString())
         hook(
+            state,
             GoogleCredentials(
                 data.accessToken,
                 data.refreshToken,
@@ -78,13 +83,14 @@ class GoogleOAuthHandler(val appCredentials: GoogleAppCredentials, var hook: (cr
         "/callback" bind callbackHandler,
     ).asServer(Netty(serverPort)).start()
 
-    val oAuthURI = URL(
-        " https://accounts.google.com/o/oauth2/v2/auth?" + listOf(
+    fun makeOAuthURI(state: String) = URL(
+        "https://accounts.google.com/o/oauth2/v2/auth?" + listOf(
             "client_id=${appCredentials.clientId}",
             "redirect_uri=http://localhost:$serverPort/callback",
             "response_type=code",
             "scope=email%20profile",
-            "access_type=offline"
+            "access_type=offline",
+            "state=${state}"
         ).joinToString("&")
     ).toURI()
 

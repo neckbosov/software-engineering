@@ -1,15 +1,18 @@
 package backend
 
+import db.SimpleDatabase
 import db.dao.*
-import models.AbstractProfileBackend
+import models.AbstractProfileAPI
+import models.ProfileType
 import models.Tag
 import models.profile.*
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 
 @Suppress("RemoveRedundantQualifierName")
-class SimpleProfileBackend : AbstractProfileBackend {
+class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
     init {
         val dbHost = System.getenv("DB_HOST") ?: "localhost"
         val dbPort = System.getenv("DB_PORT") ?: "5432"
@@ -23,7 +26,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
             password = dbPassword
         )
         transaction {
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger)
             SchemaUtils.create(Profiles, Students, Instructors, Achievements, Jobs, Tags, ResearchWorks)
         }
     }
@@ -71,10 +74,10 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
     }
 
-    override fun updateStudentProfile(id: Long, profile: StudentProfile) {
-        return transaction {
+    override suspend fun updateStudentProfile(id: Long, profile: StudentProfile) {
+        return newSuspendedTransaction {
 
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger)
             val profileId = id
             updateCommonProfile(profileId, profile)
             Students.update({ Students.profileId.eq(profileId) }) {
@@ -90,10 +93,10 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
     }
 
-    override fun getStudentProfile(id: Long): StudentProfile {
-        return transaction {
+    override suspend fun getStudentProfile(id: Long): StudentProfile {
+        return newSuspendedTransaction {
 
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger)
             val studentProfile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
             val studentAchievements = Achievements.select { Achievements.profileId.eq(id) }.map {
                 AchievementDescription(
@@ -143,9 +146,8 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
     }
 
-
-    override fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
-        transaction {
+    override suspend fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
+        newSuspendedTransaction {
             addLogger(StdOutSqlLogger)
             val profileId = id
             updateCommonProfile(profileId, profile)
@@ -171,11 +173,11 @@ class SimpleProfileBackend : AbstractProfileBackend {
 
     }
 
-    override fun getInstructorProfile(id: Long): InstructorProfile {
-        return transaction {
+    override suspend fun getInstructorProfile(id: Long): InstructorProfile {
+        return newSuspendedTransaction {
 
-            addLogger(StdOutSqlLogger)
-            val instryctorProfile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
+//            addLogger(StdOutSqlLogger)
+            val instructorProfile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
             val achievements = Achievements.select { Achievements.profileId.eq(id) }.map {
                 AchievementDescription(
                     it[Achievements.type],
@@ -205,15 +207,15 @@ class SimpleProfileBackend : AbstractProfileBackend {
             }
 
             InstructorProfile(
-                instryctorProfile[Profiles.email],
-                instryctorProfile[Profiles.firstName],
-                instryctorProfile[Profiles.lastName],
-                instryctorProfile[Profiles.patronymic],
-                instryctorProfile[Profiles.avatarUrl],
+                instructorProfile[Profiles.email],
+                instructorProfile[Profiles.firstName],
+                instructorProfile[Profiles.lastName],
+                instructorProfile[Profiles.patronymic],
+                instructorProfile[Profiles.avatarUrl],
                 career,
                 achievements,
                 instructorInterestingTags,
-                if (instryctorProfile[Profiles.isActive]) {
+                if (instructorProfile[Profiles.isActive]) {
                     Status.ACTIVE
                 } else {
                     Status.NON_ACTIVE
@@ -225,22 +227,21 @@ class SimpleProfileBackend : AbstractProfileBackend {
 
     }
 
-    override fun getIdByEmail(email: String): Long? {
-        return transaction {
+    override suspend fun getIdByEmail(email: String): Long {
+        return newSuspendedTransaction {
 
             addLogger(StdOutSqlLogger)
             val profile = Profiles.select {
                 Profiles.email.eq(email)
-            }.toList().getOrNull(0)
-            if (profile != null) profile[Profiles.id].value
-            else null
+            }.toList()[0]
+            profile[Profiles.id].value
         }
     }
 
-    override fun getProfile(id: Long): UserProfile {
-        return transaction {
+    override suspend fun getProfile(id: Long): UserProfile {
+        return newSuspendedTransaction {
 
-            addLogger(StdOutSqlLogger)
+//            addLogger(StdOutSqlLogger)
             val profile = Profiles.select { Profiles.id.eq(id) }.toList()[0]
             val achievements = Achievements.select { Achievements.profileId.eq(id) }.map {
                 AchievementDescription(
@@ -290,7 +291,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
                     )
                 }
                 ProfileType.Instructor -> {
-                    val instructor = Instructors.select { Students.profileId.eq(id) }.toList()[0]
+                    val instructor = Instructors.select { Instructors.profileId.eq(id) }.toList()[0]
                     val researches = ResearchWorks.select { ResearchWorks.instructorId.eq(id) }.map {
                         ResearchWorkDescription(
                             it[ResearchWorks.title],
@@ -321,9 +322,15 @@ class SimpleProfileBackend : AbstractProfileBackend {
 
     }
 
-    override fun postProfile(profile: UserProfile): Long {
-        TODO("Not yet implemented")
+    override suspend fun searchStudentsByTags(tags: List<Tag>): List<StudentProfile> {
+        val studentIDs = database.getStudentsIDByTag(tags)
+        return studentIDs.map {
+            getStudentProfile(it)
+        }
     }
 
-
+    override suspend fun searchInstructorsByTags(tags: List<Tag>): List<InstructorProfile> {
+        val instructorIDs = database.getInstructorsIDByTag(tags)
+        return instructorIDs.map { getInstructorProfile(it) }
+    }
 }
