@@ -7,6 +7,7 @@ import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
+import kotlinx.serialization.json.Json
 
 fun main() {
     val profileBackend = SimpleProfileBackend()
@@ -22,7 +23,14 @@ fun main() {
             allowNonSimpleContentTypes = true
         }
         install(ContentNegotiation) {
-            json()
+            json(
+                json = Json {
+                    useArrayPolymorphism = true
+                    //ignoreUnknownKeys = true
+                    isLenient = true
+                    encodeDefaults = true
+                }
+            )
         }
         install(Routing) {
             configureProfileRouting(profileBackend)

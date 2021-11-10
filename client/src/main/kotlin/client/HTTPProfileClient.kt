@@ -3,6 +3,7 @@ package client
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import models.AbstractProfileClient
@@ -12,7 +13,16 @@ import models.profile.UserProfile
 
 fun createClient(): HttpClient {
     return HttpClient(CIO) {
-        install(JsonFeature)
+        install(JsonFeature) {
+            serializer = KotlinxSerializer(
+                json = kotlinx.serialization.json.Json {
+                    useArrayPolymorphism = true
+                    //ignoreUnknownKeys = true
+                    isLenient = true
+                    encodeDefaults = true
+                }
+            )
+        }
     }
 }
 
@@ -51,7 +61,7 @@ class HTTPProfileClient(
     }
 
     override suspend fun getProfile(id: Long): UserProfile {
-        return client.get("$address/") {
+        return client.get(address) {
             parameter("id", id)
         }
     }
