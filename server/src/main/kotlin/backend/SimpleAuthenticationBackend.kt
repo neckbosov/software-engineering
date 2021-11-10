@@ -92,6 +92,9 @@ class SimpleAuthenticationBackend(val jwtInstance: SimpleJwt, googleCredentials:
         val stepResult = googleAuthStorage.registerIntermediateStep[token]!!
         val creds = stepResult.second!!
         val userInfo = GoogleApi(creds).userInfo()
+        if (googleAuthStorage.googleAppId2ProfileId.containsKey(userInfo.appId)) {
+            throw AuthException("account already exists")
+        }
         return transaction {
             val profileId = Profiles.insert {
                 it[Profiles.email] = userInfo.email
