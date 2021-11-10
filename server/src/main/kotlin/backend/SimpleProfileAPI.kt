@@ -1,7 +1,7 @@
 package backend
 
 import db.dao.*
-import models.AbstractProfileBackend
+import models.AbstractProfileAPI
 import models.ProfileType
 import models.Tag
 import models.profile.*
@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 
 @Suppress("RemoveRedundantQualifierName")
-class SimpleProfileBackend : AbstractProfileBackend {
+class SimpleProfileAPI : AbstractProfileAPI {
     init {
         val dbHost = System.getenv("DB_HOST") ?: "localhost"
         val dbPort = System.getenv("DB_PORT") ?: "5432"
@@ -72,7 +72,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
     }
 
-    override fun updateStudentProfile(id: Long, profile: StudentProfile) {
+    override suspend fun updateStudentProfile(id: Long, profile: StudentProfile) {
         return transaction {
 
             addLogger(StdOutSqlLogger)
@@ -91,7 +91,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
     }
 
-    override fun getStudentProfile(id: Long): StudentProfile {
+    override suspend fun getStudentProfile(id: Long): StudentProfile {
         return transaction {
 
             addLogger(StdOutSqlLogger)
@@ -144,8 +144,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
     }
 
-
-    override fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
+    override suspend fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
         transaction {
             addLogger(StdOutSqlLogger)
             val profileId = id
@@ -172,7 +171,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
 
     }
 
-    override fun getInstructorProfile(id: Long): InstructorProfile {
+    override suspend fun getInstructorProfile(id: Long): InstructorProfile {
         return transaction {
 
             addLogger(StdOutSqlLogger)
@@ -226,7 +225,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
 
     }
 
-    override fun getIdByEmail(email: String): Long {
+    override suspend fun getIdByEmail(email: String): Long {
         return transaction {
 
             addLogger(StdOutSqlLogger)
@@ -237,7 +236,7 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
     }
 
-    override fun getProfile(id: Long): UserProfile {
+    override suspend fun getProfile(id: Long): UserProfile {
         return transaction {
 
             addLogger(StdOutSqlLogger)
@@ -320,10 +319,4 @@ class SimpleProfileBackend : AbstractProfileBackend {
         }
 
     }
-
-    override fun postProfile(profile: UserProfile): Long {
-        TODO("Not yet implemented")
-    }
-
-
 }

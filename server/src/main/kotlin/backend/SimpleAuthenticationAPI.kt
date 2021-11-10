@@ -8,7 +8,7 @@ import db.dao.Instructors
 import db.dao.Profiles
 import db.dao.Students
 import kotlinx.coroutines.delay
-import models.AbstractAuthenticationBackend
+import models.AbstractAuthenticationAPI
 import models.ProfileType
 import models.auth.*
 import org.jetbrains.exposed.sql.Transaction
@@ -16,7 +16,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.RuntimeException
 
-class SimpleAuthenticationBackend(val jwtInstance: SimpleJwt, googleCredentials: GoogleAppCredentials) : AbstractAuthenticationBackend {
+class SimpleAuthenticationAPI(val jwtInstance: SimpleJwt, googleCredentials: GoogleAppCredentials) : AbstractAuthenticationAPI {
     private val emailPasswordAuthStorage = EmailPasswordAuthStorage()
     private val googleAuthStorage = GoogleAuthStorage()
 
@@ -42,7 +42,7 @@ class SimpleAuthenticationBackend(val jwtInstance: SimpleJwt, googleCredentials:
 
     class AuthException(desc: String) : RuntimeException(desc) {}
 
-    override fun registerViaEmailPassword(creds: EmailPasswordCredentials, profileType: ProfileType): Jwt {
+    override suspend fun registerViaEmailPassword(creds: EmailPasswordCredentials, profileType: ProfileType): Jwt {
         val account = emailPasswordAuthStorage.get(creds.email)
         if (account != null) {
             throw AuthException("email is already taken")
@@ -61,7 +61,7 @@ class SimpleAuthenticationBackend(val jwtInstance: SimpleJwt, googleCredentials:
         }
     }
 
-    override fun loginViaEmailPassword(creds: EmailPasswordCredentials): Jwt {
+    override suspend fun loginViaEmailPassword(creds: EmailPasswordCredentials): Jwt {
         val account = emailPasswordAuthStorage.get(creds.email) ?: throw RuntimeException("no such account")
         if (account.first != creds.password) {
             throw AuthException("invalid password")
@@ -69,7 +69,7 @@ class SimpleAuthenticationBackend(val jwtInstance: SimpleJwt, googleCredentials:
         return jwtInstance.sign(UserClaims(account.second))
     }
 
-    override fun registerViaGoogle(profileType: ProfileType): GoogleAuthStep {
+    override suspend fun registerViaGoogle(profileType: ProfileType): GoogleAuthStep {
         val state = makeRandomToken()
         googleAuthStorage.registerIntermediateStep[state] = Pair(profileType, null)
         return GoogleAuthStep(googleOAuthHandler.makeOAuthURI(state).toString(), state)
@@ -109,7 +109,7 @@ class SimpleAuthenticationBackend(val jwtInstance: SimpleJwt, googleCredentials:
         }
     }
 
-    override fun loginViaGoogle(): GoogleAuthStep {
+    override suspend fun loginViaGoogle(): GoogleAuthStep {
         val state = makeRandomToken()
         googleAuthStorage.loginIntermediateStep[state] = null
         return GoogleAuthStep(googleOAuthHandler.makeOAuthURI(state).toString(), state)

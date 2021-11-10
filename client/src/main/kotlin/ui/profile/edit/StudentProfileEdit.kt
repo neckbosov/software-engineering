@@ -10,12 +10,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import ui.SimpleAppInfo
 import ui.profile.edit.models.TMPStudentProfileEdit
 import ui.profile.view.ProfileViewState
@@ -24,6 +26,8 @@ import ui.utils.BoxWithVerticalScroll
 @Composable
 @Preview
 fun StudentProfileEdit(appInfo: SimpleAppInfo, profile: TMPStudentProfileEdit, modifier: Modifier = Modifier) {
+    val scope = rememberCoroutineScope()
+
     BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {
@@ -43,8 +47,10 @@ fun StudentProfileEdit(appInfo: SimpleAppInfo, profile: TMPStudentProfileEdit, m
                 ) {
                     IconButton(
                         onClick = {
-                            appInfo.profileBackend.updateStudentProfile(appInfo.currentId!!, profile.toStudentProfile())
-                            appInfo.currentState.value = ProfileViewState()
+                            scope.launch {
+                                appInfo.client.updateStudentProfile(appInfo.currentId!!, profile.toStudentProfile())
+                                appInfo.currentState.value = ProfileViewState()
+                            }
                         }
                     ) {
                         Icon(Icons.Filled.Done, "save")

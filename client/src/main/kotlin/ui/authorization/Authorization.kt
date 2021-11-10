@@ -12,6 +12,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +22,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ui.SimpleAppInfo
 import ui.profile.create.ProfileCreateState
@@ -32,8 +32,7 @@ import java.net.URI
 @Composable
 @Preview
 fun Authorization(appInfo: SimpleAppInfo) {
-    val userInfoText = remember { mutableStateOf("") }
-    val userPictureUrl = remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     DesktopMaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -70,13 +69,15 @@ fun Authorization(appInfo: SimpleAppInfo) {
                 )
                 Box(
                     modifier = Modifier.clickable {
-                        val authData = appInfo.authBackend.loginViaGoogle()
-                        val authToken = authData.token
-                        openInBrowser(URI.create(authData.authURI))
-                        CoroutineScope(Dispatchers.IO).launch { // idk which one to use lmao
-                            val jwt = appInfo.authBackend.postLoginViaGoogle(authToken)
-                            appInfo.currentJwt = jwt
-                            appInfo.currentState.value = ProfileViewState()
+                        scope.launch {
+                            val authData = appInfo.client.loginViaGoogle()
+                            val authToken = authData.token
+                            openInBrowser(URI.create(authData.authURI))
+                            scope.launch {
+                                val jwt = appInfo.client.postLoginViaGoogle(authToken)
+                                appInfo.currentJwt = jwt
+                                appInfo.currentState.value = ProfileViewState()
+                            }
                         }
                     }
                 ) {
