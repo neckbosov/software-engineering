@@ -5,11 +5,11 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import models.AbstractProfileBackend
+import models.AbstractBackend
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
 
-fun Route.configureProfileRouting(backend: AbstractProfileBackend) {
+fun Route.configureProfileRouting(backend: AbstractBackend) {
     route("/v0/profile") {
         get("/student_profile") {
             val id = call.request.queryParameters["id"]?.toLongOrNull()
