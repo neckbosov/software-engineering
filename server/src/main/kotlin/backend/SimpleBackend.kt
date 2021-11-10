@@ -1,7 +1,8 @@
 package backend
 
+import db.SimpleDatabase
 import db.dao.*
-import models.AbstractProfileBackend
+import models.AbstractBackend
 import models.Tag
 import models.profile.*
 import org.jetbrains.exposed.sql.*
@@ -9,7 +10,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 
 @Suppress("RemoveRedundantQualifierName")
-class SimpleProfileBackend : AbstractProfileBackend {
+class SimpleBackend(val database: SimpleDatabase) : AbstractBackend {
     init {
         val dbHost = System.getenv("DB_HOST") ?: "localhost"
         val dbPort = System.getenv("DB_PORT") ?: "5432"
@@ -324,5 +325,15 @@ class SimpleProfileBackend : AbstractProfileBackend {
         TODO("Not yet implemented")
     }
 
+    override fun searchStudentsByTags(tags: List<Tag>): List<StudentProfile> {
+        val studentIDs = database.getStudentsIDByTag(tags)
+        return studentIDs.map {
+            getStudentProfile(it)
+        }
+    }
 
+    override fun searchInstructorsByTags(tags: List<Tag>): List<InstructorProfile> {
+        val instructorIDs = database.getInstructorsIDByTag(tags)
+        return instructorIDs.map { getInstructorProfile(it) }
+    }
 }

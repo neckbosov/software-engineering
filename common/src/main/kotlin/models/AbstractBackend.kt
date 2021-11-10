@@ -4,7 +4,7 @@ import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import models.profile.UserProfile
 
-interface AbstractProfileBackend {
+interface AbstractBackend {
     fun updateStudentProfile(id: Long, profile: StudentProfile)
     fun getStudentProfile(id: Long): StudentProfile
 
@@ -14,4 +14,8 @@ interface AbstractProfileBackend {
     fun getIdByEmail(email: String): Long
     fun getProfile(id: Long): UserProfile
     fun postProfile(profile: UserProfile): Long
+
+    fun searchStudentsByTags(tags: Tags): List<StudentProfile>
+
+    fun searchInstructorsByTags(tags: Tags): List<InstructorProfile>
 }
