@@ -6,6 +6,7 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
 import models.AbstractProfileClient
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
@@ -32,6 +33,7 @@ class HTTPProfileClient(
 ) : AbstractProfileClient {
     override suspend fun updateStudentProfile(id: Long, profile: StudentProfile) {
         val response: HttpResponse = client.post("$address/student_profile") {
+            contentType(ContentType.Application.Json)
             body = profile
         }
     }
@@ -44,6 +46,7 @@ class HTTPProfileClient(
 
     override suspend fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
         val response: HttpResponse = client.post("$address/instructor_profile") {
+            contentType(ContentType.Application.Json)
             body = profile
         }
     }
