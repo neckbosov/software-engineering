@@ -144,7 +144,6 @@ class SimpleBackend(val database: SimpleDatabase) : AbstractBackend {
         }
     }
 
-
     override fun updateInstructorProfile(id: Long, profile: InstructorProfile) {
         transaction {
             addLogger(StdOutSqlLogger)
@@ -336,4 +335,5 @@ class SimpleBackend(val database: SimpleDatabase) : AbstractBackend {
         val instructorIDs = database.getInstructorsIDByTag(tags)
         return instructorIDs.map { getInstructorProfile(it) }
     }
+
 }

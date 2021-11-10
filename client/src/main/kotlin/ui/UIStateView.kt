@@ -1,6 +1,7 @@
 package ui
 
 import androidx.compose.runtime.Composable
+import client.SimpleAppInfo
 import ui.authorization.Authorization
 import ui.authorization.AuthorizationState
 import ui.profile.edit.ProfileEdit

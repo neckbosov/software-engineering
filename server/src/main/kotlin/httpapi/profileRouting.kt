@@ -8,10 +8,34 @@ import io.ktor.routing.*
 import models.AbstractBackend
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
+import models.profile.UserProfile
 
 fun Route.configureProfileRouting(backend: AbstractBackend) {
-    route("/v0/profile") {
-        get("/student_profile") {
+    route("/v0") {
+
+        get("/profile") {
+            val id = call.request.queryParameters["id"]?.toLongOrNull()
+            if (id == null) {
+                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
+                return@get
+            }
+            // todo handle exception
+            val result = backend.getProfile(id)
+            call.respond(HttpStatusCode.OK, result)
+        }
+
+        get("/profile/id_by_email") {
+            val email = call.request.queryParameters["email"]
+            if (email == null) {
+                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
+                return@get
+            }
+            // todo handle exception
+            val result = backend.getIdByEmail(email)
+            call.respond(HttpStatusCode.OK, result)
+        }
+
+        get("/profile/student_profile") {
             val id = call.request.queryParameters["id"]?.toLongOrNull()
             if (id == null) {
                 call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
@@ -22,7 +46,7 @@ fun Route.configureProfileRouting(backend: AbstractBackend) {
             call.respond(HttpStatusCode.OK, result)
         }
 
-        get("/instructor_profile") {
+        get("/profile/instructor_profile") {
             val id = call.request.queryParameters["id"]?.toLongOrNull()
             if (id == null) {
                 call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
@@ -33,7 +57,7 @@ fun Route.configureProfileRouting(backend: AbstractBackend) {
             call.respond(HttpStatusCode.OK, result)
         }
 
-        post("/student_profile") {
+        post("/profile/student_profile") {
             // todo handle exception
 
             val profile = call.receive<StudentProfile>()
@@ -42,7 +66,7 @@ fun Route.configureProfileRouting(backend: AbstractBackend) {
             call.respond(HttpStatusCode.OK)
         }
 
-        post("/instructor_profile") {
+        post("/profile/instructor_profile") {
 
             // todo handle exception
 
