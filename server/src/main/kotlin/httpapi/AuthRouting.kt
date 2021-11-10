@@ -2,13 +2,10 @@ package httpapi
 
 import io.ktor.application.*
 import io.ktor.http.*
-import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import models.AbstractAuthenticationAPI
 import models.ProfileType
-import models.profile.InstructorProfile
-import models.profile.StudentProfile
 
 fun Route.configureAuthRouting(backend: AbstractAuthenticationAPI) {
     route("/v0/auth") {
@@ -22,13 +19,14 @@ fun Route.configureAuthRouting(backend: AbstractAuthenticationAPI) {
         }
 
         get("/register/google") {
-            val profileType = ProfileType.valueOf(call.request.queryParameters["profile_type"]?: error("invalid profile type"))
+            val profileType =
+                ProfileType.valueOf(call.request.queryParameters["profile_type"] ?: error("invalid profile type"))
             val result = backend.registerViaGoogle(profileType)
             call.respond(HttpStatusCode.OK, result)
         }
 
         get("/register/google/post") {
-            val token = call.request.queryParameters["token"]?: error("no token provided")
+            val token = call.request.queryParameters["token"] ?: error("no token provided")
             val result = backend.postRegisterViaGoogle(token)
             call.respond(HttpStatusCode.OK, result)
         }
@@ -39,7 +37,7 @@ fun Route.configureAuthRouting(backend: AbstractAuthenticationAPI) {
         }
 
         get("/login/google/post") {
-            val token = call.request.queryParameters["token"]?: error("no token provided")
+            val token = call.request.queryParameters["token"] ?: error("no token provided")
             val result = backend.postLoginViaGoogle(token)
             call.respond(HttpStatusCode.OK, result)
         }

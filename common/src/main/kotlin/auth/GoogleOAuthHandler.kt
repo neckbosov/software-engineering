@@ -21,7 +21,10 @@ import java.sql.Timestamp
 
 data class GoogleCredentials(val accessToken: String, val refreshToken: String, val expiresAt: Timestamp)
 
-class GoogleOAuthHandler(val appCredentials: GoogleAppCredentials, var hook: (state: String?, creds: GoogleCredentials) -> Unit) {
+class GoogleOAuthHandler(
+    val appCredentials: GoogleAppCredentials,
+    var hook: (state: String?, creds: GoogleCredentials) -> Unit
+) {
     val serverPort: Int = 9239
 
     val callbackHandler = handler@{ request: Request ->
