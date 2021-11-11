@@ -52,14 +52,14 @@ fun StudentProfileEdit(appInfo: SimpleAppInfo, profile: TMPStudentProfileEdit, m
                         onClick = {
                             scope.launch {
                                 appInfo.client.updateStudentProfile(appInfo.currentId!!, profile.toStudentProfile())
-                                appInfo.currentState.value = ProfileViewState()
+                                appInfo.currentState.value = ProfileViewState(appInfo.currentId!!)
                             }
                         }
                     ) {
                         Icon(Icons.Filled.Done, "Save button")
                     }
                     IconButton(
-                        onClick = { appInfo.currentState.value = ProfileViewState() }
+                        onClick = { appInfo.currentState.value = ProfileViewState(appInfo.currentId!!) }
                     ) {
                         Icon(Icons.Filled.Cancel, "Close button")
                     }

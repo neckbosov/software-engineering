@@ -10,19 +10,29 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 object SimpleDatabaseImpl : SimpleDatabase {
     override suspend fun getStudentsIDByTag(tags: List<Tag>): List<Long> {
         return newSuspendedTransaction {
+            Tags.select {
+                Tags.tag inList tags
+            }.withDistinct().map { it[Tags.profileId].value }.toSet().toList()
+            /*
             Tags.innerJoin(Profiles).slice(Tags.profileId).select {
                 Tags.tag inList tags
                 Profiles.profileType eq ProfileType.Student
             }.withDistinct().map { it[Tags.profileId].value }.toList()
+            */
         }
     }
 
     override suspend fun getInstructorsIDByTag(tags: List<Tag>): List<Long> {
         return newSuspendedTransaction {
+            Tags.select {
+                Tags.tag inList tags
+            }.withDistinct().map { it[Tags.profileId].value }.toSet().toList()
+            /*
             Tags.innerJoin(Profiles).slice(Tags.profileId).select {
                 Tags.tag inList tags
                 Profiles.profileType eq ProfileType.Instructor
             }.withDistinct().map { it[Tags.profileId].value }.toList()
+             */
         }
     }
 }

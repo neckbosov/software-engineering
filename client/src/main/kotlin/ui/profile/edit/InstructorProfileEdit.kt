@@ -53,14 +53,14 @@ fun InstructorProfileEdit(appInfo: SimpleAppInfo, profile: TMPInstructorProfileE
                                     appInfo.currentId!!,
                                     profile.toInstructorProfile()
                                 )
-                                appInfo.currentState.value = ProfileViewState()
+                                appInfo.currentState.value = ProfileViewState(appInfo.currentId!!)
                             }
                         }
                     ) {
                         Icon(Icons.Filled.Done, "save")
                     }
                     IconButton(
-                        onClick = { appInfo.currentState.value = ProfileViewState() }
+                        onClick = { appInfo.currentState.value = ProfileViewState(appInfo.currentId!!) }
                     ) {
                         Icon(Icons.Filled.Cancel, "close")
                     }

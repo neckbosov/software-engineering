@@ -1,5 +1,6 @@
 package ui.profile.view
 
+import MenuBar
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -12,21 +13,28 @@ import models.profile.UserProfile
 import ui.SimpleAppInfo
 
 @Composable
-fun ProfileView(appInfo: SimpleAppInfo) {
+fun ProfileView(appInfo: SimpleAppInfo, profileId: Long) {
     val scope = rememberCoroutineScope()
     var user by remember { mutableStateOf<UserProfile?>(null) }
     scope.launch {
-        user = appInfo.client.getProfile(appInfo.currentId!!)
+        user = appInfo.client.getProfile(profileId)
     }
-    when (val profile = user) {
-        is StudentProfile -> {
-            StudentProfileView(appInfo, profile, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
-        }
-        is InstructorProfile -> {
-            InstructorProfileView(appInfo, profile, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
-        }
-        else -> {
-           Text("Loading")
+    MenuBar(appInfo) {
+        when (val profile = user) {
+            is StudentProfile -> {
+                StudentProfileView(appInfo, profileId, profile, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+            }
+            is InstructorProfile -> {
+                InstructorProfileView(
+                    appInfo,
+                    profileId,
+                    profile,
+                    modifier = Modifier.padding(start = 10.dp, top = 10.dp)
+                )
+            }
+            else -> {
+                Text("Loading")
+            }
         }
     }
 }

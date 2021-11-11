@@ -21,7 +21,7 @@ import ui.utils.BoxWithVerticalScroll
 
 @Composable
 @Preview
-fun StudentProfileView(appInfo: SimpleAppInfo, profile: StudentProfile, modifier: Modifier = Modifier) {
+fun StudentProfileView(appInfo: SimpleAppInfo, profileId: Long, profile: StudentProfile, modifier: Modifier = Modifier) {
     BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {
@@ -32,11 +32,13 @@ fun StudentProfileView(appInfo: SimpleAppInfo, profile: StudentProfile, modifier
                     ImageView(profile.avatarURL)
                     StudentProfileInfoView(profile)
                 }
-                IconButton(
-                    onClick = { appInfo.currentState.value = ProfileEditState() },
-                    modifier = Modifier.align(Alignment.TopEnd)
-                ) {
-                    Icon(Icons.Filled.Edit, "edit")
+                if (profileId == appInfo.currentId) {
+                    IconButton(
+                        onClick = { appInfo.currentState.value = ProfileEditState() },
+                        modifier = Modifier.align(Alignment.TopEnd)
+                    ) {
+                        Icon(Icons.Filled.Edit, "edit")
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(5.dp))

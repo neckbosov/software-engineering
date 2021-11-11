@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 @Preview
-fun BoxWithVerticalScroll(modifier: Modifier, content: @Composable BoxScope.() -> Unit ) {
+fun BoxWithVerticalScroll(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit ) {
     val stateVertical = rememberScrollState(0)
     Box(
         modifier = modifier
