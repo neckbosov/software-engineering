@@ -110,7 +110,7 @@ fun ProfileCreate(appInfo: SimpleAppInfo) {
                         scope.launch {
                             val jwt = appInfo.client.postRegisterViaGoogle(authToken)
                             appInfo.currentJwt = jwt
-                            appInfo.currentState.value = ProfileViewState()
+                            appInfo.currentState.value = ProfileViewState(appInfo.currentId!!)
                         }
                     }
                 }

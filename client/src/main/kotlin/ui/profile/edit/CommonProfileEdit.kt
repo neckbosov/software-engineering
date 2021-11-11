@@ -1,7 +1,6 @@
 package ui.profile.edit
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,23 +12,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import models.Tag
-import models.Tags
 import models.profile.*
 import ui.profile.edit.models.AchievementDescriptionEdit
 import ui.profile.edit.models.JobDescriptionEdit
 import ui.profile.edit.models.UserProfileInfoEdit
 import ui.profile.view.ImageView
-import ui.utils.loadNetworkImage
 import ui.utils.statusToString
-import kotlin.math.sin
 
 @Composable
 @Preview
@@ -45,27 +37,29 @@ fun NameEdit(profile: UserProfileInfoEdit, modifier: Modifier = Modifier) {
             )
             StatusEdit(profile.status)
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
             OutlinedTextField(
+                modifier = Modifier.weight(1f),
                 value = profile.surname.value,
                 onValueChange = { profile.surname.value = it },
                 label = { Text("Surname") },
-                singleLine = true,
-                modifier = Modifier.width(170.dp)
+                singleLine = true
             )
             OutlinedTextField(
+                modifier = Modifier.weight(1f),
                 value = profile.name.value,
                 onValueChange = { profile.name.value = it },
                 label = { Text("Name") },
-                singleLine = true,
-                modifier = Modifier.width(170.dp)
+                singleLine = true
             )
             OutlinedTextField(
+                modifier = Modifier.weight(1f),
                 value = profile.patronymic.value,
                 onValueChange = { profile.patronymic.value = it },
                 label = { Text("Patronymic") },
-                singleLine = true,
-                modifier = Modifier.width(170.dp)
+                singleLine = true
             )
         }
     }
@@ -227,7 +221,7 @@ fun CarrierEdit(jobs: SnapshotStateList<JobDescriptionEdit>, modifier: Modifier 
 
 @Composable
 @Preview
-fun TagsEdit(tags: SnapshotStateList<TextFieldValue>, modifier: Modifier = Modifier) {
+fun TagsEdit(tags: SnapshotStateList<String>, modifier: Modifier = Modifier) {
     Row(horizontalArrangement = Arrangement.spacedBy(1.dp), modifier = modifier) {
         Text(
             text = "Tags:",
@@ -259,7 +253,7 @@ fun TagsEdit(tags: SnapshotStateList<TextFieldValue>, modifier: Modifier = Modif
         }
         IconButton(
             onClick = {
-                tags += TextFieldValue("")
+                tags += ""
             }
         ) {
             Icon(Icons.Filled.Add, "add tag")
@@ -288,7 +282,6 @@ fun StatusEdit(status: MutableState<Status>, modifier: Modifier = Modifier) {
                 ) {
                     Text(statusToString(it))
                 }
-                Divider()
             }
         }
     }
@@ -296,9 +289,9 @@ fun StatusEdit(status: MutableState<Status>, modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
-fun ImageEdit(avatarURL: MutableState<TextFieldValue>, modifier: Modifier = Modifier) {
+fun ImageEdit(avatarURL: MutableState<String>, modifier: Modifier = Modifier) {
     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-        ImageView(avatarURL.value.text)
+        ImageView(avatarURL.value)
         OutlinedTextField(
             value = avatarURL.value,
             onValueChange = { avatarURL.value = it },

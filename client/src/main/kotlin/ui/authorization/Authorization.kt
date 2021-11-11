@@ -72,7 +72,7 @@ fun Authorization(appInfo: SimpleAppInfo) {
                             scope.launch {
                                 val jwt = appInfo.client.postLoginViaGoogle(authToken)
                                 appInfo.currentJwt = jwt
-                                appInfo.currentState.value = ProfileViewState()
+                                appInfo.currentState.value = ProfileViewState(appInfo.currentId!!)
                             }
                         }
                     }
