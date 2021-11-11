@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import models.profile.UserProfile
 import ui.SimpleAppInfo
 import ui.profile.view.ProfileViewState
+import ui.search.SearchState
 import ui.utils.PictureView
 import ui.utils.loadNetworkImage
 
@@ -56,7 +57,7 @@ fun MenuBar(
                 )
             }
             IconButton(
-                onClick = { /* TODO("Search UI") */ },
+                onClick = { appInfo.currentState.value = SearchState() },
                 modifier = Modifier
             ) {
                 Icon(Icons.Filled.Search, "search")

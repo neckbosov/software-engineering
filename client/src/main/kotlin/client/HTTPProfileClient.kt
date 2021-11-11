@@ -94,6 +94,7 @@ class HTTPProfileClient(
 
     override suspend fun searchStudentsByTags(tags: Tags): List<StudentProfile> {
         return client.get("$searchAddress/students") {
+            provideAuth()
             contentType(ContentType.Application.Json)
             body = tags
         }
@@ -101,6 +102,7 @@ class HTTPProfileClient(
 
     override suspend fun searchInstructorsByTags(tags: Tags): List<InstructorProfile> {
         return client.get("$searchAddress/instructors") {
+            provideAuth()
             contentType(ContentType.Application.Json)
             body = tags
         }
