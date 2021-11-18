@@ -1,6 +1,6 @@
 package httpapi
 
-import backend.SimpleProfileAPI
+import backend.SimpleSearchAPI
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -9,7 +9,7 @@ import io.ktor.routing.*
 import models.Tags
 import models.auth.SimpleJwt
 
-fun Route.configureSearchRouting(backend: SimpleProfileAPI, jwt: SimpleJwt) {
+fun Route.configureSearchRouting(backend: SimpleSearchAPI, jwt: SimpleJwt) {
     route("/v0") {
 
         get("/search/students") {
@@ -31,6 +31,12 @@ fun Route.configureSearchRouting(backend: SimpleProfileAPI, jwt: SimpleJwt) {
                 call.respond(HttpStatusCode.OK, result)
             }
         }
-
+        get("/search/tags") {
+            val prefix = call.request.queryParameters["prefix"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+            authorized(jwt) {
+                val result = backend.getTagsByPrefix(prefix)
+                call.respond(HttpStatusCode.OK, result)
+            }
+        }
     }
 }

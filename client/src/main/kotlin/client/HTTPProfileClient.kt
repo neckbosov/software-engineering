@@ -7,10 +7,7 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import models.AbstractAuthenticationAPI
-import models.AbstractProfileAPI
-import models.ProfileType
-import models.Tags
+import models.*
 import models.auth.EmailPasswordCredentials
 import models.auth.GoogleAuthStep
 import models.auth.Jwt
@@ -37,7 +34,7 @@ class HTTPProfileClient(
     private val client: HttpClient,
     private val endpoint: String,
     private val currentJwt: () -> Jwt?
-) : AbstractProfileAPI, AbstractAuthenticationAPI {
+) : AbstractProfileAPI, AbstractAuthenticationAPI, AbstractSearchAPI {
 
     private fun HttpRequestBuilder.provideAuth() {
         val jwt = currentJwt()
@@ -105,6 +102,13 @@ class HTTPProfileClient(
             provideAuth()
             contentType(ContentType.Application.Json)
             body = tags
+        }
+    }
+
+    override suspend fun getTagsByPrefix(prefix: String): List<Tag> {
+        return client.get("$searchAddress/tags") {
+            provideAuth()
+            parameter("prefix", prefix)
         }
     }
 
