@@ -106,9 +106,10 @@ class HTTPProfileClient(
     }
 
     override suspend fun getTagsByPrefix(prefix: String): List<Tag> {
-        return client.get("$searchAddress/tags") {
+        return client.post("$searchAddress/tags") {
             provideAuth()
-            parameter("prefix", prefix)
+            contentType(ContentType.Application.Json)
+            body = prefix
         }
     }
 
