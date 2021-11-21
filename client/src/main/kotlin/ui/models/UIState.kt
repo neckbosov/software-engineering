@@ -1,3 +1,3 @@
 package ui.models
 
-open class UIState
+abstract class UIState

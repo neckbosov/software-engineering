@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import models.Tags
 import models.profile.*
+import ui.utils.PictureView
 import ui.utils.loadNetworkImage
 import ui.utils.statusToString
 
@@ -165,17 +166,5 @@ fun FullNameView(fullName: String, modifier: Modifier = Modifier) {
 @Preview
 fun ImageView(avatarURL: String?, modifier: Modifier = Modifier) {
     val picture = if (avatarURL != null) loadNetworkImage(avatarURL) else null
-    if (picture != null) {
-        Image(
-            bitmap = picture,
-            contentDescription = "avatar",
-            modifier = modifier.background(Color.Transparent).requiredSize(200.dp),
-        )
-    } else {
-        Image(
-            painter = painterResource("empty-avatar.jpg"),
-            contentDescription = "avatar",
-            modifier = modifier.background(Color.Transparent).requiredSize(200.dp),
-        )
-    }
+    PictureView(picture, modifier = modifier.background(Color.Transparent).requiredSize(200.dp))
 }
