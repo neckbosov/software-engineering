@@ -10,38 +10,26 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import auth.GoogleApi
-import auth.GoogleAppCredentials
-import auth.GoogleOAuthHandler
+import kotlinx.coroutines.launch
 import ui.SimpleAppInfo
+import ui.profile.create.ProfileCreateState
 import ui.profile.view.ProfileViewState
-import ui.utils.loadNetworkImage
 import ui.utils.openInBrowser
+import java.net.URI
 
 @Composable
 @Preview
 fun Authorization(appInfo: SimpleAppInfo) {
-    val userInfoText = remember { mutableStateOf("") }
-    val userPictureUrl = remember { mutableStateOf("") }
-    val oauth =
-        GoogleOAuthHandler(GoogleAppCredentials.fromFile(".secrets/google-app-desktop.txt")) { creds ->
-            val userinfo = GoogleApi(creds).userInfo()
-            println(userinfo)
-            userInfoText.value = userinfo.toString()
-            userPictureUrl.value = userinfo.avatarUrl
-            appInfo.currentId = appInfo.backend.getIdByEmail(userinfo.email)
-            appInfo.currentState.value = ProfileViewState()
-        }
+    val scope = rememberCoroutineScope()
+
     DesktopMaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar {
@@ -77,7 +65,16 @@ fun Authorization(appInfo: SimpleAppInfo) {
                 )
                 Box(
                     modifier = Modifier.clickable {
-                        openInBrowser(oauth.oAuthURI)
+                        scope.launch {
+                            val authData = appInfo.client.loginViaGoogle()
+                            val authToken = authData.token
+                            openInBrowser(URI.create(authData.authURI))
+                            scope.launch {
+                                val jwt = appInfo.client.postLoginViaGoogle(authToken)
+                                appInfo.currentJwt = jwt
+                                appInfo.currentState.value = ProfileViewState(appInfo.currentId!!)
+                            }
+                        }
                     }
                 ) {
                     Image(
@@ -89,15 +86,14 @@ fun Authorization(appInfo: SimpleAppInfo) {
 
                 Spacer(Modifier.heightIn(20.dp))
 
-                Text(userInfoText.value, style = MaterialTheme.typography.h3)
-                Image(
-                    bitmap = if (userPictureUrl.value.isEmpty()) {
-                        ImageBitmap(1, 1)
-                    } else {
-                        loadNetworkImage(userPictureUrl.value) ?: ImageBitmap(1, 1)
-                    },
-                    "avatar",
-                    modifier = Modifier.background(Color.Transparent)
+                Text(
+                    text = "Click here to register a new account!",
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.h5,
+                    modifier = Modifier.clickable {
+                        appInfo.currentState.value = ProfileCreateState()
+                    }
                 )
             }
         }
