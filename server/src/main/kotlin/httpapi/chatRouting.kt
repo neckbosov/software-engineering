@@ -5,11 +5,11 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import models.AbstractChatBackend
+import models.AbstractChatAPI
 import models.chat.Chat
 import models.chat.Message
 
-fun Route.configureProfileRouting(backend: AbstractChatBackend) {
+fun Route.configureChatRouting(backend: AbstractChatAPI) {
     route("/v0/chats") {
         get("/chat") {
             val id = call.request.queryParameters["id"]?.toLongOrNull()
@@ -56,7 +56,7 @@ fun Route.configureProfileRouting(backend: AbstractChatBackend) {
         }
 
         get("/messages") {
-            val chatId = call.request.queryParameters["chatId"]?.toLongOrNull();
+            val chatId = call.request.queryParameters["chatId"]?.toLongOrNull()
             if (chatId == null) {
                 call.respond(status = HttpStatusCode.BadRequest, "invalid `chatId` value")
                 return@get
