@@ -31,7 +31,7 @@ fun Route.configureSearchRouting(backend: SimpleSearchAPI, jwt: SimpleJwt) {
                 call.respond(HttpStatusCode.OK, result)
             }
         }
-        post("/search/tags") {
+        get("/search/tags") {
             val prefix = call.receive<String>()
             authorized(jwt) {
                 val result = backend.getTagsByPrefix(prefix)
