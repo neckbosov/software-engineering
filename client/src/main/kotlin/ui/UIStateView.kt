@@ -3,6 +3,8 @@ package ui
 import androidx.compose.runtime.Composable
 import ui.authorization.Authorization
 import ui.authorization.AuthorizationState
+import ui.chat.ChatState
+import ui.chat.ChatView
 import ui.profile.create.ProfileCreate
 import ui.profile.create.ProfileCreateState
 import ui.profile.edit.ProfileEdit
@@ -29,6 +31,9 @@ fun UIStateView(appInfo: SimpleAppInfo) {
         }
         is SearchState -> {
             SearchView(appInfo)
+        }
+        is ChatState -> {
+            ChatView(appInfo)
         }
     }
 }
