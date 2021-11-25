@@ -1,9 +1,11 @@
 import auth.GoogleAppCredentials
 import backend.SimpleAuthenticationAPI
+import backend.SimpleChatAPI
 import backend.SimpleProfileAPI
 import backend.SimpleSearchAPI
 import db.SimpleDatabaseImpl
 import httpapi.configureAuthRouting
+import httpapi.configureChatRouting
 import httpapi.configureProfileRouting
 import httpapi.configureSearchRouting
 import io.ktor.application.*
@@ -27,7 +29,7 @@ fun main() {
             "NcZnNeZL8J-7pMXQgkz5zFiX"
         ) // it seems okay to put these secrets here
     )
-
+    val chatAPI = SimpleChatAPI()
     embeddedServer(Netty, port = 8080) {
         install(CORS)
         {
@@ -52,6 +54,7 @@ fun main() {
             configureProfileRouting(profileBackend, jwtInstance)
             configureAuthRouting(authBackend)
             configureSearchRouting(searchBackend, jwtInstance)
+            configureChatRouting(chatAPI)
         }
     }.start(wait = true)
 }
