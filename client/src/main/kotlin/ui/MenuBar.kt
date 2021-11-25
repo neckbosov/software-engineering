@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import models.profile.UserProfile
 import ui.SimpleAppInfo
+import ui.chats.ChatState
 import ui.profile.view.ProfileViewState
 import ui.search.SearchState
 import ui.utils.PictureView
@@ -63,12 +64,18 @@ fun MenuBar(
                 Icon(Icons.Filled.Search, "search")
             }
             IconButton(
-                onClick = { /* TODO("Chats UI") */ },
+                onClick = { appInfo.currentState.value = ChatState(null) },
                 modifier = Modifier
             ) {
                 Icon(Icons.Filled.ChatBubbleOutline, "chats")
             }
         }
+        Divider(
+            color = Color.DarkGray,
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(1.dp)
+        )
         block()
     }
 }
