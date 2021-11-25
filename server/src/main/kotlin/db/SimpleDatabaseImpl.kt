@@ -1,6 +1,8 @@
 package db
 
+import db.dao.Profiles
 import db.dao.Tags
+import models.ProfileType
 import models.Tag
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.and
