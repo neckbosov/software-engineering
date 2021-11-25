@@ -323,17 +323,5 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
 
     }
 
-    override suspend fun searchStudentsByTags(tags: List<Tag>): List<StudentProfile> {
-        val studentIDs = database.getStudentsIDByTag(tags)
-        return studentIDs.map {
-            getProfile(it)
-        }.filterIsInstance<StudentProfile>()
-    }
 
-    override suspend fun searchInstructorsByTags(tags: List<Tag>): List<InstructorProfile> {
-        val instructorIDs = database.getInstructorsIDByTag(tags)
-        return instructorIDs.map {
-            getProfile(it)
-        }.filterIsInstance<InstructorProfile>()
-    }
 }
