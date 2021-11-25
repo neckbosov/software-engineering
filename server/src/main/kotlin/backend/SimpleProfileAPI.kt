@@ -2,7 +2,6 @@ package backend
 
 import db.SimpleDatabase
 import db.dao.*
-import kotlinx.coroutines.runBlocking
 import models.AbstractProfileAPI
 import models.ProfileType
 import models.Tag
@@ -335,17 +334,5 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
 
     }
 
-    override suspend fun searchStudentsByTags(tags: List<Tag>): List<StudentProfile> {
-        val studentIDs = database.getStudentsIDByTag(tags)
-        return studentIDs.map {
-            getProfile(it)
-        }.filterIsInstance<StudentProfile>()
-    }
 
-    override suspend fun searchInstructorsByTags(tags: List<Tag>): List<InstructorProfile> {
-        val instructorIDs = database.getInstructorsIDByTag(tags)
-        return instructorIDs.map {
-            getProfile(it)
-        }.filterIsInstance<InstructorProfile>()
-    }
 }

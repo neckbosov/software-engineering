@@ -1,8 +1,6 @@
 package db
 
-import db.dao.Profiles
 import db.dao.Tags
-import models.ProfileType
 import models.Tag
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
@@ -22,6 +20,15 @@ object SimpleDatabaseImpl : SimpleDatabase {
             Tags.innerJoin(Profiles).slice(Tags.profileId).select {
                 (Tags.tag inList tags) and (Profiles.profileType eq ProfileType.Instructor)
             }.withDistinct().map { it[Tags.profileId].value }.toList()
+        }
+    }
+
+
+    override suspend fun getTagsByPrefix(prefix: String): List<Tag> {
+        return newSuspendedTransaction {
+            Tags.slice(Tags.tag).select {
+                Tags.tag like "$prefix%"
+            }.withDistinct().map { it[Tags.tag] }.toList()
         }
     }
 }
