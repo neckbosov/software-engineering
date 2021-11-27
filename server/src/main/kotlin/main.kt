@@ -4,6 +4,7 @@ import backend.SimpleChatAPI
 import backend.SimpleProfileAPI
 import backend.SimpleSearchAPI
 import db.SimpleDatabaseImpl
+import error.AuthException
 import httpapi.configureAuthRouting
 import httpapi.configureChatRouting
 import httpapi.configureProfileRouting
@@ -11,6 +12,7 @@ import httpapi.configureSearchRouting
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.server.engine.*
@@ -49,6 +51,15 @@ fun main() {
                     encodeDefaults = true
                 }
             )
+        }
+        install(StatusPages) {
+            exception<AuthException> { cause ->
+                call.respond(HttpStatusCode.BadRequest, cause.message ?: "AuthException")
+            }
+
+            exception<Exception> {
+                call.respond(HttpStatusCode.InternalServerError)
+            }
         }
         install(Routing) {
             configureProfileRouting(profileBackend, jwtInstance)

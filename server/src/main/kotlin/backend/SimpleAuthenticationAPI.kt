@@ -7,6 +7,7 @@ import auth.GoogleOAuthHandler
 import db.dao.Instructors
 import db.dao.Profiles
 import db.dao.Students
+import error.AuthException
 import kotlinx.coroutines.delay
 import models.AbstractAuthenticationAPI
 import models.ProfileType
@@ -39,8 +40,6 @@ class SimpleAuthenticationAPI(val jwtInstance: SimpleJwt, googleCredentials: Goo
             return@GoogleOAuthHandler
         }
     }
-
-    class AuthException(desc: String) : RuntimeException(desc) {}
 
     override suspend fun registerViaEmailPassword(creds: EmailPasswordCredentials, profileType: ProfileType): Jwt {
         val account = emailPasswordAuthStorage.get(creds.email)
