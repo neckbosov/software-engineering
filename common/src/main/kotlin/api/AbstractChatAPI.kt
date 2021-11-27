@@ -1,4 +1,4 @@
-package models
+package api
 
 import models.chat.Chat
 import models.chat.Message

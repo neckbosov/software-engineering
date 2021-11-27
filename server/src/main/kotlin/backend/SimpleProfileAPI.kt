@@ -1,8 +1,8 @@
 package backend
 
+import api.AbstractProfileAPI
 import db.SimpleDatabase
 import db.dao.*
-import models.AbstractProfileAPI
 import models.ProfileType
 import models.Tag
 import models.profile.*

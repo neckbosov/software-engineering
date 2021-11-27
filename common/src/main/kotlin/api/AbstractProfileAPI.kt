@@ -1,4 +1,4 @@
-package models
+package api
 
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
@@ -13,5 +13,4 @@ interface AbstractProfileAPI {
 
     suspend fun getIdByEmail(email: String): Long
     suspend fun getProfile(id: Long): UserProfile
-
 }

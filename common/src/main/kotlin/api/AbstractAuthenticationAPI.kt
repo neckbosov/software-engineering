@@ -1,5 +1,6 @@
-package models
+package api
 
+import models.ProfileType
 import models.auth.EmailPasswordCredentials
 import models.auth.GoogleAuthStep
 import models.auth.Jwt

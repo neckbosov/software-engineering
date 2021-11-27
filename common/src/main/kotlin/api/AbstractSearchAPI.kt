@@ -1,5 +1,7 @@
-package models
+package api
 
+import models.Tag
+import models.Tags
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
 

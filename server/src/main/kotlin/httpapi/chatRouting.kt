@@ -1,11 +1,11 @@
 package httpapi
 
+import api.AbstractChatAPI
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import models.AbstractChatAPI
 import models.chat.Chat
 import models.chat.Message
 

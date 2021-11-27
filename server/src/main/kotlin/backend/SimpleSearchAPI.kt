@@ -1,8 +1,8 @@
 package backend
 
+import api.AbstractProfileAPI
+import api.AbstractSearchAPI
 import db.SimpleDatabase
-import models.AbstractProfileAPI
-import models.AbstractSearchAPI
 import models.Tag
 import models.profile.InstructorProfile
 import models.profile.StudentProfile

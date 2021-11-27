@@ -1,10 +1,10 @@
 package httpapi
 
+import api.AbstractAuthenticationAPI
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import models.AbstractAuthenticationAPI
 import models.ProfileType
 
 fun Route.configureAuthRouting(backend: AbstractAuthenticationAPI) {
