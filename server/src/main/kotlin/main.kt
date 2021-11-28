@@ -5,10 +5,8 @@ import backend.SimpleProfileAPI
 import backend.SimpleSearchAPI
 import db.SimpleDatabaseImpl
 import error.AuthException
-import httpapi.configureAuthRouting
-import httpapi.configureChatRouting
-import httpapi.configureProfileRouting
-import httpapi.configureSearchRouting
+import error.NotAuthorisedError
+import httpapi.*
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -53,13 +51,7 @@ fun main() {
             )
         }
         install(StatusPages) {
-            exception<AuthException> { cause ->
-                call.respond(HttpStatusCode.BadRequest, cause.message ?: "AuthException")
-            }
-
-            exception<Exception> {
-                call.respond(HttpStatusCode.InternalServerError)
-            }
+            setup()
         }
         install(Routing) {
             configureProfileRouting(profileBackend, jwtInstance)
