@@ -2,7 +2,6 @@ package backend
 
 import db.SimpleDatabase
 import db.dao.*
-import kotlinx.coroutines.runBlocking
 import models.AbstractProfileAPI
 import models.ProfileType
 import models.Tag
@@ -15,17 +14,6 @@ import java.math.BigDecimal
 @Suppress("RemoveRedundantQualifierName")
 class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
     init {
-        val dbHost = System.getenv("DB_HOST") ?: "localhost"
-        val dbPort = System.getenv("DB_PORT") ?: "5432"
-        val dbName = System.getenv("DB_NAME") ?: "postgres"
-        val dbUser = System.getenv("DB_USER") ?: "postgres"
-        val dbPassword = System.getenv("DB_PASSWORD") ?: "postgres"
-        Database.connect(
-            "jdbc:postgresql://$dbHost:$dbPort/$dbName",
-            driver = "org.postgresql.Driver",
-            user = dbUser,
-            password = dbPassword
-        )
         transaction {
 //            addLogger(StdOutSqlLogger)
             SchemaUtils.create(Profiles, Students, Instructors, Achievements, Jobs, Tags, ResearchWorks)
@@ -335,17 +323,5 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
 
     }
 
-    override suspend fun searchStudentsByTags(tags: List<Tag>): List<StudentProfile> {
-        val studentIDs = database.getStudentsIDByTag(tags)
-        return studentIDs.map {
-            getProfile(it)
-        }.filterIsInstance<StudentProfile>()
-    }
 
-    override suspend fun searchInstructorsByTags(tags: List<Tag>): List<InstructorProfile> {
-        val instructorIDs = database.getInstructorsIDByTag(tags)
-        return instructorIDs.map {
-            getProfile(it)
-        }.filterIsInstance<InstructorProfile>()
-    }
 }

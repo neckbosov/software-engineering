@@ -3,7 +3,7 @@ package db.dao
 import org.jetbrains.exposed.dao.id.LongIdTable
 
 object Achievements : LongIdTable() {
-    val profileId = entityId("profile_id", Profiles)
+    val profileId = entityId("profile_id", Profiles).references(Profiles.id)
     val type = varchar("type", 256)
     val name = text("name")
     val description = text("description")

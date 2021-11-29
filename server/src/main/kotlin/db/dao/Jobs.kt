@@ -3,7 +3,7 @@ package db.dao
 import org.jetbrains.exposed.dao.id.LongIdTable
 
 object Jobs : LongIdTable() {
-    val profileId = entityId("profile_id", Profiles)
+    val profileId = entityId("profile_id", Profiles).references(Profiles.id)
     val place = varchar("place", 256)
     val position = varchar("position", 256)
     val fromDate = varchar("from_date", 20)

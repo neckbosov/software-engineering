@@ -14,7 +14,6 @@ import ui.search.SearchView
 
 @Composable
 fun UIStateView(appInfo: SimpleAppInfo) {
-    println(appInfo.currentId)
     when (val state = appInfo.currentState.value) {
         is AuthorizationState -> {
             Authorization(appInfo)
