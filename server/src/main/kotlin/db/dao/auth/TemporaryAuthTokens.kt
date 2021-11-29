@@ -10,6 +10,6 @@ object TemporaryAuthTokens : IntIdTable() {
     val accessToken = text("access_token").nullable()
     val refreshToken = text("refresh_token").nullable()
     val expiresAt = timestamp("expiresAt").nullable()  // Google token expires
-    val profileType = enumeration("profile_type", ProfileType::class)
+    val profileType = enumeration("profile_type", ProfileType::class).nullable()
     val timestamp = timestamp("timestamp")  // Our token expires
 }
