@@ -1,6 +1,7 @@
 package httpapi
 
 import backend.SimpleSearchAPI
+import error.InvalidBodyError
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -14,17 +15,27 @@ fun Route.configureSearchRouting(backend: SimpleSearchAPI, jwt: SimpleJwt) {
 
         get("/search/students") {
 
-            val tags = call.receive<Tags>()
-            authorized(jwt) {
-                val result = backend.searchStudentsByTags(tags)
+            val tags = try {
+                call.receive<Tags>()
+            } catch (t: Throwable) {
+                throw InvalidBodyError("Invalid body")
+            }
 
+            authorized(jwt) {
+
+                val result = backend.searchStudentsByTags(tags)
                 call.respond(HttpStatusCode.OK, result)
             }
         }
 
         get("/search/instructors") {
 
-            val tags = call.receive<Tags>()
+            val tags = try {
+                call.receive<Tags>()
+            } catch (t: Throwable) {
+                throw InvalidBodyError("Invalid body")
+            }
+
             authorized(jwt) {
                 val result = backend.searchInstructorsByTags(tags)
 
@@ -32,9 +43,16 @@ fun Route.configureSearchRouting(backend: SimpleSearchAPI, jwt: SimpleJwt) {
             }
         }
         get("/search/tags") {
-            val prefix = call.receive<String>()
+
+            val prefix = try {
+                call.receive<String>()
+            } catch (t: Throwable) {
+                throw InvalidBodyError("Invalid body")
+            }
+
             authorized(jwt) {
                 val result = backend.getTagsByPrefix(prefix)
+
                 call.respond(HttpStatusCode.OK, result)
             }
         }

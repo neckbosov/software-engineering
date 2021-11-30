@@ -1,5 +1,8 @@
 package httpapi
 
+import error.InvalidBodyError
+import error.InvalidQueryParameterError
+import error.NotFoundError
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -15,52 +18,61 @@ fun Route.configureProfileRouting(backend: AbstractProfileAPI, jwt: SimpleJwt) {
 
         get("/") {
             val id = call.request.queryParameters["id"]?.toLongOrNull()
-            if (id == null) {
-                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
-                return@get
+                ?: throw InvalidQueryParameterError("Invalid query parameter `id`")
+
+            val result = try {
+                backend.getProfile(id)
+            } catch (t: Throwable) {
+                throw NotFoundError("No profile with id $id")
             }
-            // todo handle exception
-            val result = backend.getProfile(id)
+
             call.respond(HttpStatusCode.OK, result)
         }
 
         get("/id_by_email") {
             val email = call.request.queryParameters["email"]
-            if (email == null) {
-                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
-                return@get
+                ?: throw InvalidQueryParameterError("Invalid query parameter `email`")
+
+            val result = try {
+                backend.getIdByEmail(email)
+            } catch (t: Throwable) {
+                throw NotFoundError("No profile with email $email")
             }
-            // todo handle exception
-            val result = backend.getIdByEmail(email)
             call.respond(HttpStatusCode.OK, result)
         }
 
         get("/student_profile") {
             val id = call.request.queryParameters["id"]?.toLongOrNull()
-            if (id == null) {
-                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
-                return@get
+                ?: throw InvalidQueryParameterError("Invalid query parameter `id`")
+
+            val result = try {
+                backend.getStudentProfile(id)
+            } catch (t: Throwable) {
+                throw NotFoundError("No student profile with id $id")
             }
-            // todo handle exception
-            val result = backend.getStudentProfile(id)
             call.respond(HttpStatusCode.OK, result)
         }
 
         get("/instructor_profile") {
             val id = call.request.queryParameters["id"]?.toLongOrNull()
-            if (id == null) {
-                call.respond(status = HttpStatusCode.BadRequest, "invalid id value")
-                return@get
+                ?: throw InvalidQueryParameterError("Invalid query parameter `id`")
+
+            val result = try {
+                backend.getInstructorProfile(id)
+            } catch (t: Throwable) {
+                throw NotFoundError("No instructor profile with id $id")
             }
-            // todo handle exception
-            val result = backend.getInstructorProfile(id)
             call.respond(HttpStatusCode.OK, result)
         }
 
         post("/student_profile") {
-            // todo handle exception
 
-            val profile = call.receive<StudentProfile>()
+            val profile = try {
+                call.receive<StudentProfile>()
+            } catch (t: Throwable) {
+                throw InvalidBodyError("Invalid body")
+            }
+
             authorized(jwt) { claims ->
                 val id = claims.id
                 backend.updateStudentProfile(id, profile)
@@ -70,9 +82,12 @@ fun Route.configureProfileRouting(backend: AbstractProfileAPI, jwt: SimpleJwt) {
 
         post("/instructor_profile") {
 
-            // todo handle exception
+            val profile = try {
+                call.receive<InstructorProfile>()
+            } catch (t: Throwable) {
+                throw InvalidBodyError("Invalid body")
+            }
 
-            val profile = call.receive<InstructorProfile>()
             authorized(jwt) { claims ->
                 val id = claims.id
                 backend.updateInstructorProfile(id, profile)

@@ -4,13 +4,13 @@ import backend.SimpleChatAPI
 import backend.SimpleProfileAPI
 import backend.SimpleSearchAPI
 import db.SimpleDatabaseImpl
-import httpapi.configureAuthRouting
-import httpapi.configureChatRouting
-import httpapi.configureProfileRouting
-import httpapi.configureSearchRouting
+import error.AuthException
+import error.NotAuthorisedError
+import httpapi.*
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.server.engine.*
@@ -49,6 +49,9 @@ fun main() {
                     encodeDefaults = true
                 }
             )
+        }
+        install(StatusPages) {
+            setup()
         }
         install(Routing) {
             configureProfileRouting(profileBackend, jwtInstance)
