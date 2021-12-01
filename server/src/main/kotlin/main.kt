@@ -5,6 +5,7 @@ import backend.api.SimpleProfileAPI
 import backend.api.SimpleSearchAPI
 import backend.api.authaccess.AuthorizedChatAPI
 import backend.api.authaccess.AuthorizedProfileAPI
+import backend.api.authaccess.AuthorizedSearchAPI
 import db.SimpleDatabaseImpl
 import httpapi.*
 import io.ktor.application.*
@@ -55,7 +56,7 @@ fun main() {
         install(Routing) {
             configureAuthRouting(authBackend)
             configureProfileRouting(AuthorizedProfileAPI(profileBackend), jwtInstance)
-            configureSearchRouting(searchBackend, jwtInstance)
+            configureSearchRouting(AuthorizedSearchAPI(searchBackend), jwtInstance)
             configureChatRouting(AuthorizedChatAPI(chatAPI), jwtInstance)
         }
     }.start(wait = true)

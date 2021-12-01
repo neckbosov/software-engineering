@@ -1,13 +1,12 @@
 package backend.api.authaccess
 
-import backend.api.SimpleChatAPI
-import models.auth.AuthorizationError
 import backend.storage.AuthorizationStorage
+import models.AbstractChatAPI
 import models.auth.NotAuthorizedError
 import models.chat.Chat
 import models.chat.Message
 
-class AuthorizedChatAPI(private val api: SimpleChatAPI) {
+class AuthorizedChatAPI(private val api: AbstractChatAPI) {
     suspend fun addChat(agentId: Long, userId1: Long, userId2: Long): Chat {
         val flags = AuthorizationStorage.getFlags(agentId)
         flags.notBannedOrThrow()

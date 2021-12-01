@@ -1,13 +1,13 @@
 package backend.api.authaccess
 
-import backend.api.SimpleProfileAPI
 import backend.storage.AuthorizationStorage
+import models.AbstractProfileAPI
 import models.auth.NotAuthorizedError
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import models.profile.UserProfile
 
-class AuthorizedProfileAPI(val api: SimpleProfileAPI) {
+class AuthorizedProfileAPI(val api: AbstractProfileAPI) {
     suspend fun updateStudentProfile(agentId: Long, id: Long, profile: StudentProfile) {
         val flags = AuthorizationStorage.getFlags(agentId)
         flags.notBannedOrThrow()
