@@ -16,21 +16,24 @@ object AuthorizationStorage {
     }
 
     fun getFlags(profileId: Long): AuthFlags {
-        val data = Authorization.select{Authorization.profileId eq profileId}.firstOrNull()
-        if (data == null) {
-            Authorization.insert {
-                it[Authorization.profileId] = profileId
-                it[Authorization.isAdmin] = false
-                it[Authorization.isModerator] = false
-                it[Authorization.isBanned] = false
+        return transaction {
+            val data = Authorization.select { Authorization.profileId eq profileId }.firstOrNull()
+            if (data == null) {
+                Authorization.insert {
+                    it[Authorization.profileId] = profileId
+                    it[Authorization.isAdmin] = false
+                    it[Authorization.isModerator] = false
+                    it[Authorization.isBanned] = false
+                }
+                AuthFlags(profileId, false, false, false)
+            } else {
+                AuthFlags(
+                    profileId,
+                    data[Authorization.isAdmin],
+                    data[Authorization.isModerator],
+                    data[Authorization.isBanned]
+                )
             }
-            return AuthFlags(profileId, false, false, false)
         }
-        return AuthFlags(
-            profileId,
-            data[Authorization.isAdmin],
-            data[Authorization.isModerator],
-            data[Authorization.isBanned]
-        )
     }
 }
