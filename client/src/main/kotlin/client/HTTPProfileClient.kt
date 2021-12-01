@@ -162,18 +162,26 @@ class HTTPProfileClient(
     }
 
     override suspend fun getChatById(chatId: Long): Chat {
-        return client.get("$endpoint/chats/chat?id=$chatId")
+        return client.get("$endpoint/chats/chat?id=$chatId") {
+            provideAuth()
+        }
     }
 
     override suspend fun getChatsByUserId(userId: Long): List<Chat> {
-        return client.get("$endpoint/chats/user_chats?profileId=$userId")
+        return client.get("$endpoint/chats/user_chats?profileId=$userId") {
+            provideAuth()
+        }
     }
 
     override suspend fun getMessageById(messageId: Long): Message {
-        return client.get("$endpoint/chats/msg?id=$messageId")
+        return client.get("$endpoint/chats/msg?id=$messageId") {
+            provideAuth()
+        }
     }
 
     override suspend fun getMessages(chatId: Long, startPos: Long, endPos: Long): List<Message> {
-        return client.get("$endpoint/chats/messages?chatId=$chatId&startPos=$startPos&endPos=$endPos")
+        return client.get("$endpoint/chats/messages?chatId=$chatId&startPos=$startPos&endPos=$endPos") {
+            provideAuth()
+        }
     }
 }
