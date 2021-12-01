@@ -1,6 +1,5 @@
 package httpapi
 
-import backend.SimpleAuthenticationAPI
 import error.AuthException
 import error.NotAuthorisedError
 import io.ktor.application.*

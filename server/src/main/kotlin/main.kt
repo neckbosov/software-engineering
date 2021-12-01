@@ -1,16 +1,14 @@
 import auth.GoogleAppCredentials
-import backend.SimpleAuthenticationAPI
-import backend.SimpleChatAPI
-import backend.SimpleProfileAPI
-import backend.SimpleSearchAPI
+import backend.api.SimpleAuthenticationAPI
+import backend.api.SimpleChatAPI
+import backend.api.SimpleProfileAPI
+import backend.api.SimpleSearchAPI
+import backend.api.authaccess.AuthorizedChatAPI
 import db.SimpleDatabaseImpl
-import error.AuthException
-import error.NotAuthorisedError
 import httpapi.*
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.server.engine.*
@@ -57,7 +55,7 @@ fun main() {
             configureProfileRouting(profileBackend, jwtInstance)
             configureAuthRouting(authBackend)
             configureSearchRouting(searchBackend, jwtInstance)
-            configureChatRouting(chatAPI)
+            configureChatRouting(AuthorizedChatAPI(chatAPI), jwtInstance)
         }
     }.start(wait = true)
 }

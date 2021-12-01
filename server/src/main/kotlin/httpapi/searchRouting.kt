@@ -1,6 +1,6 @@
 package httpapi
 
-import backend.SimpleSearchAPI
+import backend.api.SimpleSearchAPI
 import error.InvalidBodyError
 import io.ktor.application.*
 import io.ktor.http.*
