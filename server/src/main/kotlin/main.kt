@@ -1,8 +1,5 @@
 import auth.GoogleAppCredentials
-import backend.api.SimpleAuthenticationAPI
-import backend.api.SimpleChatAPI
-import backend.api.SimpleProfileAPI
-import backend.api.SimpleSearchAPI
+import backend.api.*
 import backend.api.authaccess.AuthorizedChatAPI
 import backend.api.authaccess.AuthorizedProfileAPI
 import backend.api.authaccess.AuthorizedSearchAPI

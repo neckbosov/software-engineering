@@ -9,7 +9,6 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import models.AbstractProfileAPI
 import models.auth.SimpleJwt
 import models.profile.InstructorProfile
 import models.profile.StudentProfile

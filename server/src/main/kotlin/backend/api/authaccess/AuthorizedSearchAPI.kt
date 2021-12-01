@@ -1,7 +1,7 @@
 package backend.api.authaccess
 
+import api.AbstractSearchAPI
 import backend.storage.AuthorizationStorage
-import models.AbstractSearchAPI
 import models.Tag
 import models.Tags
 import models.profile.InstructorProfile

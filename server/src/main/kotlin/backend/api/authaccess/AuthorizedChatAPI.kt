@@ -1,7 +1,7 @@
 package backend.api.authaccess
 
+import api.AbstractChatAPI
 import backend.storage.AuthorizationStorage
-import models.AbstractChatAPI
 import models.auth.NotAuthorizedError
 import models.chat.Chat
 import models.chat.Message

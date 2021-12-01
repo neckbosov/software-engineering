@@ -1,7 +1,7 @@
 package backend.api
 
+import api.AbstractReviewAPI
 import db.SimpleDatabase
-import models.AbstractReviewAPI
 import models.review.Review
 
 class SimpleReviewAPI(val database: SimpleDatabase) : AbstractReviewAPI {
