@@ -71,7 +71,7 @@ class SimpleChatAPI : AbstractChatAPI {
         return newSuspendedTransaction {
             Chats.select {
                 Chats.userId1.eq(userId).or(Chats.userId2.eq(userId))
-            }
+            }.toList()
         }.map { chat ->
             Chat(chat[Chats.userId1].value, chat[Chats.userId2].value, chat[Chats.id].value, chat[Chats.messagesCnt])
         }
@@ -85,7 +85,7 @@ class SimpleChatAPI : AbstractChatAPI {
                         Messages.pos.greaterEq(startPos)
                             .and(Messages.pos.less(endPos))
                     )
-            }
+            }.toList()
         }.map { msg ->
             Message(
                 msg[Messages.chatId].value,
