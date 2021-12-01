@@ -1,4 +1,4 @@
-package backend
+package backend.storage
 
 import auth.GoogleCredentials
 import db.dao.auth.AppId2PersonId
