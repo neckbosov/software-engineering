@@ -1,8 +1,11 @@
 package ui
 
+import MenuBar
 import androidx.compose.runtime.Composable
 import ui.authorization.Authorization
 import ui.authorization.AuthorizationState
+import ui.chats.ChatState
+import ui.chats.ChatView
 import ui.profile.create.ProfileCreate
 import ui.profile.create.ProfileCreateState
 import ui.profile.edit.ProfileEdit
@@ -29,6 +32,9 @@ fun UIStateView(appInfo: SimpleAppInfo) {
         }
         is SearchState -> {
             SearchView(appInfo)
+        }
+        is ChatState -> {
+            ChatView(appInfo, state.chatId)
         }
     }
 }
