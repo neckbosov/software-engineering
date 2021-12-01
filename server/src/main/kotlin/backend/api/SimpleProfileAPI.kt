@@ -1,4 +1,4 @@
-package backend
+package backend.api
 
 import api.AbstractProfileAPI
 import db.SimpleDatabase

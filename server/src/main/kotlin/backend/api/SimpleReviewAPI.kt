@@ -1,4 +1,4 @@
-package backend
+package backend.api
 
 import db.SimpleDatabase
 import models.AbstractReviewAPI

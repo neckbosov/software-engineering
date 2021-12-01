@@ -1,5 +1,11 @@
 import auth.GoogleAppCredentials
-import backend.*
+import backend.api.SimpleAuthenticationAPI
+import backend.api.SimpleChatAPI
+import backend.api.SimpleProfileAPI
+import backend.api.SimpleSearchAPI
+import backend.api.authaccess.AuthorizedChatAPI
+import backend.api.authaccess.AuthorizedProfileAPI
+import backend.api.authaccess.AuthorizedSearchAPI
 import db.SimpleDatabaseImpl
 import httpapi.*
 import io.ktor.application.*
@@ -45,12 +51,15 @@ fun main() {
                 }
             )
         }
+        install(StatusPages) {
+            setup()
+        }
         install(Routing) {
-            configureProfileRouting(profileBackend, jwtInstance)
             configureAuthRouting(authBackend)
-            configureSearchRouting(searchBackend, jwtInstance)
-            configureChatRouting(chatAPI)
             configureReviewRouting(reviewAPI, jwtInstance)
+            configureProfileRouting(AuthorizedProfileAPI(profileBackend), jwtInstance)
+            configureSearchRouting(AuthorizedSearchAPI(searchBackend), jwtInstance)
+            configureChatRouting(AuthorizedChatAPI(chatAPI), jwtInstance)
         }
     }.start(wait = true)
 }
