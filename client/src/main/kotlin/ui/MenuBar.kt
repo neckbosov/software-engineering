@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import models.profile.UserProfile
 import ui.SimpleAppInfo
-import ui.chats.ChatState
+import ui.chat.ChatState
 import ui.profile.view.ProfileViewState
 import ui.search.SearchState
 import ui.utils.PictureView

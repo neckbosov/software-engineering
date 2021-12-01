@@ -16,6 +16,8 @@ import models.Tags
 import models.auth.EmailPasswordCredentials
 import models.auth.GoogleAuthStep
 import models.auth.Jwt
+import models.chat.Chat
+import models.chat.Message
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import models.profile.UserProfile
@@ -39,8 +41,7 @@ class HTTPProfileClient(
     private val client: HttpClient,
     private val endpoint: String,
     private val currentJwt: () -> Jwt?
-) : AbstractProfileAPI, AbstractAuthenticationAPI, AbstractSearchAPI {
-
+) : AbstractProfileAPI, AbstractAuthenticationAPI, AbstractSearchAPI, AbstractChatAPI {
     private fun HttpRequestBuilder.provideAuth() {
         val jwt = currentJwt()
         if (jwt != null) {
@@ -146,6 +147,46 @@ class HTTPProfileClient(
     override suspend fun postLoginViaGoogle(token: String): Jwt {
         return client.get("$endpoint/auth/login/google/post") {
             parameter("token", token)
+        }
+    }
+
+    override suspend fun addChat(userId1: Long, userId2: Long): Chat {
+        return client.post("$endpoint/chats/chat") {
+            contentType(ContentType.Application.Json)
+            provideAuth()
+            body = Chat(userId1, userId2)
+        }
+    }
+
+    override suspend fun addMessage(chatId: Long, senderId: Long, content: String): Message {
+        return client.post("$endpoint/chats/msg") {
+            contentType(ContentType.Application.Json)
+            provideAuth()
+            body = Message(chatId, senderId, content)
+        }
+    }
+
+    override suspend fun getChatById(chatId: Long): Chat {
+        return client.get("$endpoint/chats/chat?id=$chatId") {
+            provideAuth()
+        }
+    }
+
+    override suspend fun getChatsByUserId(userId: Long): List<Chat> {
+        return client.get("$endpoint/chats/user_chats?profileId=$userId") {
+            provideAuth()
+        }
+    }
+
+    override suspend fun getMessageById(messageId: Long): Message {
+        return client.get("$endpoint/chats/msg?id=$messageId") {
+            provideAuth()
+        }
+    }
+
+    override suspend fun getMessages(chatId: Long, startPos: Long, endPos: Long): List<Message> {
+        return client.get("$endpoint/chats/messages?chatId=$chatId&startPos=$startPos&endPos=$endPos") {
+            provideAuth()
         }
     }
 }

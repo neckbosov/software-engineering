@@ -91,10 +91,13 @@ fun Route.configureChatRouting(backend: AuthorizedChatAPI, jwt: SimpleJwt) {
         }
 
         get("/user_chats") {
-            val userId = call.request.queryParameters["profileID"]?.toLongOrNull()
-                ?: throw InvalidQueryParameterError("Invalid query parameter `profileID`")
+            val userId = call.request.queryParameters["profileId"]?.toLongOrNull()
+                ?: throw InvalidQueryParameterError("Invalid query parameter `profileId`")
+
+            // todo check that request sender id is equals to userId
 
             authorized(jwt) { agent ->
+                println(agent.id)
                 val result = try {
                     backend.getChatsByUserId(agent.id, userId)
                 } catch (t: Throwable) {

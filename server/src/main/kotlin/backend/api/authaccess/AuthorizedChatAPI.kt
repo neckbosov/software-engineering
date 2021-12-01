@@ -61,6 +61,8 @@ class AuthorizedChatAPI(private val api: AbstractChatAPI) {
 
     suspend fun getChatsByUserId(agentId: Long, userId: Long): List<Chat> {
         val flags = AuthorizationStorage.getFlags(agentId)
+        println(agentId)
+        println(userId)
         flags.notBannedOrThrow()
         if (agentId != userId && !flags.isAdmin)
             throw NotAuthorizedError

@@ -1,4 +1,4 @@
-package ui.chats
+package ui.chat
 
 import MenuBar
 import androidx.compose.foundation.layout.*
@@ -8,9 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ui.SimpleAppInfo
+import ui.chat.Chat
 
 @Composable
-fun ChatView(appInfo: SimpleAppInfo, chatId: Int?, modifier: Modifier = Modifier) {
+fun ChatView(appInfo: SimpleAppInfo, chatId: Long?, modifier: Modifier = Modifier) {
     MenuBar(appInfo) {
         Row(modifier = Modifier.fillMaxSize(1f)) {
             ChatListView(appInfo, chatId, modifier = Modifier.fillMaxHeight(1f).fillMaxWidth(0.3f))
@@ -18,7 +19,7 @@ fun ChatView(appInfo: SimpleAppInfo, chatId: Int?, modifier: Modifier = Modifier
                 color = Color.DarkGray,
                 modifier = Modifier.width(1.dp).fillMaxHeight(1f)
             )
-            ChatWindowView(appInfo, chatId)
+            Chat(appInfo, chatId)
         }
     }
 }
