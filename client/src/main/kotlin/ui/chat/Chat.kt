@@ -11,10 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
@@ -22,43 +19,37 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import models.chat.Message
+import ui.SimpleAppInfo
 
 @OptIn(ExperimentalUnitApi::class)
 @Composable
 @Preview
-fun Chat() {
+fun Chat(appInfo: SimpleAppInfo, chatId: Long?) {
+    if (chatId == null) {
+        return Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
+        ) {}
+    }
+    val scope = rememberCoroutineScope()
     val message = remember { mutableStateOf("") }
-    val messages = listOf(
-        Message(0, 0, "Hello!"),
-        Message(0, 0, "How are you?"),
-        Message(0, 1, "Hi! Fine, thanks. And you?"),
-        Message(0, 0, "Me too"),
-        Message(0, 1, "niice"),
-        Message(0, 1, "pafpafpaf"),
-        Message(0, 0, "Hello!"),
-        Message(0, 0, "How are you?"),
-        Message(0, 1, "Hi! Fine, thanks. And you?"),
-        Message(0, 0, "Me too"),
-        Message(0, 1, "niice"),
-        Message(0, 1, "pafpafpaf"),
-        Message(0, 0, "Hello!"),
-        Message(0, 0, "How are you?"),
-        Message(0, 1, "Hi! Fine, thanks. And you?"),
-        Message(0, 0, "Me too"),
-        Message(0, 1, "niice"),
-        Message(0, 1, "pafpafpaf"),
-    )
+    val messages = remember { mutableStateOf(listOf<Message>()) }
 
     val scrollState = rememberScrollState()
     LaunchedEffect(Unit) { scrollState.animateScrollTo(10000) }
+
+    scope.launch {
+        messages.value = appInfo.client.getMessages(chatId, 0, 100)
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Bottom
     ) {
         Column(modifier = Modifier.fillMaxWidth().weight(1f).padding(5.dp).verticalScroll(scrollState)) {
-            messages.forEach { message ->
+            messages.value.forEach { message ->
                 val alignment = if (message.senderId == 0L) Alignment.Start else Alignment.End
 
                 Card(
@@ -89,7 +80,13 @@ fun Chat() {
                 onValueChange = { message.value = it },
                 trailingIcon = {
                     IconButton(
-                        onClick = { },
+                        onClick = {
+                            scope.launch {
+                                appInfo.currentId?.let { appInfo.client.addMessage(chatId, it, message.value) }
+                                messages.value = appInfo.client.getMessages(chatId, 0, 100)
+                                message.value = ""
+                            }
+                        },
                         modifier = Modifier.requiredSize(50.dp)
                             .border(3.dp, MaterialTheme.colors.primary, shape = CircleShape)
                     ) {

@@ -6,6 +6,8 @@ import models.AbstractChatAPI
 import models.chat.Chat
 import models.chat.Message
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -31,7 +33,7 @@ class SimpleChatAPI : AbstractChatAPI {
 
     override suspend fun addMessage(chatId: Long, senderId: Long, content: String): Message {
         val (msgId, msgPos) = newSuspendedTransaction {
-            val msgCnt = Chats.select { Chats.id.eq(chatId) }.first()[Chats.messagesCnt]
+            val msgCnt = Chats.select { Chats.id.eq(chatId) }.firstOrNull()?.let { it[Chats.messagesCnt] } ?: 0
             Chats.update({ Chats.id.eq(chatId) }) { chat ->
                 chat[messagesCnt] = msgCnt + 1
             }
@@ -62,8 +64,10 @@ class SimpleChatAPI : AbstractChatAPI {
     }
 
     override suspend fun getChatById(chatId: Long): Chat {
-        val chat = newSuspendedTransaction { Chats.select { Chats.id.eq(chatId) }.first() }
-
+        val chat = newSuspendedTransaction { Chats.select {
+            addLogger(StdOutSqlLogger)
+            Chats.id.eq(chatId) }.first()
+        }
         return Chat(chat[Chats.userId1].value, chat[Chats.userId2].value, chatId, chat[Chats.messagesCnt])
     }
 
@@ -71,7 +75,7 @@ class SimpleChatAPI : AbstractChatAPI {
         return newSuspendedTransaction {
             Chats.select {
                 Chats.userId1.eq(userId).or(Chats.userId2.eq(userId))
-            }
+            }.toList()
         }.map { chat ->
             Chat(chat[Chats.userId1].value, chat[Chats.userId2].value, chat[Chats.id].value, chat[Chats.messagesCnt])
         }
@@ -85,7 +89,7 @@ class SimpleChatAPI : AbstractChatAPI {
                         Messages.pos.greaterEq(startPos)
                             .and(Messages.pos.less(endPos))
                     )
-            }
+            }.toList()
         }.map { msg ->
             Message(
                 msg[Messages.chatId].value,

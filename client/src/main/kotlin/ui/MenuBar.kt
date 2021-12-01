@@ -64,12 +64,18 @@ fun MenuBar(
                 Icon(Icons.Filled.Search, "search")
             }
             IconButton(
-                onClick = { appInfo.currentState.value = ChatState() },
+                onClick = { appInfo.currentState.value = ChatState(null) },
                 modifier = Modifier
             ) {
                 Icon(Icons.Filled.ChatBubbleOutline, "chats")
             }
         }
+        Divider(
+            color = Color.DarkGray,
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(1.dp)
+        )
         block()
     }
 }

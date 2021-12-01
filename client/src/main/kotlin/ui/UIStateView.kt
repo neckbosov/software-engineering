@@ -33,7 +33,7 @@ fun UIStateView(appInfo: SimpleAppInfo) {
             SearchView(appInfo)
         }
         is ChatState -> {
-            ChatView(appInfo)
+            ChatView(appInfo, state.chatId)
         }
     }
 }
