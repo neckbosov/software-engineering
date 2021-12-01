@@ -1,5 +1,6 @@
 package httpapi
 
+import api.AbstractReviewAPI
 import error.InvalidBodyError
 import error.InvalidQueryParameterError
 import error.NotFoundError
@@ -8,7 +9,6 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import models.AbstractReviewAPI
 import models.auth.SimpleJwt
 import models.review.Review
 

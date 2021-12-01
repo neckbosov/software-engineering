@@ -1,5 +1,6 @@
 package backend.api
 
+import api.AbstractAuthenticationAPI
 import auth.GoogleApi
 import auth.GoogleAppCredentials
 import auth.GoogleOAuthHandler
@@ -10,13 +11,13 @@ import db.dao.Profiles
 import db.dao.Students
 import error.AuthException
 import kotlinx.coroutines.delay
-import models.AbstractAuthenticationAPI
 import models.ProfileType
 import models.auth.*
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 
+@Suppress("RemoveRedundantQualifierName")
 class SimpleAuthenticationAPI(val jwtInstance: SimpleJwt, googleCredentials: GoogleAppCredentials) :
         AbstractAuthenticationAPI {
     private val emailPasswordAuthStorage = BasicEmailAuthStorage()
@@ -144,7 +145,7 @@ class SimpleAuthenticationAPI(val jwtInstance: SimpleJwt, googleCredentials: Goo
         return (1..length)
             .map { _ -> kotlin.random.Random.nextInt(0, alphabet.length) }
             .map(alphabet::get)
-            .joinToString("");
+            .joinToString("")
     }
 
     private fun Transaction.mkProfileTypeRecord(profileId: Long, profileType: ProfileType) {

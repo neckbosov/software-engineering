@@ -1,8 +1,8 @@
 package backend.api
 
+import api.AbstractChatAPI
 import db.dao.Chats
 import db.dao.Messages
-import models.AbstractChatAPI
 import models.chat.Chat
 import models.chat.Message
 import org.jetbrains.exposed.sql.*

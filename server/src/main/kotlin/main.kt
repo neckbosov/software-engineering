@@ -1,8 +1,5 @@
 import auth.GoogleAppCredentials
-import backend.api.SimpleAuthenticationAPI
-import backend.api.SimpleChatAPI
-import backend.api.SimpleProfileAPI
-import backend.api.SimpleSearchAPI
+import backend.api.*
 import backend.api.authaccess.AuthorizedChatAPI
 import backend.api.authaccess.AuthorizedProfileAPI
 import backend.api.authaccess.AuthorizedSearchAPI
@@ -30,6 +27,7 @@ fun main() {
         ) // it seems okay to put these secrets here
     )
     val chatAPI = SimpleChatAPI()
+    val reviewAPI = SimpleReviewAPI(SimpleDatabaseImpl)
     embeddedServer(Netty, port = 8080) {
         install(CORS)
         {
@@ -55,6 +53,7 @@ fun main() {
         }
         install(Routing) {
             configureAuthRouting(authBackend)
+            configureReviewRouting(reviewAPI, jwtInstance)
             configureProfileRouting(AuthorizedProfileAPI(profileBackend), jwtInstance)
             configureSearchRouting(AuthorizedSearchAPI(searchBackend), jwtInstance)
             configureChatRouting(AuthorizedChatAPI(chatAPI), jwtInstance)

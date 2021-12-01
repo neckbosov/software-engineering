@@ -1,13 +1,15 @@
 package backend.api
 
-import models.AbstractReviewAPI
+import api.AbstractReviewAPI
+import db.SimpleDatabase
 import models.review.Review
 
-class SimpleReviewAPI: AbstractReviewAPI {
+class SimpleReviewAPI(val database: SimpleDatabase) : AbstractReviewAPI {
     override suspend fun getReviews(userId: Long): List<Review> {
-        TODO()
+        return database.getReviews(userId)
     }
+
     override suspend fun postReview(review: Review) {
-        TODO()
+        return database.postReview(review)
     }
 }

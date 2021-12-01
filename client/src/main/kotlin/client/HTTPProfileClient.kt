@@ -1,5 +1,8 @@
 package client
 
+import api.AbstractAuthenticationAPI
+import api.AbstractProfileAPI
+import api.AbstractSearchAPI
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
@@ -7,7 +10,9 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import models.*
+import models.ProfileType
+import models.Tag
+import models.Tags
 import models.auth.EmailPasswordCredentials
 import models.auth.GoogleAuthStep
 import models.auth.Jwt
