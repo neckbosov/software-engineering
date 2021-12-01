@@ -1,4 +1,4 @@
-package backend
+package backend.api
 
 import models.AbstractReviewAPI
 import models.review.Review

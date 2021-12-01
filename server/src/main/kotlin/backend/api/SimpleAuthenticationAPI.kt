@@ -1,9 +1,10 @@
-package backend
+package backend.api
 
 import auth.GoogleApi
 import auth.GoogleAppCredentials
-import auth.GoogleCredentials
 import auth.GoogleOAuthHandler
+import backend.storage.BasicEmailAuthStorage
+import backend.storage.DbGoogleAuthStorage
 import db.dao.Instructors
 import db.dao.Profiles
 import db.dao.Students

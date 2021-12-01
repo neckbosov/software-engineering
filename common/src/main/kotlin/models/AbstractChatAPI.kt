@@ -6,7 +6,7 @@ import models.chat.Message
 interface AbstractChatAPI {
     suspend fun addChat(userId1: Long, userId2: Long): Chat
 
-    suspend fun addMessage(chatId: Long, senderId: Long, content: String): Message
+    suspend fun addMessage(senderId: Long, chatId: Long, content: String): Message
 
     suspend fun getMessageById(messageId: Long): Message
 

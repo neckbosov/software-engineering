@@ -1,4 +1,4 @@
-package backend
+package backend.api
 
 import db.dao.Chats
 import db.dao.Messages
@@ -29,7 +29,7 @@ class SimpleChatAPI : AbstractChatAPI {
         return Chat(userId1, userId2, id.value, 0)
     }
 
-    override suspend fun addMessage(chatId: Long, senderId: Long, content: String): Message {
+    override suspend fun addMessage(senderId: Long, chatId: Long, content: String): Message {
         val (msgId, msgPos) = newSuspendedTransaction {
             val msgCnt = Chats.select { Chats.id.eq(chatId) }.first()[Chats.messagesCnt]
             Chats.update({ Chats.id.eq(chatId) }) { chat ->

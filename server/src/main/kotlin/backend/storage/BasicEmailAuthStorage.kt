@@ -1,4 +1,4 @@
-package backend
+package backend.storage
 
 import models.auth.AbstractEmailAuthStorage
 
