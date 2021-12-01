@@ -36,8 +36,7 @@ class HTTPProfileClient(
     private val client: HttpClient,
     private val endpoint: String,
     private val currentJwt: () -> Jwt?
-) : AbstractProfileAPI, AbstractAuthenticationAPI, AbstractChatAPI {
-
+) : AbstractProfileAPI, AbstractAuthenticationAPI, AbstractSearchAPI, AbstractChatAPI {
     private fun HttpRequestBuilder.provideAuth() {
         val jwt = currentJwt()
         if (jwt != null) {
@@ -104,6 +103,14 @@ class HTTPProfileClient(
             provideAuth()
             contentType(ContentType.Application.Json)
             body = tags
+        }
+    }
+
+    override suspend fun getTagsByPrefix(prefix: String): List<Tag> {
+        return client.get("$searchAddress/tags") {
+            provideAuth()
+            contentType(ContentType.Application.Json)
+            body = prefix
         }
     }
 

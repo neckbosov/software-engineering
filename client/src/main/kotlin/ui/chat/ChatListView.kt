@@ -6,14 +6,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import models.profile.UserProfile
 import ui.SimpleAppInfo
@@ -65,12 +64,17 @@ fun ChatListView(appInfo: SimpleAppInfo, chatId: Long?, modifier: Modifier = Mod
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PreviewChatView(appInfo: SimpleAppInfo, chat: ChatInfo, openChatId: Long?) {
+    val coroutineScope = rememberCoroutineScope()
+    val picture: MutableState<ImageBitmap?> = mutableStateOf(null)
+    coroutineScope.launch {
+        delay(10L)
+        picture.value = chat.user2.avatarURL?.let { loadNetworkImage(it) }
+    }
     ListItem(
         text = { Text(chat.user2.name + " " + chat.user2.surname) },
         icon = {
-            val picture = chat.user2.avatarURL?.let { loadNetworkImage(chat.user2.avatarURL ?: "") }
             PictureView(
-                picture,
+                picture.value,
                 modifier = Modifier
                     .background(Color.Transparent)
                     .clip(CircleShape)

@@ -2,14 +2,15 @@ import auth.GoogleAppCredentials
 import backend.SimpleAuthenticationAPI
 import backend.SimpleChatAPI
 import backend.SimpleProfileAPI
+import backend.SimpleSearchAPI
 import db.SimpleDatabaseImpl
-import httpapi.configureAuthRouting
-import httpapi.configureChatRouting
-import httpapi.configureProfileRouting
-import httpapi.configureSearchRouting
+import error.AuthException
+import error.NotAuthorisedError
+import httpapi.*
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.server.engine.*
@@ -19,6 +20,7 @@ import models.auth.SimpleJwt
 
 fun main() {
     val profileBackend = SimpleProfileAPI(SimpleDatabaseImpl)
+    val searchBackend = SimpleSearchAPI(SimpleDatabaseImpl, profileBackend)
     val jwtInstance = SimpleJwt("aboba") // TODO: parse secret from some local file
     val authBackend = SimpleAuthenticationAPI(
         jwtInstance,
@@ -48,10 +50,13 @@ fun main() {
                 }
             )
         }
+        install(StatusPages) {
+            setup()
+        }
         install(Routing) {
             configureProfileRouting(profileBackend, jwtInstance)
             configureAuthRouting(authBackend)
-            configureSearchRouting(profileBackend, jwtInstance)
+            configureSearchRouting(searchBackend, jwtInstance)
             configureChatRouting(chatAPI)
         }
     }.start(wait = true)

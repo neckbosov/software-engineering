@@ -39,4 +39,13 @@ object SimpleDatabaseImpl : SimpleDatabase {
             }.withDistinct().map { it[Tags.profileId].value }.toList()
         }
     }
+
+
+    override suspend fun getTagsByPrefix(prefix: String): List<Tag> {
+        return newSuspendedTransaction {
+            Tags.slice(Tags.tag).select {
+                Tags.tag like "$prefix%"
+            }.withDistinct().map { it[Tags.tag] }.toList()
+        }
+    }
 }
