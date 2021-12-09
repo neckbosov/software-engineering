@@ -1,6 +1,7 @@
 package client
 
 import api.AbstractAuthenticationAPI
+import api.AbstractChatAPI
 import api.AbstractProfileAPI
 import api.AbstractSearchAPI
 import io.ktor.client.*

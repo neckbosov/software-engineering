@@ -2,6 +2,11 @@ plugins {
     kotlin("plugin.serialization")
     kotlin("jvm")
     java
+    application
+}
+
+application {
+    mainClass.set("MainKt")
 }
 
 group = "org.example"
@@ -17,7 +22,7 @@ val http4kVersion: String by project
 
 dependencies {
     implementation(project(":common"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.21")
+    implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
 
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -43,4 +48,8 @@ dependencies {
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>() {
+    kotlinOptions.jvmTarget = "11"
 }
