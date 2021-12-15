@@ -1,6 +1,5 @@
 package ui.profile.create
 
-import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
@@ -34,7 +33,7 @@ fun ProfileCreate(appInfo: SimpleAppInfo) {
     val scope = rememberCoroutineScope()
     val profileType = remember { mutableStateOf(ProfileType.Student) }
 
-    DesktopMaterialTheme {
+    MaterialTheme {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,

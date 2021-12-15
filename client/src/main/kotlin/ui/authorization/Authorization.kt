@@ -1,6 +1,5 @@
 package ui.authorization
 
-import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,7 +29,7 @@ import java.net.URI
 fun Authorization(appInfo: SimpleAppInfo) {
     val scope = rememberCoroutineScope()
 
-    DesktopMaterialTheme {
+    MaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar {
                 Text("Logo")
