@@ -9,6 +9,7 @@ services:
     restart: always
     ports:
       - "8080:8080"
+      - "9239:9239"
     volumes:
       - ./.secrets:/.secrets
     environment:

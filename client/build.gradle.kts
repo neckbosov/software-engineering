@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     java
-    id("org.jetbrains.compose") version "1.0.0-alpha4-build361"
+    id("org.jetbrains.compose") version "1.0.0"
 }
 
 group = "org.example"
