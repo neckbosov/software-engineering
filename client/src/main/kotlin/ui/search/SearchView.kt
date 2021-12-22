@@ -44,6 +44,7 @@ fun SearchStudentView(appInfo: SimpleAppInfo, profile: StudentProfile, modifier:
                     .background(Color.Transparent)
                     .clip(CircleShape)
                     .height(50.dp)
+                    .width(50.dp)
                     .border(
                         1.dp,
                         Color.DarkGray,
@@ -83,6 +84,7 @@ fun SearchTutorView(appInfo: SimpleAppInfo, profile: InstructorProfile, modifier
                     .background(Color.Transparent)
                     .clip(CircleShape)
                     .height(50.dp)
+                    .width(50.dp)
                     .border(
                         1.dp,
                         Color.DarkGray,
@@ -100,52 +102,46 @@ fun SearchTutorView(appInfo: SimpleAppInfo, profile: InstructorProfile, modifier
     )
 }
 
-@Composable
-fun AutoCompleteText(
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
-    onOptionSelected: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    //label: @Composable (() -> Unit)? = null,
-    suggestions: List<String> = emptyList()
-) {
-    Column(modifier = modifier) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = { text -> if (text !== value) onValueChange(text) },
-            modifier = Modifier.fillMaxWidth(),
-            //label = label,
-        )
-        DropdownMenu(
-            expanded = suggestions.isNotEmpty(),
-            onDismissRequest = {  },
-            modifier = Modifier.fillMaxWidth(),
-            focusable = false,
-        ) {
-            suggestions.forEach { label ->
-                DropdownMenuItem(onClick = {
-                    onOptionSelected(label)
-                }) {
-                    Text(text = label)
-                }
-            }
-        }
-
-    }
-}
-
-
 
 @Composable
 fun SearchView(appInfo: SimpleAppInfo, modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
-    val searchResult = mutableStateOf(listOf<UserProfile>())
+    val searchResult = remember {  mutableStateListOf<UserProfile>() }
 
     val text = remember { mutableStateOf(TextFieldValue("")) }
-    val tutorsFlag = mutableStateOf(true)
-    val studentsFlag = mutableStateOf(true)
 
-    val tags = remember { text.value.text.split(" ").toList().toMutableStateList() }
+    val tutorsFlag = remember {  mutableStateOf(true) }
+    val studentsFlag = remember {  mutableStateOf(true) }
+
+    val tags = remember { text.value.text.split(" ").filter { it.isNotBlank() }.toMutableStateList() }
+    val suggestionsLastTag = remember { mutableStateListOf<String>() }
+    val suggestions = remember { mutableStateListOf<String>() }
+    val expandedFlag = remember { mutableStateOf(suggestions.isNotEmpty()) }
+
+    val updateText: (TextFieldValue, Boolean) -> Unit = { it, closeFlag ->
+        text.value = it
+        tags.clear()
+        tags.addAll(text.value.text.split(" ").filter { it.isNotBlank() })
+        val lastTag = if (tags.isNotEmpty()) {
+            tags.last()
+        } else {
+            ""
+        }
+        val previousTags = if (tags.isNotEmpty()) {
+            tags.take(tags.size - 1)
+        } else {
+            emptyList()
+        }.joinToString(" ")
+        if (lastTag.isNotBlank()) {
+            scope.launch {
+                suggestionsLastTag.clear()
+                suggestionsLastTag.addAll(appInfo.client.getTagsByPrefix(lastTag))
+                suggestions.clear()
+                suggestions.addAll(suggestionsLastTag.map { "$previousTags $it" })
+                expandedFlag.value = if (closeFlag) false else suggestions.isNotEmpty()
+            }
+        }
+    }
 
     MenuBar(appInfo) {
         BoxWithVerticalScroll {
@@ -164,37 +160,45 @@ fun SearchView(appInfo: SimpleAppInfo, modifier: Modifier = Modifier) {
                                 } else {
                                     listOf()
                                 }
-                                searchResult.value = students + tutors
+                                searchResult.clear()
+                                searchResult.addAll(students + tutors)
                             }
                         }
                     ) {
                         Icon(Icons.Filled.Search, "Search")
                     }
-                    val lastTag = if (tags.isNotEmpty()) {
-                        tags.last()
-                    } else {
-                        ""
+
+                    Column(modifier = modifier) {
+                        OutlinedTextField(
+                            value = text.value,
+                            onValueChange = { txt ->
+                                updateText(txt, false)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            //label = label,
+                        )
+                        DropdownMenu(
+                            expanded = expandedFlag.value,
+                            onDismissRequest = {
+                                expandedFlag.value = false
+                                               },
+                            modifier = Modifier.width(500.dp),
+                            focusable = false,
+                        ) {
+                            suggestions.forEach { label ->
+                                DropdownMenuItem(onClick = {
+                                    updateText(TextFieldValue(label), true)
+                                }) {
+                                    Text(text = label)
+                                }
+                            }
+                        }
                     }
-                    val previousTags = if (tags.isNotEmpty()) {
-                        tags.take(tags.size - 1)
-                    } else {
-                        emptyList()
-                    }.joinToString(" ")
-                    val suggestionsLastTag = remember { mutableStateListOf<String>() }
-                    scope.launch {
-                        suggestionsLastTag.clear()
-                        suggestionsLastTag.addAll(appInfo.client.getTagsByPrefix(lastTag))
-                    }
-                    val suggestions = suggestionsLastTag.map { "$previousTags $it" }
-                    AutoCompleteText(
-                        value = text.value,
-                        onValueChange = { text.value = it },
-                        onOptionSelected = { text.value = TextFieldValue(it) },
-                        modifier = Modifier.fillMaxWidth(),
-                        suggestions = suggestions
-                    )
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(3.dp), modifier = Modifier.padding(start = 10.dp).fillMaxWidth()) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(3.dp),
+                    modifier = Modifier.padding(start = 10.dp).fillMaxWidth()
+                ) {
                     Text("Options: ")
                     Text("Tutors:")
                     Checkbox(
@@ -215,15 +219,15 @@ fun SearchView(appInfo: SimpleAppInfo, modifier: Modifier = Modifier) {
                 Column(
                     modifier = modifier
                 ) {
-                    if (searchResult.value.isEmpty()) {
+                    if (searchResult.isEmpty()) {
                         Text(":(")
                     } else {
-                        val tutors = searchResult.value.filterIsInstance<InstructorProfile>()
+                        val tutors = searchResult.filterIsInstance<InstructorProfile>()
                         tutors.forEach {
                             Divider()
                             SearchTutorView(appInfo, it)
                         }
-                        val students = searchResult.value.filterIsInstance<StudentProfile>()
+                        val students = searchResult.filterIsInstance<StudentProfile>()
                         students.forEach {
                             Divider()
                             SearchStudentView(appInfo, it)

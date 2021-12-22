@@ -8,10 +8,7 @@ import db.dao.Tags
 import models.ProfileType
 import models.Tag
 import models.review.Review
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 object SimpleDatabaseImpl : SimpleDatabase {
@@ -48,6 +45,7 @@ object SimpleDatabaseImpl : SimpleDatabase {
 
     override suspend fun getTagsByPrefix(prefix: String): List<Tag> {
         return newSuspendedTransaction {
+            addLogger(StdOutSqlLogger)
             Tags.slice(Tags.tag).select {
                 Tags.tag like "$prefix%"
             }.withDistinct().map { it[Tags.tag] }.toList()
