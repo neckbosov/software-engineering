@@ -2,6 +2,7 @@ package client
 
 import api.*
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -23,6 +24,7 @@ import models.review.Review
 
 fun createClient(): HttpClient {
     return HttpClient(CIO) {
+        expectSuccess = false
         install(JsonFeature) {
             serializer = KotlinxSerializer(
                 json = kotlinx.serialization.json.Json {
@@ -144,9 +146,12 @@ class HTTPProfileClient(
     }
 
     override suspend fun postLoginViaGoogle(token: String): Jwt {
-        return client.get("$endpoint/auth/login/google/post") {
+        val response: HttpResponse = client.get("$endpoint/auth/login/google/post") {
             parameter("token", token)
         }
+        if (response.status == HttpStatusCode.OK)
+            return response.receive<String>()
+        else throw Exception(response.receive<String>())
     }
 
     override suspend fun addChat(userId1: Long, userId2: Long): Chat {

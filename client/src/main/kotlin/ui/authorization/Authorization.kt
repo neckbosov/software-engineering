@@ -9,6 +9,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,17 +19,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.ktor.http.*
 import kotlinx.coroutines.launch
 import ui.SimpleAppInfo
 import ui.profile.create.ProfileCreateState
 import ui.profile.view.ProfileViewState
 import ui.utils.openInBrowser
+import java.awt.SystemColor.text
+import java.lang.Exception
 import java.net.URI
 
 @Composable
 @Preview
 fun Authorization(appInfo: SimpleAppInfo) {
     val scope = rememberCoroutineScope()
+    val errorMessage = remember { mutableStateOf<String?>(null) }
 
     MaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -69,9 +75,13 @@ fun Authorization(appInfo: SimpleAppInfo) {
                             val authToken = authData.token
                             openInBrowser(URI.create(authData.authURI))
                             scope.launch {
-                                val jwt = appInfo.client.postLoginViaGoogle(authToken)
-                                appInfo.currentJwt = jwt
-                                appInfo.currentState.value = ProfileViewState(appInfo.currentId!!)
+                                try {
+                                    val jwt = appInfo.client.postLoginViaGoogle(authToken)
+                                    appInfo.currentJwt = jwt
+                                    appInfo.currentState.value = ProfileViewState(appInfo.currentId!!)
+                                } catch (e: Exception) {
+                                    errorMessage.value = e.message
+                                }
                             }
                         }
                     }
@@ -80,6 +90,13 @@ fun Authorization(appInfo: SimpleAppInfo) {
                         painter = painterResource("sign-in-google.png"),
                         "google sign in button",
                         modifier = Modifier.background(Color.Transparent)
+                    )
+                }
+
+                errorMessage.value?.let {
+                    Text(
+                        it,
+                        color = Color.Red
                     )
                 }
 

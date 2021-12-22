@@ -38,8 +38,12 @@ fun Route.configureAuthRouting(backend: AbstractAuthenticationAPI) {
 
         get("/login/google/post") {
             val token = call.request.queryParameters["token"] ?: error("no token provided")
-            val result = backend.postLoginViaGoogle(token)
-            call.respond(HttpStatusCode.OK, result)
+            try {
+                val result = backend.postLoginViaGoogle(token)
+                call.respond(HttpStatusCode.OK, result)
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, e.message ?: "Something went wrong!")
+            }
         }
     }
 }
