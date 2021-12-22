@@ -39,7 +39,6 @@ fun MenuBar(
             modifier = Modifier
                 .fillMaxHeight(1f)
                 .width(64.dp)
-                .height(64.dp)
                 .background(Color.LightGray)
         ) {
             IconButton(
@@ -56,6 +55,8 @@ fun MenuBar(
                             Color.DarkGray,
                             CircleShape
                         )
+                        .width(50.dp)
+                        .height(50.dp)
                 )
             }
             IconButton(
