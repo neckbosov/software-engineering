@@ -38,7 +38,7 @@ fun Authorization(appInfo: SimpleAppInfo) {
     MaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar {
-                Text("Logo")
+                Text("MeeTut", color = Color.White)
             }
 
             Column(
@@ -47,7 +47,7 @@ fun Authorization(appInfo: SimpleAppInfo) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "[Name]",
+                    text = "MeeTut",
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.h3
@@ -56,7 +56,7 @@ fun Authorization(appInfo: SimpleAppInfo) {
                 Spacer(Modifier.heightIn(20.dp))
 
                 Text(
-                    text = "[Name] is a platform for students and professors, where you can find a professor/student for the thesis work",
+                    text = "MeeTut is a platform for students and professors, where you can find a professor/student for the thesis work",
                     color = Color.Gray
                 )
 

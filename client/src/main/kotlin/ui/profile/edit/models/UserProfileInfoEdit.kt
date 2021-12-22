@@ -17,4 +17,5 @@ sealed class UserProfileInfoEdit(
     val interestsTags = profile.interestsTags.map { it }.toMutableStateList()
     val status = mutableStateOf(profile.status)
     val validToSubmit = mutableStateOf(true)
+    val reviews = profile.reviews
 }

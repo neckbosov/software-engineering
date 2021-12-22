@@ -50,13 +50,13 @@ fun Chat(appInfo: SimpleAppInfo, chatId: Long?) {
     ) {
         Column(modifier = Modifier.fillMaxWidth().weight(1f).padding(5.dp).verticalScroll(scrollState)) {
             messages.value.forEach { message ->
-                val alignment = if (message.senderId == 0L) Alignment.Start else Alignment.End
+                val alignment = if (message.senderId == appInfo.currentId) Alignment.End else Alignment.Start
 
                 Card(
                     modifier = Modifier.widthIn(max = 340.dp).align(alignment),
-                    shape = cardShapeFor(message.senderId == 0L), // 3
+                    shape = cardShapeFor(message.senderId == appInfo.currentId), // 3
                     backgroundColor = when (message.senderId) {
-                        0L -> MaterialTheme.colors.primary
+                        appInfo.currentId -> MaterialTheme.colors.primary
                         else -> MaterialTheme.colors.secondary
                     },
                 ) {
@@ -64,7 +64,7 @@ fun Chat(appInfo: SimpleAppInfo, chatId: Long?) {
                         modifier = Modifier.padding(8.dp),
                         text = message.content,
                         color = when (message.senderId) {
-                            0L -> MaterialTheme.colors.onPrimary
+                            appInfo.currentId -> MaterialTheme.colors.onPrimary
                             else -> MaterialTheme.colors.onSecondary
                         },
                         fontSize = TextUnit(20f, TextUnitType.Sp)
@@ -102,7 +102,7 @@ fun Chat(appInfo: SimpleAppInfo, chatId: Long?) {
 fun cardShapeFor(isMine: Boolean): Shape {
     val roundedCorners = RoundedCornerShape(16.dp)
     return when {
-        isMine -> roundedCorners.copy(bottomStart = CornerSize(0))
-        else -> roundedCorners.copy(bottomEnd = CornerSize(0))
+        isMine -> roundedCorners.copy(bottomEnd = CornerSize(0))
+        else -> roundedCorners.copy(bottomStart = CornerSize(0))
     }
 }

@@ -1,9 +1,6 @@
 package client
 
-import api.AbstractAuthenticationAPI
-import api.AbstractChatAPI
-import api.AbstractProfileAPI
-import api.AbstractSearchAPI
+import api.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -23,6 +20,7 @@ import models.chat.Message
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import models.profile.UserProfile
+import models.review.Review
 
 fun createClient(): HttpClient {
     return HttpClient(CIO) {
@@ -44,7 +42,7 @@ class HTTPProfileClient(
     private val client: HttpClient,
     private val endpoint: String,
     private val currentJwt: () -> Jwt?
-) : AbstractProfileAPI, AbstractAuthenticationAPI, AbstractSearchAPI, AbstractChatAPI {
+) : AbstractProfileAPI, AbstractAuthenticationAPI, AbstractSearchAPI, AbstractChatAPI, AbstractReviewAPI {
     private fun HttpRequestBuilder.provideAuth() {
         val jwt = currentJwt()
         if (jwt != null) {
@@ -193,6 +191,20 @@ class HTTPProfileClient(
     override suspend fun getMessages(chatId: Long, startPos: Long, endPos: Long): List<Message> {
         return client.get("$endpoint/chats/messages?chatId=$chatId&startPos=$startPos&endPos=$endPos") {
             provideAuth()
+        }
+    }
+
+    override suspend fun getReviews(userId: Long): List<Review> {
+        return client.get("$endpoint/profile/review?id=${userId}") {
+            provideAuth()
+        }
+    }
+
+    override suspend fun postReview(review: Review) {
+        return client.post("$endpoint/profile/review") {
+            contentType(ContentType.Application.Json)
+            provideAuth()
+            body = review
         }
     }
 }

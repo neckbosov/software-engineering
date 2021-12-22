@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
 
 @Suppress("RemoveRedundantQualifierName")
 class SimpleChatAPI : AbstractChatAPI {
@@ -32,6 +33,7 @@ class SimpleChatAPI : AbstractChatAPI {
     }
 
     override suspend fun addMessage(senderId: Long, chatId: Long, content: String): Message {
+        val timestamp = Instant.now().toString()
         val (msgId, msgPos) = newSuspendedTransaction {
             val msgCnt = Chats.select { Chats.id.eq(chatId) }.firstOrNull()?.let { it[Chats.messagesCnt] } ?: 0
             Chats.update({ Chats.id.eq(chatId) }) { chat ->
@@ -43,12 +45,13 @@ class SimpleChatAPI : AbstractChatAPI {
                 msg[Messages.pos] = msgCnt
                 msg[Messages.content] = content
                 msg[Messages.senderId] = senderId
+                msg[Messages.timestamp] = timestamp
             }[Messages.id].value
 
             Pair(msgId, msgCnt)
         }
 
-        return Message(chatId, senderId, content, msgId, msgPos)
+        return Message(chatId, senderId, content, msgId, msgPos, timestamp)
     }
 
     override suspend fun getMessageById(messageId: Long): Message {

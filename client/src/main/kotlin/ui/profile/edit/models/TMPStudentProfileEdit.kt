@@ -22,6 +22,7 @@ class TMPStudentProfileEdit(
             interestsTags = interestsTags.map { it },
             status = status.value,
             universityDescription = universityDescription.toUniversityDescription(),
-            cvURL = cvURL.value.ifEmpty { null }
+            cvURL = cvURL.value.ifEmpty { null },
+            reviews = reviews
         )
 }
