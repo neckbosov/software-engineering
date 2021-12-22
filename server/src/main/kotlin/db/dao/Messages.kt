@@ -7,4 +7,5 @@ object Messages : LongIdTable() {
     val senderId = entityId("sender_id", Profiles).references(Profiles.id)
     val pos = long("pos")
     val content = text("content")
+    val timestamp = text("timestamp")
 }
