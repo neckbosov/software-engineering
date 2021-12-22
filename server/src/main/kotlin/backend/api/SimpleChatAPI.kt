@@ -26,11 +26,12 @@ class SimpleChatAPI : AbstractChatAPI {
             Chats.insert { chat ->
                 chat[Chats.userId1] = userId1
                 chat[Chats.userId2] = userId2
+                chat[Chats.messagesCnt] = 0
             }
         }
-        val id = chat[Chats.id]
+        val id = chat[Chats.id].value
 
-        return Chat(userId1, userId2, id.value, 0)
+        return Chat(userId1, userId2, id, 0)
     }
 
     override suspend fun addMessage(senderId: Long, chatId: Long, content: String): Message {
