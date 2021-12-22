@@ -27,4 +27,5 @@ data class Message(
     val content: String,
     val id: Long = 0,
     val pos: Long = 0,
+    var timestamp: String? = null
 )
