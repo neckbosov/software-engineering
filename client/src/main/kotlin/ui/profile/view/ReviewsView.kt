@@ -82,9 +82,15 @@ fun ReviewCard(appInfo: SimpleAppInfo, review: Review) {
     }
     Row {
         Text(review.body, modifier = Modifier.fillMaxWidth(0.5f).wrapContentHeight())
-        Text(reviewer.value, style = TextStyle(
-            fontSize = 12f.sp,
-            fontStyle = FontStyle.Italic
-        ))
+        Column {
+            Text(review.date, style = TextStyle(
+                fontSize = 12f.sp,
+                fontStyle = FontStyle.Italic
+            ))
+            Text(reviewer.value, style = TextStyle(
+                fontSize = 12f.sp,
+                fontStyle = FontStyle.Italic
+            ))
+        }
     }
 }
