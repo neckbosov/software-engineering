@@ -16,4 +16,5 @@ sealed class UserProfileInfoEdit(
     val achievements = profile.achievements.map { AchievementDescriptionEdit(it) }.toMutableStateList()
     val interestsTags = profile.interestsTags.map { it }.toMutableStateList()
     val status = mutableStateOf(profile.status)
+    val reviews = profile.reviews
 }

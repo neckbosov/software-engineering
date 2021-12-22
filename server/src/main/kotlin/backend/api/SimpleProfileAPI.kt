@@ -6,6 +6,7 @@ import db.dao.*
 import models.ProfileType
 import models.Tag
 import models.profile.*
+import models.review.Review
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -127,6 +128,16 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
                 Pair(studentData[Students.from], studentData[Students.to]),
                 studentData[Students.gpa]?.toFloat()
             )
+
+            val reviews = Reviews.select { Reviews.userId.eq(id)}.map {
+                Review(
+                    it[Reviews.userId].value,
+                    it[Reviews.reviewerId].value,
+                    it[Reviews.date],
+                    it[Reviews.body]
+                )
+            }
+
             StudentProfile(
                 studentProfile[Profiles.email],
                 studentProfile[Profiles.firstName],
@@ -141,6 +152,7 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
                 } else {
                     Status.NON_ACTIVE
                 },
+                reviews,
                 universityData,
                 studentData[Students.cvUrl]
             )
@@ -207,6 +219,15 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
                 )
             }
 
+            val reviews = Reviews.select { Reviews.userId.eq(id)}.map {
+                Review(
+                    it[Reviews.userId].value,
+                    it[Reviews.reviewerId].value,
+                    it[Reviews.date],
+                    it[Reviews.body]
+                )
+            }
+
             InstructorProfile(
                 instructorProfile[Profiles.email],
                 instructorProfile[Profiles.firstName],
@@ -221,8 +242,9 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
                 } else {
                     Status.NON_ACTIVE
                 },
+                reviews,
                 instructor[Instructors.degree],
-                researches
+                researches,
             )
         }
 
@@ -262,6 +284,16 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
             val tags = Tags.select { Tags.profileId.eq(id) }.map {
                 it[Tags.tag]
             }
+
+            val reviews = Reviews.select { Reviews.userId.eq(id)}.map {
+                Review(
+                    it[Reviews.userId].value,
+                    it[Reviews.reviewerId].value,
+                    it[Reviews.date],
+                    it[Reviews.body]
+                )
+            }
+
             when (profile[Profiles.profileType]) {
                 ProfileType.Student -> {
                     val studentData = Students.select { Students.profileId.eq(id) }.toList()[0]
@@ -287,6 +319,7 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
                         } else {
                             Status.NON_ACTIVE
                         },
+                        reviews,
                         universityData,
                         studentData[Students.cvUrl]
                     )
@@ -314,6 +347,7 @@ class SimpleProfileAPI(val database: SimpleDatabase) : AbstractProfileAPI {
                         } else {
                             Status.NON_ACTIVE
                         },
+                        reviews,
                         instructor[Instructors.degree],
                         researches
                     )
