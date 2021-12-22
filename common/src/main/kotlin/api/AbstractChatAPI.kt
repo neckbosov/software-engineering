@@ -12,6 +12,8 @@ interface AbstractChatAPI {
 
     suspend fun getChatById(chatId: Long): Chat
 
+    suspend fun getChatByUserIds(userId1: Long, userId2: Long): Chat
+
     suspend fun getChatsByUserId(userId: Long): List<Chat>
 
     /**
