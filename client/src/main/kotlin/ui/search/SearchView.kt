@@ -9,9 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -103,13 +101,51 @@ fun SearchTutorView(appInfo: SimpleAppInfo, profile: InstructorProfile, modifier
 }
 
 @Composable
+fun AutoCompleteText(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    onOptionSelected: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    //label: @Composable (() -> Unit)? = null,
+    suggestions: List<String> = emptyList()
+) {
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { text -> if (text !== value) onValueChange(text) },
+            modifier = Modifier.fillMaxWidth(),
+            //label = label,
+        )
+        DropdownMenu(
+            expanded = suggestions.isNotEmpty(),
+            onDismissRequest = {  },
+            modifier = Modifier.fillMaxWidth(),
+            focusable = false,
+        ) {
+            suggestions.forEach { label ->
+                DropdownMenuItem(onClick = {
+                    onOptionSelected(label)
+                }) {
+                    Text(text = label)
+                }
+            }
+        }
+
+    }
+}
+
+
+
+@Composable
 fun SearchView(appInfo: SimpleAppInfo, modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val searchResult = mutableStateOf(listOf<UserProfile>())
 
-    val text = mutableStateOf(TextFieldValue(""))
+    val text = remember { mutableStateOf(TextFieldValue("")) }
     val tutorsFlag = mutableStateOf(true)
     val studentsFlag = mutableStateOf(true)
+
+    val tags = remember { text.value.text.split(" ").toList().toMutableStateList() }
 
     MenuBar(appInfo) {
         BoxWithVerticalScroll {
@@ -118,21 +154,44 @@ fun SearchView(appInfo: SimpleAppInfo, modifier: Modifier = Modifier) {
                     IconButton(
                         onClick = {
                             scope.launch {
-                                val tags = text.value.text.split(" ").toList()
-                                val students = if (studentsFlag.value) { appInfo.client.searchStudentsByTags(tags) } else { listOf() }
-                                val tutors = if (tutorsFlag.value) {appInfo.client.searchInstructorsByTags(tags) } else { listOf() }
+                                val students = if (studentsFlag.value) {
+                                    appInfo.client.searchStudentsByTags(tags)
+                                } else {
+                                    listOf()
+                                }
+                                val tutors = if (tutorsFlag.value) {
+                                    appInfo.client.searchInstructorsByTags(tags)
+                                } else {
+                                    listOf()
+                                }
                                 searchResult.value = students + tutors
                             }
                         }
                     ) {
                         Icon(Icons.Filled.Search, "Search")
                     }
-                    OutlinedTextField(
-                        text.value,
-                        onValueChange = {
-                            text.value = it
-                        },
-                        modifier = Modifier.fillMaxWidth()
+                    val lastTag = if (tags.isNotEmpty()) {
+                        tags.last()
+                    } else {
+                        ""
+                    }
+                    val previousTags = if (tags.isNotEmpty()) {
+                        tags.take(tags.size - 1)
+                    } else {
+                        emptyList()
+                    }.joinToString(" ")
+                    val suggestionsLastTag = remember { mutableStateListOf<String>() }
+                    scope.launch {
+                        suggestionsLastTag.clear()
+                        suggestionsLastTag.addAll(appInfo.client.getTagsByPrefix(lastTag))
+                    }
+                    val suggestions = suggestionsLastTag.map { "$previousTags $it" }
+                    AutoCompleteText(
+                        value = text.value,
+                        onValueChange = { text.value = it },
+                        onOptionSelected = { text.value = TextFieldValue(it) },
+                        modifier = Modifier.fillMaxWidth(),
+                        suggestions = suggestions
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(3.dp), modifier = Modifier.padding(start = 10.dp).fillMaxWidth()) {
