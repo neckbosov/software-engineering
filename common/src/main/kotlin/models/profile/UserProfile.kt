@@ -2,6 +2,7 @@ package models.profile
 
 import kotlinx.serialization.Serializable
 import models.Tags
+import models.review.Review
 
 @Serializable
 sealed class UserProfile {
@@ -19,6 +20,8 @@ sealed class UserProfile {
     abstract val interestsTags: Tags
 
     abstract val status: Status
+
+    abstract val reviews: List<Review>
 }
 
 @Serializable
@@ -32,6 +35,7 @@ data class InstructorProfile(
     override val achievements: List<AchievementDescription>,
     override val interestsTags: Tags,
     override val status: Status,
+    override val reviews: List<Review>,
 
     val degree: String,
     val works: List<ResearchWorkDescription>,
@@ -48,6 +52,7 @@ data class StudentProfile(
     override val achievements: List<AchievementDescription>,
     override val interestsTags: Tags,
     override val status: Status,
+    override val reviews: List<Review>,
 
     val universityDescription: UniversityDescription,
     val cvURL: String? = null,

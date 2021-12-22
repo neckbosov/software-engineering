@@ -22,6 +22,7 @@ class TMPInstructorProfileEdit(
             interestsTags = interestsTags.map { it },
             status = status.value,
             degree = degree.value,
-            works = works.map { it.toResearchWorkDescription() }
+            works = works.map { it.toResearchWorkDescription() },
+            reviews = reviews
         )
 }

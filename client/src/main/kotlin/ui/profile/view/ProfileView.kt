@@ -23,6 +23,7 @@ fun ProfileView(appInfo: SimpleAppInfo, profileId: Long) {
         when (val profile = user) {
             is StudentProfile -> {
                 StudentProfileView(appInfo, profileId, profile, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+                ReviewsView(profile)
             }
             is InstructorProfile -> {
                 InstructorProfileView(
@@ -31,6 +32,7 @@ fun ProfileView(appInfo: SimpleAppInfo, profileId: Long) {
                     profile,
                     modifier = Modifier.padding(start = 10.dp, top = 10.dp)
                 )
+                ReviewsView(profile)
             }
             else -> {
                 Text("Loading")
