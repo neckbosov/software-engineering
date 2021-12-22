@@ -22,16 +22,15 @@ class SimpleChatAPI : AbstractChatAPI {
     }
 
     override suspend fun addChat(userId1: Long, userId2: Long): Chat {
-        val chat = newSuspendedTransaction {
-            Chats.insert { chat ->
+        return transaction {
+            val id = Chats.insert { chat ->
                 chat[Chats.userId1] = userId1
                 chat[Chats.userId2] = userId2
                 chat[Chats.messagesCnt] = 0
-            }
-        }
-        val id = chat[Chats.id].value
+            } get Chats.id
 
-        return Chat(userId1, userId2, id, 0)
+            Chat(userId1, userId2, id.value, 0)
+        }
     }
 
     override suspend fun addMessage(senderId: Long, chatId: Long, content: String): Message {
