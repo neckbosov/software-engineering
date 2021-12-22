@@ -33,8 +33,15 @@ fun Route.configureReviewRouting(backend: AbstractReviewAPI, jwt: SimpleJwt) {
             } catch (t: Throwable) {
                 throw InvalidBodyError("Invalid body")
             }
+            println(review)
             // TODO check auth!!!!!!
-            backend.postReview(review)
+            try {
+                backend.postReview(review)
+            } catch (t: Throwable) {
+                call.respond(HttpStatusCode.InternalServerError, t.message ?: "failed to post the review")
+                return@post
+            }
+            call.respond(HttpStatusCode.OK)
         }
     }
 }
