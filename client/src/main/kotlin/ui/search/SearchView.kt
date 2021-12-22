@@ -9,9 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -46,6 +44,7 @@ fun SearchStudentView(appInfo: SimpleAppInfo, profile: StudentProfile, modifier:
                     .background(Color.Transparent)
                     .clip(CircleShape)
                     .height(50.dp)
+                    .width(50.dp)
                     .border(
                         1.dp,
                         Color.DarkGray,
@@ -85,6 +84,7 @@ fun SearchTutorView(appInfo: SimpleAppInfo, profile: InstructorProfile, modifier
                     .background(Color.Transparent)
                     .clip(CircleShape)
                     .height(50.dp)
+                    .width(50.dp)
                     .border(
                         1.dp,
                         Color.DarkGray,
@@ -102,14 +102,46 @@ fun SearchTutorView(appInfo: SimpleAppInfo, profile: InstructorProfile, modifier
     )
 }
 
+
 @Composable
 fun SearchView(appInfo: SimpleAppInfo, modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
-    val searchResult = mutableStateOf(listOf<UserProfile>())
+    val searchResult = remember {  mutableStateListOf<UserProfile>() }
 
-    val text = mutableStateOf(TextFieldValue(""))
-    val tutorsFlag = mutableStateOf(true)
-    val studentsFlag = mutableStateOf(true)
+    val text = remember { mutableStateOf(TextFieldValue("")) }
+
+    val tutorsFlag = remember {  mutableStateOf(true) }
+    val studentsFlag = remember {  mutableStateOf(true) }
+
+    val tags = remember { text.value.text.split(" ").filter { it.isNotBlank() }.toMutableStateList() }
+    val suggestionsLastTag = remember { mutableStateListOf<String>() }
+    val suggestions = remember { mutableStateListOf<String>() }
+    val expandedFlag = remember { mutableStateOf(suggestions.isNotEmpty()) }
+
+    val updateText: (TextFieldValue, Boolean) -> Unit = { it, closeFlag ->
+        text.value = it
+        tags.clear()
+        tags.addAll(text.value.text.split(" ").filter { it.isNotBlank() })
+        val lastTag = if (tags.isNotEmpty()) {
+            tags.last()
+        } else {
+            ""
+        }
+        val previousTags = if (tags.isNotEmpty()) {
+            tags.take(tags.size - 1)
+        } else {
+            emptyList()
+        }.joinToString(" ")
+        if (lastTag.isNotBlank()) {
+            scope.launch {
+                suggestionsLastTag.clear()
+                suggestionsLastTag.addAll(appInfo.client.getTagsByPrefix(lastTag))
+                suggestions.clear()
+                suggestions.addAll(suggestionsLastTag.map { "$previousTags $it" })
+                expandedFlag.value = if (closeFlag) false else suggestions.isNotEmpty()
+            }
+        }
+    }
 
     MenuBar(appInfo) {
         BoxWithVerticalScroll {
@@ -118,24 +150,55 @@ fun SearchView(appInfo: SimpleAppInfo, modifier: Modifier = Modifier) {
                     IconButton(
                         onClick = {
                             scope.launch {
-                                val tags = text.value.text.split(" ").toList()
-                                val students = if (studentsFlag.value) { appInfo.client.searchStudentsByTags(tags) } else { listOf() }
-                                val tutors = if (tutorsFlag.value) {appInfo.client.searchInstructorsByTags(tags) } else { listOf() }
-                                searchResult.value = students + tutors
+                                val students = if (studentsFlag.value) {
+                                    appInfo.client.searchStudentsByTags(tags)
+                                } else {
+                                    listOf()
+                                }
+                                val tutors = if (tutorsFlag.value) {
+                                    appInfo.client.searchInstructorsByTags(tags)
+                                } else {
+                                    listOf()
+                                }
+                                searchResult.clear()
+                                searchResult.addAll(students + tutors)
                             }
                         }
                     ) {
                         Icon(Icons.Filled.Search, "Search")
                     }
-                    OutlinedTextField(
-                        text.value,
-                        onValueChange = {
-                            text.value = it
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+
+                    Column(modifier = modifier) {
+                        OutlinedTextField(
+                            value = text.value,
+                            onValueChange = { txt ->
+                                updateText(txt, false)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            //label = label,
+                        )
+                        DropdownMenu(
+                            expanded = expandedFlag.value,
+                            onDismissRequest = {
+                                expandedFlag.value = false
+                                               },
+                            modifier = Modifier.width(500.dp),
+                            focusable = false,
+                        ) {
+                            suggestions.forEach { label ->
+                                DropdownMenuItem(onClick = {
+                                    updateText(TextFieldValue(label), true)
+                                }) {
+                                    Text(text = label)
+                                }
+                            }
+                        }
+                    }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(3.dp), modifier = Modifier.padding(start = 10.dp).fillMaxWidth()) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(3.dp),
+                    modifier = Modifier.padding(start = 10.dp).fillMaxWidth()
+                ) {
                     Text("Options: ")
                     Text("Tutors:")
                     Checkbox(
@@ -156,15 +219,15 @@ fun SearchView(appInfo: SimpleAppInfo, modifier: Modifier = Modifier) {
                 Column(
                     modifier = modifier
                 ) {
-                    if (searchResult.value.isEmpty()) {
+                    if (searchResult.isEmpty()) {
                         Text(":(")
                     } else {
-                        val tutors = searchResult.value.filterIsInstance<InstructorProfile>()
+                        val tutors = searchResult.filterIsInstance<InstructorProfile>()
                         tutors.forEach {
                             Divider()
                             SearchTutorView(appInfo, it)
                         }
-                        val students = searchResult.value.filterIsInstance<StudentProfile>()
+                        val students = searchResult.filterIsInstance<StudentProfile>()
                         students.forEach {
                             Divider()
                             SearchStudentView(appInfo, it)
