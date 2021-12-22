@@ -68,6 +68,8 @@ fun InstructorProfileView(
                     Text("Go to chat")
                 }
             }
+            Spacer(modifier = Modifier.height(10.dp))
+            ReviewsView(appInfo, profileId, profile)
         }
     }
 }

@@ -63,6 +63,8 @@ fun StudentProfileView(appInfo: SimpleAppInfo, profileId: Long, profile: Student
                     Text("Go to chat")
                 }
             }
+            Spacer(modifier = Modifier.height(5.dp))
+            ReviewsView(appInfo, profileId, profile)
         }
     }
 }
