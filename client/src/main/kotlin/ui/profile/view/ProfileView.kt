@@ -23,25 +23,13 @@ fun ProfileView(appInfo: SimpleAppInfo, profileId: Long) {
     }
     MenuBar(appInfo) {
         when (val profile = user) {
-            is StudentProfile -> {
-                Column {
-                    StudentProfileView(appInfo, profileId, profile, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
-                    Spacer(modifier = Modifier.height(50.dp))
-                    ReviewsView(appInfo, profileId, profile)
-                }
-            }
-            is InstructorProfile -> {
-                Column {
-                    InstructorProfileView(
+            is StudentProfile -> StudentProfileView(appInfo, profileId, profile, modifier = Modifier.padding(start = 10.dp, top = 10.dp))
+            is InstructorProfile -> InstructorProfileView(
                         appInfo,
                         profileId,
                         profile,
                         modifier = Modifier.padding(start = 10.dp, top = 10.dp)
                     )
-                    Spacer(modifier = Modifier.height(50.dp))
-                    ReviewsView(appInfo, profileId, profile)
-                }
-            }
             else -> {
                 Text("Loading")
             }

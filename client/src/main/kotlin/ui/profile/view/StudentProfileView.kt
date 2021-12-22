@@ -2,27 +2,33 @@ package ui.profile.view
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import models.profile.StudentProfile
 import ui.SimpleAppInfo
+import ui.chat.ChatState
 import ui.profile.edit.ProfileEditState
 import ui.utils.BoxWithVerticalScroll
 
 @Composable
 @Preview
 fun StudentProfileView(appInfo: SimpleAppInfo, profileId: Long, profile: StudentProfile, modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxWidth(1f)) {
+    val scope = rememberCoroutineScope()
+
+    BoxWithVerticalScroll(modifier = modifier.fillMaxSize(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {
                 Row(
@@ -45,6 +51,20 @@ fun StudentProfileView(appInfo: SimpleAppInfo, profileId: Long, profile: Student
             AchievmentsView(profile.achievements)
             CarrierView(profile.career)
             CVView(profile)
+            if (profileId != appInfo.currentId) {
+                Button(
+                    onClick = {
+                        scope.launch {
+                            val chatId = appInfo.client.getChatByUserIds(appInfo.currentId!!, profileId).id
+                            appInfo.currentState.value = ChatState(chatId)
+                        }
+                    }
+                ) {
+                    Text("Go to chat")
+                }
+            }
+            Spacer(modifier = Modifier.height(5.dp))
+            ReviewsView(appInfo, profileId, profile)
         }
     }
 }

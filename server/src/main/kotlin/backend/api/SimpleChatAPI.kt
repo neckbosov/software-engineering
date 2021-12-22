@@ -3,6 +3,7 @@ package backend.api
 import api.AbstractChatAPI
 import db.dao.Chats
 import db.dao.Messages
+import db.dao.Messages.chatId
 import models.chat.Chat
 import models.chat.Message
 import org.jetbrains.exposed.sql.*
@@ -23,15 +24,15 @@ class SimpleChatAPI : AbstractChatAPI {
     }
 
     override suspend fun addChat(userId1: Long, userId2: Long): Chat {
-        val chat = newSuspendedTransaction {
-            Chats.insert { chat ->
+        return transaction {
+            val id = Chats.insert { chat ->
                 chat[Chats.userId1] = userId1
                 chat[Chats.userId2] = userId2
-            }
-        }
-        val id = chat[Chats.id]
+                chat[Chats.messagesCnt] = 0
+            } get Chats.id
 
-        return Chat(userId1, userId2, id.value, 0)
+            Chat(userId1, userId2, id.value, 0)
+        }
     }
 
     override suspend fun addMessage(senderId: Long, chatId: Long, content: String): Message {
@@ -75,6 +76,16 @@ class SimpleChatAPI : AbstractChatAPI {
             Chats.id.eq(chatId) }.first()
         }
         return Chat(chat[Chats.userId1].value, chat[Chats.userId2].value, chatId, chat[Chats.messagesCnt])
+    }
+
+    override suspend fun getChatByUserIds(userId1: Long, userId2: Long): Chat {
+        val chat = newSuspendedTransaction { Chats.select {
+            addLogger(StdOutSqlLogger)
+            (Chats.userId1.eq(userId1).and(Chats.userId2.eq(userId2))).or {
+                (Chats.userId1.eq(userId2).and(Chats.userId2.eq(userId1)))
+            } }.first()
+        }
+        return Chat(chat[Chats.userId1].value, chat[Chats.userId2].value, chat[Chats.id].value, chat[Chats.messagesCnt])
     }
 
     override suspend fun getChatsByUserId(userId: Long): List<Chat> {
