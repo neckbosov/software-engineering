@@ -27,7 +27,7 @@ fun InstructorProfileView(
     profile: InstructorProfile,
     modifier: Modifier = Modifier
 ) {
-    BoxWithVerticalScroll(modifier = modifier.fillMaxWidth(1f)) {
+    Box(modifier = modifier.fillMaxWidth(1f)) {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(modifier = Modifier.fillMaxWidth(1f)) {
                 Row(

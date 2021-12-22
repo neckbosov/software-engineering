@@ -197,6 +197,7 @@ class HTTPProfileClient(
 
     override suspend fun postReview(review: Review) {
         return client.post("$endpoint/profile/review") {
+            contentType(ContentType.Application.Json)
             provideAuth()
             body = review
         }
