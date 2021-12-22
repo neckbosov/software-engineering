@@ -1,10 +1,8 @@
 package client
 
-import api.AbstractAuthenticationAPI
-import api.AbstractChatAPI
-import api.AbstractProfileAPI
-import api.AbstractSearchAPI
+import api.*
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -22,9 +20,13 @@ import models.chat.Message
 import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import models.profile.UserProfile
+import models.review.Review
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun createClient(): HttpClient {
     return HttpClient(CIO) {
+        expectSuccess = false
         install(JsonFeature) {
             serializer = KotlinxSerializer(
                 json = kotlinx.serialization.json.Json {
@@ -42,7 +44,7 @@ class HTTPProfileClient(
     private val client: HttpClient,
     private val endpoint: String,
     private val currentJwt: () -> Jwt?
-) : AbstractProfileAPI, AbstractAuthenticationAPI, AbstractSearchAPI, AbstractChatAPI {
+) : AbstractProfileAPI, AbstractAuthenticationAPI, AbstractSearchAPI, AbstractChatAPI, AbstractReviewAPI {
     private fun HttpRequestBuilder.provideAuth() {
         val jwt = currentJwt()
         if (jwt != null) {
@@ -146,9 +148,12 @@ class HTTPProfileClient(
     }
 
     override suspend fun postLoginViaGoogle(token: String): Jwt {
-        return client.get("$endpoint/auth/login/google/post") {
+        val response: HttpResponse = client.get("$endpoint/auth/login/google/post") {
             parameter("token", token)
         }
+        if (response.status == HttpStatusCode.OK)
+            return response.receive<String>()
+        else throw Exception(response.receive<String>())
     }
 
     override suspend fun addChat(userId1: Long, userId2: Long): Chat {
@@ -163,12 +168,19 @@ class HTTPProfileClient(
         return client.post("$endpoint/chats/msg") {
             contentType(ContentType.Application.Json)
             provideAuth()
-            body = Message(chatId, senderId, content)
+            val date = SimpleDateFormat("dd/M/yyyy hh:mm").format(Date())
+            body = Message(chatId, senderId, content, timestamp = date)
         }
     }
 
     override suspend fun getChatById(chatId: Long): Chat {
         return client.get("$endpoint/chats/chat?id=$chatId") {
+            provideAuth()
+        }
+    }
+
+    override suspend fun getChatByUserIds(userId1: Long, userId2: Long): Chat {
+        return client.get("$endpoint/chats/chat?user_id=$userId2") {
             provideAuth()
         }
     }
@@ -188,6 +200,20 @@ class HTTPProfileClient(
     override suspend fun getMessages(chatId: Long, startPos: Long, endPos: Long): List<Message> {
         return client.get("$endpoint/chats/messages?chatId=$chatId&startPos=$startPos&endPos=$endPos") {
             provideAuth()
+        }
+    }
+
+    override suspend fun getReviews(userId: Long): List<Review> {
+        return client.get("$endpoint/profile/review?id=${userId}") {
+            provideAuth()
+        }
+    }
+
+    override suspend fun postReview(review: Review) {
+        return client.post("$endpoint/profile/review") {
+            contentType(ContentType.Application.Json)
+            provideAuth()
+            body = review
         }
     }
 }

@@ -1,6 +1,7 @@
 package httpapi
 
 import backend.api.authaccess.AuthorizedChatAPI
+import db.dao.Chats.userId2
 import error.InvalidBodyError
 import error.InvalidQueryParameterError
 import error.NotFoundError
@@ -17,13 +18,21 @@ fun Route.configureChatRouting(backend: AuthorizedChatAPI, jwt: SimpleJwt) {
     route("/v0/chats") {
         get("/chat") {
             val id = call.request.queryParameters["id"]?.toLongOrNull()
-                ?: throw InvalidQueryParameterError("Invalid query parameter `id`")
+            val userId = call.request.queryParameters["user_id"]?.toLongOrNull()
+
+            if (id == null && userId == null)
+                throw InvalidQueryParameterError("Invalid query parameter `id` or `user_id`")
 
             authorized(jwt) { agent ->
                 val result = try {
-                    backend.getChatById(agent.id, id)
-                } catch (t: Throwable) {
-                    throw NotFoundError("No chat found with id $id")
+                    if (id != null) backend.getChatById(agent.id, id)
+                    else backend.getChatByUserIds(agent.id, userId!!)
+                } catch (_: Throwable) {
+                    if (userId != null) {
+                        backend.addChat(agent.id, agent.id, userId)
+                    } else {
+                        throw NotFoundError("No chat found with id $id")
+                    }
                 }
                 call.respond(HttpStatusCode.OK, result)
             }

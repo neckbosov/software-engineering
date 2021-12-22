@@ -25,12 +25,12 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.achievements (
-                                     id bigint NOT NULL,
-                                     profile_id bigint NOT NULL,
-                                     type character varying(256) NOT NULL,
-                                     name text NOT NULL,
-                                     description text NOT NULL,
-                                     date character varying(20) NOT NULL
+    id bigint NOT NULL,
+    profile_id bigint NOT NULL,
+    type character varying(256) NOT NULL,
+    name text NOT NULL,
+    description text NOT NULL,
+    date character varying(20) NOT NULL
 );
 
 
@@ -62,9 +62,9 @@ ALTER SEQUENCE public.achievements_id_seq OWNED BY public.achievements.id;
 --
 
 CREATE TABLE public.appid2personid (
-                                       id integer NOT NULL,
-                                       app_id text NOT NULL,
-                                       profile_id bigint NOT NULL
+    id integer NOT NULL,
+    app_id text NOT NULL,
+    profile_id bigint NOT NULL
 );
 
 
@@ -97,11 +97,11 @@ ALTER SEQUENCE public.appid2personid_id_seq OWNED BY public.appid2personid.id;
 --
 
 CREATE TABLE public."authorization" (
-                                        id bigint NOT NULL,
-                                        profile_id bigint NOT NULL,
-                                        is_admin boolean NOT NULL,
-                                        is_moderator boolean NOT NULL,
-                                        is_banned boolean NOT NULL
+    id bigint NOT NULL,
+    profile_id bigint NOT NULL,
+    is_admin boolean NOT NULL,
+    is_moderator boolean NOT NULL,
+    is_banned boolean NOT NULL
 );
 
 
@@ -133,10 +133,10 @@ ALTER SEQUENCE public.authorization_id_seq OWNED BY public."authorization".id;
 --
 
 CREATE TABLE public.chats (
-                              id bigint NOT NULL,
-                              user1_id bigint NOT NULL,
-                              user2_id bigint NOT NULL,
-                              msg_cnt bigint NOT NULL
+    id bigint NOT NULL,
+    user1_id bigint NOT NULL,
+    user2_id bigint NOT NULL,
+    msg_cnt bigint NOT NULL
 );
 
 
@@ -168,9 +168,9 @@ ALTER SEQUENCE public.chats_id_seq OWNED BY public.chats.id;
 --
 
 CREATE TABLE public.instructors (
-                                    id bigint NOT NULL,
-                                    profile_id bigint NOT NULL,
-                                    degree character varying(256) NOT NULL
+    id bigint NOT NULL,
+    profile_id bigint NOT NULL,
+    degree character varying(256) NOT NULL
 );
 
 
@@ -202,12 +202,12 @@ ALTER SEQUENCE public.instructors_id_seq OWNED BY public.instructors.id;
 --
 
 CREATE TABLE public.jobs (
-                             id bigint NOT NULL,
-                             profile_id bigint NOT NULL,
-                             place character varying(256) NOT NULL,
-                             "position" character varying(256) NOT NULL,
-                             from_date character varying(20) NOT NULL,
-                             to_date character varying(20) NOT NULL
+    id bigint NOT NULL,
+    profile_id bigint NOT NULL,
+    place character varying(256) NOT NULL,
+    "position" character varying(256) NOT NULL,
+    from_date character varying(20) NOT NULL,
+    to_date character varying(20) NOT NULL
 );
 
 
@@ -239,12 +239,12 @@ ALTER SEQUENCE public.jobs_id_seq OWNED BY public.jobs.id;
 --
 
 CREATE TABLE public.messages (
-                                 id bigint NOT NULL,
-                                 chat_id bigint NOT NULL,
-                                 sender_id bigint NOT NULL,
-                                 pos bigint NOT NULL,
-                                 content text NOT NULL,
-                                 "timestamp" text NOT NULL
+    id bigint NOT NULL,
+    chat_id bigint NOT NULL,
+    sender_id bigint NOT NULL,
+    pos bigint NOT NULL,
+    content text NOT NULL,
+    "timestamp" text NOT NULL
 );
 
 
@@ -276,14 +276,14 @@ ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 --
 
 CREATE TABLE public.profiles (
-                                 id bigint NOT NULL,
-                                 avatar_url text,
-                                 email character varying(256) NOT NULL,
-                                 first_name character varying(50) NOT NULL,
-                                 last_name character varying(50) NOT NULL,
-                                 patronymic character varying(50),
-                                 is_active boolean NOT NULL,
-                                 profile_type integer NOT NULL
+    id bigint NOT NULL,
+    avatar_url text,
+    email character varying(256) NOT NULL,
+    first_name character varying(50) NOT NULL,
+    last_name character varying(50) NOT NULL,
+    patronymic character varying(50),
+    is_active boolean NOT NULL,
+    profile_type integer NOT NULL
 );
 
 
@@ -315,11 +315,11 @@ ALTER SEQUENCE public.profiles_id_seq OWNED BY public.profiles.id;
 --
 
 CREATE TABLE public.researchworks (
-                                      id bigint NOT NULL,
-                                      instructor_id bigint NOT NULL,
-                                      title character varying(256) NOT NULL,
-                                      description text NOT NULL,
-                                      details_url text NOT NULL
+    id bigint NOT NULL,
+    instructor_id bigint NOT NULL,
+    title character varying(256) NOT NULL,
+    description text NOT NULL,
+    details_url text NOT NULL
 );
 
 
@@ -351,16 +351,16 @@ ALTER SEQUENCE public.researchworks_id_seq OWNED BY public.researchworks.id;
 --
 
 CREATE TABLE public.students (
-                                 id bigint NOT NULL,
-                                 profile_id bigint NOT NULL,
-                                 university character varying(256) NOT NULL,
-                                 faculty character varying(256) NOT NULL,
-                                 step character varying(50) NOT NULL,
-                                 course integer NOT NULL,
-                                 "from" character varying(256) NOT NULL,
-                                 "to" character varying(256) NOT NULL,
-                                 gpa numeric(3,2),
-                                 cv_url text
+    id bigint NOT NULL,
+    profile_id bigint NOT NULL,
+    university character varying(256) NOT NULL,
+    faculty character varying(256) NOT NULL,
+    step character varying(50) NOT NULL,
+    course integer NOT NULL,
+    "from" character varying(256) NOT NULL,
+    "to" character varying(256) NOT NULL,
+    gpa numeric(3,2),
+    cv_url text
 );
 
 
@@ -392,9 +392,9 @@ ALTER SEQUENCE public.students_id_seq OWNED BY public.students.id;
 --
 
 CREATE TABLE public.tags (
-                             id bigint NOT NULL,
-                             profile_id bigint NOT NULL,
-                             tag character varying(50) NOT NULL
+    id bigint NOT NULL,
+    profile_id bigint NOT NULL,
+    tag character varying(50) NOT NULL
 );
 
 
@@ -426,13 +426,13 @@ ALTER SEQUENCE public.tags_id_seq OWNED BY public.tags.id;
 --
 
 CREATE TABLE public.temporaryauthtokens (
-                                            id integer NOT NULL,
-                                            temporary_token text NOT NULL,
-                                            access_token text,
-                                            refresh_token text,
-                                            "expiresAt" timestamp without time zone,
-                                            profile_type integer,
-                                            "timestamp" timestamp without time zone NOT NULL
+    id integer NOT NULL,
+    temporary_token text NOT NULL,
+    access_token text,
+    refresh_token text,
+    "expiresAt" timestamp without time zone,
+    profile_type integer,
+    "timestamp" timestamp without time zone NOT NULL
 );
 
 
@@ -965,3 +965,4 @@ ALTER TABLE ONLY public.tags
 --
 -- PostgreSQL database dump complete
 --
+

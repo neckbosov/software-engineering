@@ -55,6 +55,8 @@ fun MenuBar(
                             Color.DarkGray,
                             CircleShape
                         )
+                        .width(50.dp)
+                        .height(50.dp)
                 )
             }
             IconButton(
