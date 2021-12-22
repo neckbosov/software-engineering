@@ -65,9 +65,9 @@ fun ReviewsView(appInfo: SimpleAppInfo, profileId: Long, profile: UserProfile, m
                     fontWeight = FontWeight.SemiBold,
                 ),
             )
-            LazyColumn {
-                items(reviews.value.size) { index: Int ->
-                    ReviewCard(appInfo, reviews.value[index])
+            Column {
+                reviews.value.forEach { review ->
+                    ReviewCard(appInfo, review)
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }

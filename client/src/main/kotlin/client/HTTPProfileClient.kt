@@ -176,6 +176,12 @@ class HTTPProfileClient(
         }
     }
 
+    override suspend fun getChatByUserIds(userId1: Long, userId2: Long): Chat {
+        return client.get("$endpoint/chats/chat?user_id=$userId2") {
+            provideAuth()
+        }
+    }
+
     override suspend fun getChatsByUserId(userId: Long): List<Chat> {
         return client.get("$endpoint/chats/user_chats?profileId=$userId") {
             provideAuth()

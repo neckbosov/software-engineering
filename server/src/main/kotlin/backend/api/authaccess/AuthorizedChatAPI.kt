@@ -2,6 +2,9 @@ package backend.api.authaccess
 
 import api.AbstractChatAPI
 import backend.storage.AuthorizationStorage
+import db.dao.Chats.userId1
+import db.dao.Chats.userId2
+import db.dao.Messages.chatId
 import models.auth.NotAuthorizedError
 import models.chat.Chat
 import models.chat.Message
@@ -57,6 +60,12 @@ class AuthorizedChatAPI(private val api: AbstractChatAPI) {
         flags.notBannedOrThrow()
         flags.canReadChatOrThrow(chatId)
         return api.getChatById(chatId)
+    }
+
+    suspend fun getChatByUserIds(agentId: Long, userId: Long): Chat {
+        val flags = AuthorizationStorage.getFlags(agentId)
+        flags.notBannedOrThrow()
+        return api.getChatByUserIds(agentId, userId)
     }
 
     suspend fun getChatsByUserId(agentId: Long, userId: Long): List<Chat> {
