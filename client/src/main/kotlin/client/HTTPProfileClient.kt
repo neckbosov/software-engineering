@@ -20,6 +20,8 @@ import models.profile.InstructorProfile
 import models.profile.StudentProfile
 import models.profile.UserProfile
 import models.review.Review
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun createClient(): HttpClient {
     return HttpClient(CIO) {
@@ -161,7 +163,8 @@ class HTTPProfileClient(
         return client.post("$endpoint/chats/msg") {
             contentType(ContentType.Application.Json)
             provideAuth()
-            body = Message(chatId, senderId, content)
+            val date = SimpleDateFormat("dd/M/yyyy hh:mm").format(Date())
+            body = Message(chatId, senderId, content, timestamp = date)
         }
     }
 

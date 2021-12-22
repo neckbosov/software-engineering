@@ -10,7 +10,9 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.text.SimpleDateFormat
 import java.time.Instant
+import java.util.*
 
 @Suppress("RemoveRedundantQualifierName")
 class SimpleChatAPI : AbstractChatAPI {
@@ -33,7 +35,7 @@ class SimpleChatAPI : AbstractChatAPI {
     }
 
     override suspend fun addMessage(senderId: Long, chatId: Long, content: String): Message {
-        val timestamp = Instant.now().toString()
+        val date = SimpleDateFormat("dd/M/yyyy hh:mm").format(Date())
         val (msgId, msgPos) = newSuspendedTransaction {
             val msgCnt = Chats.select { Chats.id.eq(chatId) }.firstOrNull()?.let { it[Chats.messagesCnt] } ?: 0
             Chats.update({ Chats.id.eq(chatId) }) { chat ->
@@ -45,13 +47,13 @@ class SimpleChatAPI : AbstractChatAPI {
                 msg[Messages.pos] = msgCnt
                 msg[Messages.content] = content
                 msg[Messages.senderId] = senderId
-                msg[Messages.timestamp] = timestamp
+                msg[Messages.timestamp] = date
             }[Messages.id].value
 
             Pair(msgId, msgCnt)
         }
 
-        return Message(chatId, senderId, content, msgId, msgPos, timestamp)
+        return Message(chatId, senderId, content, msgId, msgPos, date)
     }
 
     override suspend fun getMessageById(messageId: Long): Message {
@@ -62,7 +64,8 @@ class SimpleChatAPI : AbstractChatAPI {
             msg[Messages.senderId].value,
             msg[Messages.content],
             messageId,
-            msg[Messages.pos]
+            msg[Messages.pos],
+            msg[Messages.timestamp]
         )
     }
 
@@ -99,7 +102,8 @@ class SimpleChatAPI : AbstractChatAPI {
                 msg[Messages.senderId].value,
                 msg[Messages.content],
                 msg[Messages.id].value,
-                msg[Messages.pos]
+                msg[Messages.pos],
+                msg[Messages.timestamp]
             )
         }
     }
