@@ -54,7 +54,7 @@ fun SearchStudentView(appInfo: SimpleAppInfo, profile: StudentProfile, modifier:
         },
         secondaryText = {
             val universityInfo = profile.universityDescription
-            Text("Student in ${universityInfo.universityName}, ${universityInfo.faculty}, ${universityInfo.course}")
+            Text("Student at ${universityInfo.universityName}, ${universityInfo.faculty}, ${universityInfo.course}")
         },
         trailing = { Text("Student") },
         modifier = Modifier.fillMaxWidth().clickable {

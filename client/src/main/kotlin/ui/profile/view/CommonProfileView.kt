@@ -3,6 +3,7 @@ package ui.profile.view
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -132,7 +133,9 @@ fun TagsView(tags: Tags, modifier: Modifier = Modifier) {
             modifier = Modifier
         )
         tags.forEach {
-            Text(it)
+            Card {
+                Text(it, modifier = Modifier.padding(5.dp))
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package ui.profile.view
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -12,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -104,6 +107,8 @@ fun StudentProfileInfoView(profile: StudentProfile, modifier: Modifier = Modifie
 @Composable
 @Preview
 fun CVView(profile: StudentProfile, modifier: Modifier = Modifier) {
+    val uriHandler = LocalUriHandler.current
+
     Row(modifier) {
         Text(
             text = "CV URL: ",
@@ -112,9 +117,20 @@ fun CVView(profile: StudentProfile, modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.SemiBold,
             ),
         )
-        Text(
-            text = profile.cvURL ?: "Not loaded",
-            fontSize = 20f.sp
-        )
+        val url = profile.cvURL
+        if (url != null) {
+            ClickableText(
+                text = AnnotatedString(url),
+                style = TextStyle(fontSize = 20f.sp),
+                onClick = {
+                    uriHandler.openUri(url)
+                }
+            )
+        } else {
+            Text(
+                text = "Not loaded",
+                style = TextStyle(fontSize = 20f.sp)
+            )
+        }
     }
 }
