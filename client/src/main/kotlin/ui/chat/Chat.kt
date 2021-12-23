@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import models.chat.Message
 import ui.SimpleAppInfo
@@ -42,6 +43,13 @@ fun Chat(appInfo: SimpleAppInfo, chatId: Long?) {
 
     scope.launch {
         messages.value = appInfo.client.getMessages(chatId, 0, 100)
+    }
+
+    LaunchedEffect(Unit) {
+        while(true) {
+            messages.value = appInfo.client.getMessages(chatId, 0, 100)
+            delay(300)
+        }
     }
 
     Column(
