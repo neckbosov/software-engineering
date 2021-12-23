@@ -40,7 +40,7 @@ fun ProfileCreate(appInfo: SimpleAppInfo) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Добро пожаловать в [Name]!",
+                text = "Welcome to MeeTut!",
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.h6
@@ -48,7 +48,7 @@ fun ProfileCreate(appInfo: SimpleAppInfo) {
 
             Spacer(Modifier.heightIn(20.dp))
 
-            Text("Кто Вы?")
+            Text("Who are you?")
             Column(horizontalAlignment = Alignment.Start) {
                 Row(
                     Modifier.padding(5.dp),
@@ -62,7 +62,7 @@ fun ProfileCreate(appInfo: SimpleAppInfo) {
                     val annotatedString = buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(fontWeight = FontWeight.Bold)
-                        ) { append("  Студент  ") }
+                        ) { append("  Student  ") }
                     }
 
                     ClickableText(
@@ -85,7 +85,7 @@ fun ProfileCreate(appInfo: SimpleAppInfo) {
                     val annotatedString = buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(fontWeight = FontWeight.Bold)
-                        ) { append("  Преподаватель  ") }
+                        ) { append("  Tutor  ") }
                     }
 
                     ClickableText(
@@ -114,7 +114,7 @@ fun ProfileCreate(appInfo: SimpleAppInfo) {
                     }
                 }
             ) {
-                Text("Создать профиль!")
+                Text("Create profile")
             }
         }
     }

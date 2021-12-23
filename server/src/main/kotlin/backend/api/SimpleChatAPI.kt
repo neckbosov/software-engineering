@@ -54,7 +54,7 @@ class SimpleChatAPI : AbstractChatAPI {
             Pair(msgId, msgCnt)
         }
 
-        return Message(chatId, senderId, content, msgId, msgPos, date)
+        return Message(chatId, senderId, content, date, msgId, msgPos)
     }
 
     override suspend fun getMessageById(messageId: Long): Message {
@@ -64,9 +64,9 @@ class SimpleChatAPI : AbstractChatAPI {
             msg[Messages.chatId].value,
             msg[Messages.senderId].value,
             msg[Messages.content],
+            msg[Messages.timestamp],
             messageId,
-            msg[Messages.pos],
-            msg[Messages.timestamp]
+            msg[Messages.pos]
         )
     }
 
@@ -112,9 +112,9 @@ class SimpleChatAPI : AbstractChatAPI {
                 msg[Messages.chatId].value,
                 msg[Messages.senderId].value,
                 msg[Messages.content],
+                msg[Messages.timestamp],
                 msg[Messages.id].value,
-                msg[Messages.pos],
-                msg[Messages.timestamp]
+                msg[Messages.pos]
             )
         }
     }

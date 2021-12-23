@@ -164,12 +164,11 @@ class HTTPProfileClient(
         }
     }
 
-    override suspend fun addMessage(chatId: Long, senderId: Long, content: String): Message {
+    override suspend fun addMessage(senderId: Long, chatId: Long, content: String): Message {
         return client.post("$endpoint/chats/msg") {
             contentType(ContentType.Application.Json)
             provideAuth()
-            val date = SimpleDateFormat("dd/M/yyyy hh:mm").format(Date())
-            body = Message(chatId, senderId, content, timestamp = date)
+            body = Message(chatId, senderId, content, timestamp = "")
         }
     }
 
