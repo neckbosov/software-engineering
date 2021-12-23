@@ -89,7 +89,7 @@ fun Chat(appInfo: SimpleAppInfo, chatId: Long?) {
                     IconButton(
                         onClick = {
                             scope.launch {
-                                appInfo.currentId?.let { appInfo.client.addMessage(chatId, it, message.value) }
+                                appInfo.currentId?.let { appInfo.client.addMessage(it, chatId, message.value) }
                                 messages.value = appInfo.client.getMessages(chatId, 0, 100)
                                 message.value = ""
                             }
