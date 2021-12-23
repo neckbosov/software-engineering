@@ -20,6 +20,6 @@ class UniversityDescriptionEdit(
         grade = grade.value,
         period = Pair(period1.value, period2.value),
         gpa = gpa.value.toFloatOrNull() ?: 0.0F,
-        course = gpa.value.toIntOrNull() ?: 0
+        course = course.value.toIntOrNull() ?: 0
     )
 }

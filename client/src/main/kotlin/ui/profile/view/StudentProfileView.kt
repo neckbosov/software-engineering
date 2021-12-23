@@ -80,7 +80,7 @@ fun StudentProfileInfoView(profile: StudentProfile, modifier: Modifier = Modifie
         EmailView(profile.email)
         val universityInfo = profile.universityDescription
         Text(
-            text = "Student in ${universityInfo.universityName}, ${universityInfo.faculty}, ${universityInfo.course}",
+            text = "Student at ${universityInfo.universityName}, ${universityInfo.faculty}, ${universityInfo.course}",
             style = TextStyle(
                 fontSize = 15f.sp,
                 fontWeight = FontWeight.SemiBold,

@@ -86,9 +86,8 @@ fun StudentProfileInfoEdit(profile: TMPStudentProfileEdit, modifier: Modifier = 
     val universityInfo = profile.universityDescription
     val isGPAValid = remember { mutableStateOf(checkBigDecimal(universityInfo.gpa.value)) }
     val isCourseValid = remember { mutableStateOf(checkInt(universityInfo.course.value)) }
-    val isGradeValid = remember { mutableStateOf(checkInt(universityInfo.grade.value)) }
 
-    profile.validToSubmit.value = isGPAValid.value && isCourseValid.value && isGradeValid.value
+    profile.validToSubmit.value = isGPAValid.value && isCourseValid.value
     Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier) {
         Text(
             text = "University Info:",
@@ -115,17 +114,14 @@ fun StudentProfileInfoEdit(profile: TMPStudentProfileEdit, modifier: Modifier = 
                 )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                OutlinedTextFieldWithError(
+                OutlinedTextField(
                     value = universityInfo.grade.value,
                     onValueChange = {
-                        isGradeValid.value = checkInt(it)
                         universityInfo.grade.value = it
                     },
                     label = { Text("Grade") },
                     singleLine = true,
-                    modifier = Modifier.weight(1f),
-                    isError = !isGradeValid.value,
-                    errorMessage = { Text("Grade should be a number") }
+                    modifier = Modifier.weight(1f)
                 )
                 OutlinedTextFieldWithError(
                     value = universityInfo.course.value,
